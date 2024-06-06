@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3 uid="uid://c8161in0xfnar"]
+
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_gxcth"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_slbbk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_harsj"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_t1ljk"]
+material = SubResource("StandardMaterial3D_harsj")
+
+[sub_resource type="BoxMesh" id="BoxMesh_ps1lc"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_t5fd3"]
+
+[node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
+script = ExtResource("1_gxcth")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_slbbk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+mesh = SubResource("CapsuleMesh_t1ljk")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CollisionShape3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.5, 0.5)
+mesh = SubResource("BoxMesh_ps1lc")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_height_offset = 0.5
+avoidance_enabled = true
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(20, 0, 0, 0, 2, 0, 0, 0, 20, 0, 0, 0)
+shape = SubResource("CylinderShape3D_t5fd3")
+
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]
