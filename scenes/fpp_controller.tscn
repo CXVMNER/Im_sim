@@ -4,11 +4,11 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v36qa"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y55q4"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_76fdr"]
 albedo_color = Color(1, 0.0980392, 0.196078, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_t614e"]
-material = SubResource("StandardMaterial3D_y55q4")
+material = SubResource("StandardMaterial3D_76fdr")
 
 [sub_resource type="Animation" id="Animation_bp8e0"]
 length = 0.001
