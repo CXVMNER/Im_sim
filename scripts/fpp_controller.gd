@@ -97,25 +97,26 @@ func _headbob(time) -> Vector3:
 
 func _toggle_crouch():
 	if is_crouching:
-		crouching(false)  # Call crouching(false) directly
+		# Only uncrouch if there's no obstacle above
+		if CROUCH_SHAPECAST.is_colliding() == false:
+			crouching(false)
 	else:
-		crouching(true)   # Call crouching(true) directly
+		crouching(true)
 
 func uncrouch_check():
 	if CROUCH_SHAPECAST.is_colliding() == false:
 		crouching(false)
-	if CROUCH_SHAPECAST.is_colliding() == true:
-		await get_tree().create_timer(0.1).timeout
-		uncrouch_check()
 
 func crouching(state : bool):
 	match state:
 		true:
 			ANIMATIONPLAYER.play("crouch", 0, CROUCHING_SPEED)
 			set_movement_speed("crouching")
+			is_crouching = true
 		false:
 			ANIMATIONPLAYER.play("crouch", 0, -CROUCHING_SPEED, true)
 			set_movement_speed("walking")
+			is_crouching = false  # Mark as not crouching
 
 func _on_animation_player_animation_started(anim_name):
 	if anim_name == "crouch":
