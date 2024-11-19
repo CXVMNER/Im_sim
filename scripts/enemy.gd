@@ -8,6 +8,10 @@ var SPEED = 3.0
 # var DETECTION_RADIUS = 8.0
 var player_detected = false
 
+var max_hp = 50
+var current_hp = max_hp
+var attack_damage = 10
+
 func _ready():
 	detection_area.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
 	detection_area.connect("body_exited", Callable(self, "_on_area_3d_body_exited"))
@@ -30,7 +34,7 @@ func _physics_process(delta):
 	# Rotate to face the player
 	face_player(player_location)
 	
-	# move_and_slide()
+	# move_and_slide() # Uncomment if you need enemy movement
 
 func update_target_location(target_location):
 	nav_agent.set_target_position(target_location)
