@@ -1,11 +1,17 @@
 extends CharacterBody3D
 
+var max_hp = 100
+var current_hp = max_hp
+
 var speed : float
 const WALK_SPEED = 5.0
 const SPRINT_SPEED = 8.0
 const CROUCH_SPEED = 3.0
 const JUMP_VELOCITY = 4.5
 const SENSITIVITY = 0.01
+
+const AIR_CONTROL_FACTOR = 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
+var stored_horizontal_velocity = Vector3.ZERO  # To store the velocity at the moment of jumping
 
 # head bob variables
 const BOB_FREQ = 2.0
@@ -28,6 +34,7 @@ var gravity = 9.8
 func _input(event):
 	if event.is_action_pressed("exit"):
 		get_tree().quit()
+	
 	if event.is_action_pressed("crouch") and is_on_floor() and TOGGLE_CROUCH == true:
 		_toggle_crouch()
 	if event.is_action_pressed("crouch") and is_crouching == false and is_on_floor() and TOGGLE_CROUCH == false: # Hold to crouch
@@ -62,6 +69,9 @@ func _physics_process(delta):
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
+		# Store the horizontal velocity when the jump starts
+		stored_horizontal_velocity.x = velocity.x
+		stored_horizontal_velocity.z = velocity.z
 
 	# Handle sprint.
 	if Input.is_action_pressed("sprint") and not is_crouching:
@@ -76,17 +86,28 @@ func _physics_process(delta):
 	# Get the input direction and handle the movement/deceleration.
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	var direction = (CameraController.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	if direction:
-		velocity.x = direction.x * speed
-		velocity.z = direction.z * speed
+
+	# Modify movement based on whether the player is on the floor or in the air
+	if is_on_floor():
+		# Normal movement control on the ground
+		if direction:
+			velocity.x = direction.x * speed
+			velocity.z = direction.z * speed
+		else:
+			velocity.x = move_toward(velocity.x, 0, speed)
+			velocity.z = move_toward(velocity.z, 0, speed)
 	else:
-		velocity.x = move_toward(velocity.x, 0, speed)
-		velocity.z = move_toward(velocity.z, 0, speed)
-	
-	# Head bob
+		# Air control: Allow limited movement but clamp the maximum velocity
+		if direction:
+			# Allow limited air control by blending stored velocity with input direction
+			var air_control_velocity = stored_horizontal_velocity + (direction * speed * AIR_CONTROL_FACTOR)
+			velocity.x = lerp(velocity.x, air_control_velocity.x, AIR_CONTROL_FACTOR)
+			velocity.z = lerp(velocity.z, air_control_velocity.z, AIR_CONTROL_FACTOR)
+
+	# Head bob (only when on the ground)
 	t_bob += delta * velocity.length() * float(is_on_floor())
 	camera.transform.origin = _headbob(t_bob)
-	
+
 	move_and_slide()
 
 func _headbob(time) -> Vector3:
