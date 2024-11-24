@@ -2,6 +2,12 @@ extends CharacterBody3D
 
 var max_hp = 100
 var current_hp = max_hp
+var health := 10
+
+# @onready var hud = $%HUD
+
+@export var fireSpeed := 0.2
+@export var attackPower := 1
 
 var speed : float
 const WALK_SPEED = 5.0
@@ -24,9 +30,12 @@ var is_crouching = false
 @export var CROUCH_SHAPECAST : Node3D
 
 @onready var ANIMATIONPLAYER = $AnimationPlayer
+@onready var hitbox = $CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = 9.8
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gravity = 9.8
+
+var bullet = preload("res://scenes/bullet.tscn")
 
 @onready var CameraController = $CameraController
 @onready var camera = $CameraController/Camera3D
@@ -34,6 +43,10 @@ var gravity = 9.8
 func _input(event):
 	if event.is_action_pressed("exit"):
 		get_tree().quit()
+	
+	if event.is_action_pressed("attack"):
+		ANIMATIONPLAYER.play("attack")
+		hitbox.monitoring = true
 	
 	if event.is_action_pressed("crouch") and is_on_floor() and TOGGLE_CROUCH == true:
 		_toggle_crouch()
@@ -54,6 +67,8 @@ func _ready():
 	
 	# add crouch check shapecast collision exception for CharacterBody3D node
 	CROUCH_SHAPECAST.add_exception(self)
+	
+	# hud.health = health
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
@@ -150,3 +165,15 @@ func set_movement_speed(state : String):
 			speed = WALK_SPEED
 		"crouching":
 			speed = CROUCH_SPEED
+
+
+func _on_animation_player_animation_finished(anim_name):
+	if anim_name == "attack":
+		ANIMATIONPLAYER.play("idle")
+		hitbox.monitoring = false
+
+
+func _on_hitbox_body_entered(body):
+	# print("Collision detected with", body)
+	if body.is_in_group("enemies"):
+		print("enemy hit")

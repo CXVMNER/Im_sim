@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwjo7m8r0jffb"]
+
+[ext_resource type="Script" path="res://scripts/HUDItem.gd" id="1_8vy6n"]
+
+[node name="HUDItem" type="Label"]
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("1_8vy6n")
