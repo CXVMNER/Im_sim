@@ -77,6 +77,7 @@ func _ready():
 	CROUCH_SHAPECAST.add_exception(self)
 
 	hud.health = health
+	hud.updateHud()
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:

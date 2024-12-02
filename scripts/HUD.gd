@@ -3,9 +3,9 @@ extends Control
 @export var ammo := 200
 @export var stamina := 100
 
-@onready var healthValue = $"%health"
-@onready var ammoValue = $"%ammo"
-@onready var staminaValue = $"%stamina"
+@onready var healthValue = $%health
+@onready var ammoValue = $%ammo
+@onready var staminaValue = $%stamina
 
 @onready var updates = $HUDUpdate
 @onready var overlay = $Overlay
