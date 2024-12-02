@@ -226,6 +226,7 @@ _data = {
 [sub_resource type="SphereShape3D" id="SphereShape3D_c503a"]
 
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CROUCH_SHAPECAST")]
+collision_layer = 3
 script = ExtResource("1_888b0")
 CROUCH_SHAPECAST = NodePath("ShapeCast3D")
 
@@ -256,6 +257,9 @@ monitoring = false
 transform = Transform3D(1, 1.07102e-07, 0, -9.74978e-10, 1, -9.31323e-10, 0, 0, 1, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_aotb2")
 
+[node name="gun" type="Marker3D" parent="CameraController/Camera3D/WeaponHolder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.75)
+
 [node name="HUD" parent="CameraController" instance=ExtResource("2_lq6am")]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -270,6 +274,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 shape = SubResource("SphereShape3D_c503a")
 target_position = Vector3(0, 0.5, 0)
 
+[node name="staminaRegen" type="Timer" parent="."]
+wait_time = 3.0
+
 [connection signal="body_entered" from="CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox" to="." method="_on_hitbox_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
+[connection signal="timeout" from="staminaRegen" to="." method="_on_stamina_regen_timeout"]

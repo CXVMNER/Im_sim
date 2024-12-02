@@ -18,18 +18,18 @@ func _ready():
 	ammoValue.text = str(ammo)
 	staminaValue.text = str(stamina)
 	
-func _updateHud():
+func updateHud():
 	healthValue.text = str(health)
 	ammoValue.text = str(ammo)
 	staminaValue.text = str(stamina)
 	
-func _addUpdate(qty, text, color):
+func addUpdate(qty, text, color):
 	var lab = item.instantiate()
 	lab.text = str(qty) + " " + text
 	lab.set_modulate(color)
 	updates.add_child(lab)
 
-func _screenGlow(color):
+func screenGlow(color):
 	var tween = get_tree().create_tween()
 	tween.tween_property(overlay, "color", color, 0.1)
 	tween.tween_property(overlay, "color", Color(1,0,0,0), 0.7)
@@ -38,7 +38,6 @@ func gameOver():
 	var tween = get_tree().create_tween()
 	tween.tween_property(overlay, "color", Color(1,0,0,1), 0.1)
 	$Reset.visible = true
-
 
 func _on_reset_pressed():
 	get_tree().set_pause(false)
