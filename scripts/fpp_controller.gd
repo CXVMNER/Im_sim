@@ -15,7 +15,7 @@ var speed : float
 const WALK_SPEED = 5.0
 const SPRINT_SPEED = 8.0
 const CROUCH_SPEED = 3.0
-const JUMP_VELOCITY = 4.5
+const JUMP_VELOCITY = 4.0
 const SENSITIVITY = 0.01
 
 const AIR_CONTROL_FACTOR = 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
