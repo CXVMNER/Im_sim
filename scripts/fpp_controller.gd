@@ -112,6 +112,11 @@ func _physics_process(delta):
 	elif not is_crouching:
 		speed = WALK_SPEED
 
+	# Stamina regeneration logic (triggered by the timer)
+	if regenStamina and hud.stamina < 100:
+		hud.stamina += 1
+		hud.updateHud()
+
 	# Adjust speed for crouching.
 	if is_crouching:
 		speed = CROUCH_SPEED
@@ -142,11 +147,6 @@ func _physics_process(delta):
 	camera.transform.origin = _headbob(t_bob)
 
 	move_and_slide()
-
-	# Stamina regeneration logic (triggered by the timer)
-	if regenStamina and hud.stamina < 100:
-		hud.stamina += 1
-		hud.updateHud()
 
 func _fire():
 	var now := Time.get_ticks_msec()/1000.0

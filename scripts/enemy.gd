@@ -38,8 +38,8 @@ func _ready():
 	$%body.set_surface_override_material(0, mat)
 	$%nose.set_surface_override_material(1, mat)
 	material = mat
-	detection_area.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
-	detection_area.connect("body_exited", Callable(self, "_on_area_3d_body_exited"))
+	# detection_area.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
+	# detection_area.connect("body_exited", Callable(self, "_on_area_3d_body_exited"))
 
 func takeDamage(dmg):
 	health -= dmg
@@ -65,18 +65,24 @@ func _fire():
 
 func _process(delta):
 	velocity = Vector3.ZERO
-
-	var current_location = global_transform.origin # Current enemy location
-	var player_location = player.global_transform.origin # Player location
+	var current_location = global_transform.origin  # Current enemy location
 	
-	if sight.is_colliding() and sight.get_collider() == player:
-		_fire()
-	
-	nav_agent.set_target_position(player.global_transform.origin)
-	var next_nav_point = nav_agent.get_next_path_position()
-	velocity = (next_nav_point - global_transform.origin).normalized() * SPEED
-	# Rotate to face the player
-	face_player(player_location)
+	# Check if the player exists before accessing its global_transform
+	if player: # and player.is_instance_valid():
+		var player_location = player.global_transform.origin  # Player location
+		if sight.is_colliding() and sight.get_collider() == player:
+			_fire()
+		
+		# Navigate towards the player
+		nav_agent.set_target_position(player_location)
+		var next_nav_point = nav_agent.get_next_path_position()
+		velocity = (next_nav_point - current_location).normalized() * SPEED
+		
+		# Rotate to face the player
+		face_player(player_location)
+	else:
+		# Reset navigation to a default position (e.g., start position)
+		nav_agent.set_target_position(startPos)
 	
 	move_and_slide()
 
