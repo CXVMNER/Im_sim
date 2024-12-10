@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 @export var PlayerPath : NodePath
 @export var color : Color
-@export var aggroRange := 5.0
+# @export var aggroRange := 5.0
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
@@ -24,17 +24,19 @@ var engaged = false
 @onready var nav_agent = $NavigationAgent3D
 @onready var detection_area = $Area3D
 
-var SPEED = 3.0
 var player_detected = false
+
+const SPEED = 1.5
+const ATTACK_RANGE = 2.5
 
 func _ready():
 	player = get_node(PlayerPath)
 	startPos = global_position
 	var mat = StandardMaterial3D.new()
-	mat.set_albedo(color)
+	# mat.set_albedo(color)
 	mat.emission_enabled = true
 	$%body.set_surface_override_material(0, mat)
-	$%nose.set_surface_override_material(0, mat)
+	$%nose.set_surface_override_material(1, mat)
 	material = mat
 	detection_area.connect("body_entered", Callable(self, "_on_area_3d_body_entered"))
 	detection_area.connect("body_exited", Callable(self, "_on_area_3d_body_exited"))
@@ -63,37 +65,26 @@ func _fire():
 
 func _process(delta):
 	velocity = Vector3.ZERO
-	if (global_position.distance_to(player.global_position) < aggroRange and player.health > 0) or engaged: 
-		nav_agent.set_target_position(player.global_transform.origin)
-		# Check if sight is valid and player is in sight
-		if sight.is_colliding() and sight.get_collider() == player:
-			_fire()
-		look_at(Vector3(player.global_position.x, player.global_position.y, player.global_position.z), Vector3.UP)
-	elif global_position.distance_to(startPos) > 5:
-		nav_agent.set_target_position(startPos)
-		look_at(Vector3(startPos.x, startPos.y, startPos.z), Vector3.UP)
-	
-	var nextPos = nav_agent.get_next_path_position()
-	velocity = (nextPos - global_transform.origin).normalized()
-	move_and_slide()
 
-func _physics_process(delta):
-	if !player_detected: # Check if player is not detected
-		nav_agent.set_velocity(Vector3.ZERO) # Stop moving
-		return
-	
 	var current_location = global_transform.origin # Current enemy location
 	var player_location = player.global_transform.origin # Player location
 	
-	update_target_location(player_location)
+	if sight.is_colliding() and sight.get_collider() == player:
+		_fire()
 	
-	var next_location = nav_agent.get_next_path_position() # Next location the nav agent is directing towards
-	var new_velocity = (next_location - current_location).normalized() * SPEED # Calculate velocity between current and next location
-	
-	nav_agent.set_velocity(new_velocity)
-	
+	nav_agent.set_target_position(player.global_transform.origin)
+	var next_nav_point = nav_agent.get_next_path_position()
+	velocity = (next_nav_point - global_transform.origin).normalized() * SPEED
 	# Rotate to face the player
 	face_player(player_location)
+	
+	move_and_slide()
+
+func _target_in_range():
+	return global_position.distance_to(player.global_position) < ATTACK_RANGE
+
+func _hit_finished():
+	player.hit()
 
 func update_target_location(target_location):
 	nav_agent.set_target_position(target_location)
