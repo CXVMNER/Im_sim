@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+class_name Player
+
 @onready var gun = $CameraController/Camera3D/WeaponHolder/gun
 @onready var hud = $CameraController/HUD
 @export var health := 10

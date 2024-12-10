@@ -20,12 +20,14 @@ script = ExtResource("1_gxcth")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_slbbk")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+[node name="body" type="MeshInstance3D" parent="CollisionShape3D"]
+unique_name_in_owner = true
 mesh = SubResource("CapsuleMesh_t1ljk")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="CollisionShape3D"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.5, 0.375)
+[node name="nose" type="MeshInstance3D" parent="CollisionShape3D"]
+unique_name_in_owner = true
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.5, 0.5)
 mesh = SubResource("BoxMesh_ps1lc")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
@@ -38,6 +40,18 @@ avoidance_enabled = true
 transform = Transform3D(20, 0, 0, 0, 2, 0, 0, 0, 20, 0, 0, 0)
 shape = SubResource("CylinderShape3D_t5fd3")
 
+[node name="gun" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.25)
+
+[node name="sight" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0)
+target_position = Vector3(0, -10, 0)
+collision_mask = 3
+
+[node name="engaged" type="Timer" parent="."]
+wait_time = 3.0
+
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]
+[connection signal="timeout" from="engaged" to="." method="_on_engaged_timeout"]

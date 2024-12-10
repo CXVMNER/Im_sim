@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" path="res://scripts/fpp_controller.gd" id="1_888b0"]
-[ext_resource type="PackedScene" path="res://scenes/HUD.tscn" id="2_lq6am"]
+[ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v36qa"]
 
@@ -262,6 +262,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.75)
 
 [node name="HUD" parent="CameraController" instance=ExtResource("2_lq6am")]
 unique_name_in_owner = true
+mouse_filter = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
