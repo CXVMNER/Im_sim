@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bb4nkm70jejd8"]
+[gd_scene load_steps=16 format=3 uid="uid://bb4nkm70jejd8"]
 
 [ext_resource type="Texture2D" uid="uid://d3wlwl8qnne8" path="res://textures/prototype/Dark/texture_01.png" id="1_3reho"]
 [ext_resource type="Script" path="res://scripts/level_01.gd" id="1_avbq2"]
@@ -12,12 +12,12 @@
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
-[sub_resource type="Sky" id="Sky_tu2nk"]
+[sub_resource type="Sky" id="Sky_33pdg"]
 sky_material = SubResource("ProceduralSkyMaterial_qfypb")
 
 [sub_resource type="Environment" id="Environment_e4ieo"]
 background_mode = 2
-sky = SubResource("Sky_tu2nk")
+sky = SubResource("Sky_33pdg")
 tonemap_mode = 2
 glow_enabled = true
 
@@ -37,6 +37,8 @@ uv1_triplanar = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8bg0g"]
 albedo_texture = ExtResource("2_a8ik3")
 uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5iath"]
 
 [node name="world" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00184822, -4.76837e-07, -0.0340958)
@@ -141,3 +143,32 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.003, -0.25, -6)
 use_collision = true
 size = Vector3(2, 0.5, 2)
 material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="FallZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -0.25, 11)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FallZone"]
+transform = Transform3D(2, 0, 0, 0, 0.5, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("BoxShape3D_5iath")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="FallZone/CollisionShape3D"]
+transform = Transform3D(0.5, 0, 0, 0, 2, 0, 0, 0, 0.5, 0, 0, 0)
+use_collision = true
+size = Vector3(2, 0.5, 2)
+material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="new_level" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 11)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="new_level"]
+transform = Transform3D(2, 0, 0, 0, 0.5, 0, 0, 0, 2, 0, 0, 0)
+shape = SubResource("BoxShape3D_5iath")
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="new_level/CollisionShape3D"]
+transform = Transform3D(0.5, 0, 0, 0, 2, 0, 0, 0, 0.5, 0, 0, 0)
+use_collision = true
+size = Vector3(2, 0.5, 2)
+material = SubResource("StandardMaterial3D_r7s51")
+
+[connection signal="body_entered" from="FallZone" to="CharacterBody3D" method="_on_fallzone_body_entered"]
+[connection signal="body_entered" from="new_level" to="CharacterBody3D" method="_on_new_level_body_entered"]

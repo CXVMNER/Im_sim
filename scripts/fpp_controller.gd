@@ -249,3 +249,9 @@ func _on_hitbox_body_entered(body):
 
 func _on_stamina_regen_timeout():
 	regenStamina = true
+
+func _on_fallzone_body_entered(body):
+	get_tree().change_scene_to_file("res://scenes/level_01.tscn")
+
+func _on_new_level_body_entered(body):
+	get_tree().change_scene_to_file("res://scenes/level_02.tscn")
