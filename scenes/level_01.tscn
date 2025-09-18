@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bb4nkm70jejd8"]
+[gd_scene load_steps=18 format=3 uid="uid://bb4nkm70jejd8"]
 
 [ext_resource type="Texture2D" uid="uid://d3wlwl8qnne8" path="res://textures/prototype/Dark/texture_01.png" id="1_3reho"]
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_avbq2"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://bd6bmfe3g5nfg" path="res://scenes/fpp_controller.tscn" id="3_q73g5"]
 [ext_resource type="PackedScene" uid="uid://c8161in0xfnar" path="res://scenes/enemy.tscn" id="6_haycg"]
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="7_ky2cw"]
+[ext_resource type="PackedScene" uid="uid://bedak0vojygom" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-a.glb" id="8_llcge"]
+[ext_resource type="PackedScene" uid="uid://b2abkj55ujeoy" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-b.glb" id="9_lwi15"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qfypb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -126,7 +128,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -25)
 PlayerPath = NodePath("../CharacterBody3D")
 
 [node name="Enemy2" parent="." instance=ExtResource("6_haycg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.93853, 0, -27.1906)
 PlayerPath = NodePath("../CharacterBody3D")
 
 [node name="powerUp" parent="." instance=ExtResource("7_ky2cw")]
@@ -169,6 +171,12 @@ transform = Transform3D(0.5, 0, 0, 0, 2, 0, 0, 0, 0.5, 0, 0, 0)
 use_collision = true
 size = Vector3(2, 0.5, 2)
 material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="blaster-a2" parent="." instance=ExtResource("8_llcge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1079, 0.302951, -2.79034)
+
+[node name="blaster-b2" parent="." instance=ExtResource("9_lwi15")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.55953, 0.19708, -2.72243)
 
 [connection signal="body_entered" from="FallZone" to="CharacterBody3D" method="_on_fallzone_body_entered"]
 [connection signal="body_entered" from="new_level" to="CharacterBody3D" method="_on_new_level_body_entered"]

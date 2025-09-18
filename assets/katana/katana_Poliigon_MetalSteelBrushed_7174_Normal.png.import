@@ -1,0 +1,38 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://b1q0iapsqkcnd"
+path.s3tc="res://.godot/imported/katana_Poliigon_MetalSteelBrushed_7174_Normal.png-bcf11f7ca6f6a516780c402f89691556.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "32e1cd4100154e410799f92f0df22fad"
+}
+
+[deps]
+
+source_file="res://assets/katana/katana_Poliigon_MetalSteelBrushed_7174_Normal.png"
+dest_files=["res://.godot/imported/katana_Poliigon_MetalSteelBrushed_7174_Normal.png-bcf11f7ca6f6a516780c402f89691556.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=1
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=1
+roughness/src_normal="res://assets/katana/katana_Poliigon_MetalSteelBrushed_7174_Normal.png"
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0
