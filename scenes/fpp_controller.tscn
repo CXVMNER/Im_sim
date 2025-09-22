@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene load_steps=16 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
@@ -225,6 +225,9 @@ _data = {
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_c503a"]
 
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_ghtvo"]
+length = 0.291572
+
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CROUCH_SHAPECAST")]
 collision_layer = 3
 script = ExtResource("1_888b0")
@@ -278,6 +281,10 @@ target_position = Vector3(0, 0.5, 0)
 
 [node name="staminaRegen" type="Timer" parent="."]
 wait_time = 3.0
+
+[node name="stairCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.45, -0.590212)
+shape = SubResource("SeparationRayShape3D_ghtvo")
 
 [connection signal="body_entered" from="CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox" to="." method="_on_hitbox_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

@@ -6,7 +6,7 @@ extends CharacterBody3D
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
-var health = 20
+var health = 10
 var material
 var player = null
 var bullet = preload("res://scenes/bullet.tscn")

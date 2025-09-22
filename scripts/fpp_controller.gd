@@ -15,7 +15,7 @@ var bullet = preload("res://scenes/bullet.tscn")
 
 var speed : float
 const WALK_SPEED = 5.0
-const SPRINT_SPEED = 8.0
+const SPRINT_SPEED = 7.0
 const CROUCH_SPEED = 3.0
 const JUMP_VELOCITY = 4.0
 const SENSITIVITY = 0.01

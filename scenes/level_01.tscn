@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bb4nkm70jejd8"]
+[gd_scene load_steps=23 format=3 uid="uid://bb4nkm70jejd8"]
 
 [ext_resource type="Texture2D" uid="uid://d3wlwl8qnne8" path="res://textures/prototype/Dark/texture_01.png" id="1_3reho"]
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_avbq2"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bd6bmfe3g5nfg" path="res://scenes/fpp_controller.tscn" id="3_q73g5"]
 [ext_resource type="PackedScene" uid="uid://c8161in0xfnar" path="res://scenes/enemy.tscn" id="6_haycg"]
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="7_ky2cw"]
+[ext_resource type="Texture2D" uid="uid://iuwrc41rnqr7" path="res://textures/prototype/Orange/texture_01.png" id="8_1b6n0"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qfypb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -40,8 +41,97 @@ uv1_triplanar = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5iath"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_llcge"]
+albedo_texture = ExtResource("8_1b6n0")
+
+[sub_resource type="BoxMesh" id="BoxMesh_t0ybu"]
+size = Vector3(2, 0.1, 2)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_lwi15"]
+points = PackedVector3Array(1.01587, 0.0610863, 1.01587, -1.01587, -0.0658482, -1.01587, -1.01587, -0.0658482, 1.01587, -1.01587, 0.0610863, -1.01587, 1.01587, -0.0658482, -1.01587, -1.01587, 0.0610863, 1.01587, 1.01587, -0.0658482, 1.01587, 1.01587, 0.0610863, -1.01587)
+
+[sub_resource type="Animation" id="Animation_e6mo4"]
+resource_name = "platform"
+length = 6.0
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1, 3, 4, 6)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1, 3, 4, 6)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, -4, -0.25, 0, 0.25, 0, -4, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1, 3, 4, 6)
+}
+
+[sub_resource type="Animation" id="Animation_px6rj"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:position:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2ucnx"]
+_data = {
+&"RESET": SubResource("Animation_px6rj"),
+&"platform": SubResource("Animation_e6mo4")
+}
+
 [node name="world" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00184822, -4.76837e-07, -0.0340958)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00644684, -0.0293374, -0.0345706)
 script = ExtResource("1_avbq2")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -121,6 +211,30 @@ transform = Transform3D(-1.31134e-07, 0, 2, 0, 5, 0, -3, 0, -8.74228e-08, 5, 2.5
 use_collision = true
 material = SubResource("StandardMaterial3D_r7s51")
 
+[node name="step1" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.125, 1)
+use_collision = true
+size = Vector3(2, 0.25, 1)
+material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="step2" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.375, 1.5)
+use_collision = true
+size = Vector3(2, 0.25, 1)
+material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="step3" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.625, 2)
+use_collision = true
+size = Vector3(2, 0.25, 1)
+material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="step4" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.875, 2.5)
+use_collision = true
+size = Vector3(2, 0.25, 1)
+material = SubResource("StandardMaterial3D_r7s51")
+
 [node name="Enemy" parent="." instance=ExtResource("6_haycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -25)
 PlayerPath = NodePath("../CharacterBody3D")
@@ -169,6 +283,24 @@ transform = Transform3D(0.5, 0, 0, 0, 2, 0, 0, 0, 0.5, 0, 0, 0)
 use_collision = true
 size = Vector3(2, 0.5, 2)
 material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="movingPlatform" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 0.9, -10)
+
+[node name="AnimatableBody3D" type="AnimatableBody3D" parent="movingPlatform"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="movingPlatform/AnimatableBody3D"]
+material_override = SubResource("StandardMaterial3D_llcge")
+mesh = SubResource("BoxMesh_t0ybu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="movingPlatform/AnimatableBody3D"]
+shape = SubResource("ConvexPolygonShape3D_lwi15")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="movingPlatform/AnimatableBody3D"]
+libraries = {
+&"": SubResource("AnimationLibrary_2ucnx")
+}
+autoplay = "platform"
 
 [connection signal="body_entered" from="FallZone" to="CharacterBody3D" method="_on_fallzone_body_entered"]
 [connection signal="body_entered" from="new_level" to="CharacterBody3D" method="_on_new_level_body_entered"]
