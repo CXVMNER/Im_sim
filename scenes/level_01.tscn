@@ -240,7 +240,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -25)
 PlayerPath = NodePath("../CharacterBody3D")
 
 [node name="Enemy2" parent="." instance=ExtResource("6_haycg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.93853, 0, -27.1906)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -18)
 PlayerPath = NodePath("../CharacterBody3D")
 
 [node name="powerUp" parent="." instance=ExtResource("7_ky2cw")]

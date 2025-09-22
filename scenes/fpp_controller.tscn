@@ -226,7 +226,7 @@ _data = {
 [sub_resource type="SphereShape3D" id="SphereShape3D_c503a"]
 
 [sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_ghtvo"]
-length = 0.291572
+length = 0.25
 
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CROUCH_SHAPECAST")]
 collision_layer = 3
@@ -283,7 +283,7 @@ target_position = Vector3(0, 0.5, 0)
 wait_time = 3.0
 
 [node name="stairCollision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.45, -0.590212)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.45, -0.625)
 shape = SubResource("SeparationRayShape3D_ghtvo")
 
 [connection signal="body_entered" from="CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox" to="." method="_on_hitbox_body_entered"]
