@@ -44,10 +44,9 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gr
 @onready var CameraController = $CameraController
 @onready var camera = $CameraController/Camera3D
 
-func _input(event):
-	if event.is_action_pressed("exit"):
-		get_tree().quit()
+var mouse_captured := true
 
+func _input(event):
 	# Melee attack (animation and hitbox enablement)
 	if event.is_action_pressed("attack"):
 		perform_melee_attack()
@@ -82,10 +81,20 @@ func _ready():
 	hud.updateHud()
 
 func _unhandled_input(event):
-	if event is InputEventMouseMotion:
+	if event.is_action_pressed("exit"):
+		get_tree().quit()
+	
+	if event is InputEventMouseMotion and mouse_captured:
 		CameraController.rotate_y(-event.relative.x * SENSITIVITY)
 		camera.rotate_x(-event.relative.y * SENSITIVITY)
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+	
+	if event.is_action_pressed("toggle_mouse"):
+		mouse_captured = not mouse_captured
+		if mouse_captured:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _physics_process(delta):
 	# Handle gravity.
