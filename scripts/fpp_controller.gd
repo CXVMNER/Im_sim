@@ -19,6 +19,7 @@ const SPRINT_SPEED = 7.0
 const CROUCH_SPEED = 3.0
 const JUMP_VELOCITY = 4.0
 const SENSITIVITY = 0.01
+const BACKWARD_SPEED = 0.8  # 80% of normal speed when moving backwards
 
 const AIR_CONTROL_FACTOR = 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
 var stored_horizontal_velocity = Vector3.ZERO  # To store the velocity at the moment of jumping
@@ -138,6 +139,9 @@ func _physics_process(delta):
 	if is_on_floor():
 		# Normal movement control on the ground
 		if direction:
+			# Apply speed reduction when "move_backward" is pressed
+			if Input.is_action_pressed("move_backward"):
+				speed *= BACKWARD_SPEED
 			velocity.x = direction.x * speed
 			velocity.z = direction.z * speed
 		else:
@@ -146,6 +150,9 @@ func _physics_process(delta):
 	else:
 		# Air control: Allow limited movement but clamp the maximum velocity
 		if direction:
+			# Apply speed reduction when "move_backward" is pressed in air
+			if Input.is_action_pressed("move_backward"):
+				speed *= BACKWARD_SPEED
 			# Allow limited air control by blending stored velocity with input direction
 			var air_control_velocity = stored_horizontal_velocity + (direction * speed * AIR_CONTROL_FACTOR)
 			velocity.x = lerp(velocity.x, air_control_velocity.x, AIR_CONTROL_FACTOR)
