@@ -11,11 +11,12 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_t614e"]
 material = SubResource("StandardMaterial3D_76fdr")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uts5f"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghtvo"]
 albedo_color = Color(1, 0, 0, 1)
+use_z_clip_scale = true
+z_clip_scale = 0.75
 
 [sub_resource type="BoxMesh" id="BoxMesh_fg1av"]
-material = SubResource("StandardMaterial3D_uts5f")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_aotb2"]
 points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
@@ -249,7 +250,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 [node name="WeaponHolder" type="Node3D" parent="CameraController/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/Camera3D/WeaponHolder"]
-transform = Transform3D(0.0993572, -0.113203, 0, 0.0112475, 0.987185, 0.0113203, -0.00128149, -0.112475, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.099357195, -0.113202795, 0, 0.011247514, 0.98718494, 0.011320283, -0.0012814878, -0.11247511, 0.0993572, 0.45, -0.35, -0.6)
+material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
 [node name="Hitbox" type="Area3D" parent="CameraController/Camera3D/WeaponHolder/WeaponMesh"]
