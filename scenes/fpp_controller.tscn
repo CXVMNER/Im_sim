@@ -95,6 +95,18 @@ tracks/5/keys = {
 "update": 0,
 "values": [Vector3(-0.113446, 0, 0.113446)]
 }
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("ShapeCast3D:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 1.5, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_pa70x"]
 resource_name = "attack"
@@ -148,7 +160,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [2.0, 1.5]
+"values": [2.0, 1.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -160,7 +172,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(0, 1, 0), Vector3(0, 0.75, 0)]
+"values": [Vector3(0, 1, 0), Vector3(0, 0.5, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -172,7 +184,19 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(0, 1.5, 0), Vector3(0, 1, 0)]
+"values": [Vector3(0, 1.5, 0), Vector3(0, 0.75, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ShapeCast3D:position")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 1.5, 0), Vector3(0, 0.75, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_g7p17"]
@@ -250,7 +274,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 [node name="WeaponHolder" type="Node3D" parent="CameraController/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/Camera3D/WeaponHolder"]
-transform = Transform3D(0.099357195, -0.113202795, 0, 0.011247514, 0.98718494, 0.011320283, -0.0012814878, -0.11247511, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935719, -0.11320279, 0, 0.011247513, 0.9871849, 0.011320283, -0.0012814876, -0.112475105, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
