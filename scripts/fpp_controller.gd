@@ -14,9 +14,9 @@ var lastShot := 0.0
 var bullet = preload("res://scenes/bullet.tscn")
 
 var speed : float
-const WALK_SPEED = 5.0
+const WALK_SPEED = 4.0
 const SPRINT_SPEED = 7.0
-const CROUCH_SPEED = 3.0
+const CROUCH_SPEED = 2.0
 const JUMP_VELOCITY = 4.0
 const SENSITIVITY = 0.01
 const BACKWARD_SPEED = 0.8  # 80% of normal speed when moving backwards
@@ -266,8 +266,8 @@ func _on_hitbox_body_entered(body):
 func _on_stamina_regen_timeout():
 	regenStamina = true
 
-func _on_fallzone_body_entered(body):
-	get_tree().change_scene_to_file("res://scenes/level_01.tscn")
+# func _on_fallzone_body_entered(body):
+# 	get_tree().change_scene_to_file("res://scenes/level_01.tscn")
 
-func _on_new_level_body_entered(body):
-	get_tree().change_scene_to_file("res://scenes/level_02.tscn")
+# func _on_new_level_body_entered(body):
+# 	get_tree().change_scene_to_file("res://scenes/level_02.tscn")

@@ -1,8 +1,8 @@
 [gd_scene load_steps=23 format=3 uid="uid://d2pibjg30griw"]
 
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_b6l7m"]
-[ext_resource type="Texture2D" uid="uid://d3wlwl8qnne8" path="res://textures/prototype/Dark/texture_01.png" id="1_vhr1c"]
-[ext_resource type="Texture2D" uid="uid://b0gdxoa4rrd0n" path="res://textures/prototype/Green/texture_03.png" id="2_p0ku4"]
+[ext_resource type="Texture2D" uid="uid://d3wlwl8qnne8" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="1_vhr1c"]
+[ext_resource type="Texture2D" uid="uid://b0gdxoa4rrd0n" path="res://assets/kenney_prototype-textures/PNG/Green/texture_03.png" id="2_p0ku4"]
 [ext_resource type="PackedScene" uid="uid://bd6bmfe3g5nfg" path="res://scenes/fpp_controller.tscn" id="3_106sl"]
 [ext_resource type="Texture2D" uid="uid://bfnbxrybmalxn" path="res://textures/prototype/Light/texture_13.png" id="5_u2tna"]
 [ext_resource type="PackedScene" uid="uid://c8161in0xfnar" path="res://scenes/enemy.tscn" id="6_jm0yl"]
