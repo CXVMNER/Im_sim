@@ -13,7 +13,7 @@ enum Type {
 @onready var respawnTimer = $respawn
 @onready var label = $Mesh/Label
 
-var collectable = true
+var collectable := true
 
 func _ready():
 	var mat = StandardMaterial3D.new()

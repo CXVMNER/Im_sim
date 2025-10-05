@@ -275,7 +275,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 [node name="WeaponHolder" type="Node3D" parent="CameraController/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935715, -0.11320276, 0, 0.011247508, 0.9871846, 0.011320283, -0.0012814872, -0.112475075, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935712, -0.11320272, 0, 0.011247505, 0.9871843, 0.011320283, -0.0012814868, -0.11247504, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 

@@ -1,9 +1,9 @@
 [gd_scene load_steps=23 format=3 uid="uid://bb4nkm70jejd8"]
 
-[ext_resource type="Texture2D" uid="uid://d3wlwl8qnne8" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="1_3reho"]
+[ext_resource type="Texture2D" uid="uid://d3wlwl8qnne8" path="res://textures/prototype/Dark/texture_01.png" id="1_3reho"]
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_avbq2"]
 [ext_resource type="Texture2D" uid="uid://bfnbxrybmalxn" path="res://textures/prototype/Light/texture_13.png" id="2_a8ik3"]
-[ext_resource type="Texture2D" uid="uid://b0gdxoa4rrd0n" path="res://assets/kenney_prototype-textures/PNG/Green/texture_03.png" id="2_oa775"]
+[ext_resource type="Texture2D" uid="uid://b0gdxoa4rrd0n" path="res://textures/prototype/Green/texture_03.png" id="2_oa775"]
 [ext_resource type="PackedScene" uid="uid://bd6bmfe3g5nfg" path="res://scenes/fpp_controller.tscn" id="3_q73g5"]
 [ext_resource type="PackedScene" uid="uid://c8161in0xfnar" path="res://scenes/enemy.tscn" id="6_haycg"]
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="7_ky2cw"]
@@ -131,7 +131,6 @@ _data = {
 }
 
 [node name="world" type="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00644684, -0.0293374, -0.0345706)
 script = ExtResource("1_avbq2")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -234,6 +233,18 @@ use_collision = true
 size = Vector3(2, 0.25, 1)
 material = SubResource("StandardMaterial3D_r7s51")
 
+[node name="step5" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.125, 3.5)
+use_collision = true
+size = Vector3(2, 0.25, 1)
+material = SubResource("StandardMaterial3D_r7s51")
+
+[node name="step6" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.125, 4.5)
+use_collision = true
+size = Vector3(2, 0.25, 1)
+material = SubResource("StandardMaterial3D_r7s51")
+
 [node name="CSGBox3D12" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -6)
 use_collision = true
@@ -251,12 +262,6 @@ material = SubResource("StandardMaterial3D_r7s51")
 
 [node name="CSGBox3D15" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.5, -5)
-use_collision = true
-size = Vector3(2, 0.5, 2)
-material = SubResource("StandardMaterial3D_r7s51")
-
-[node name="CSGBox3D16" type="CSGBox3D" parent="NavigationRegion3D/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, 4)
 use_collision = true
 size = Vector3(2, 0.5, 2)
 material = SubResource("StandardMaterial3D_r7s51")

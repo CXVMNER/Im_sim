@@ -1,7 +1,7 @@
 extends RigidBody3D
 
-var speed = 40.0
-var damage = 1
+var speed := 40.0
+var damage := 1
 
 func _ready():
 	linear_velocity = transform.basis * Vector3(0, 0, -speed)

@@ -8,28 +8,28 @@ class_name Player
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
-var regenStamina = false
+var regenStamina := false
 var lastShot := 0.0
 
 var bullet = preload("res://scenes/bullet.tscn")
 
 var speed : float
-const WALK_SPEED = 4.0
-const SPRINT_SPEED = 7.0
-const CROUCH_SPEED = 2.0
-const JUMP_VELOCITY = 4.0
-const SENSITIVITY = 0.01
-const BACKWARD_SPEED = 0.8  # 80% of normal speed when moving backwards
+const WALK_SPEED := 4.0
+const SPRINT_SPEED := 7.0
+const CROUCH_SPEED := 2.0
+const JUMP_VELOCITY := 4.0
+const SENSITIVITY := 0.01
+const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 
-const AIR_CONTROL_FACTOR = 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
-var stored_horizontal_velocity = Vector3.ZERO  # To store the velocity at the moment of jumping
+const AIR_CONTROL_FACTOR := 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
+var stored_horizontal_velocity := Vector3.ZERO  # To store the velocity at the moment of jumping
 
 # head bob variables
-const BOB_FREQ = 2.0
-const BOB_AMP = 0.08
-var t_bob = 0.0
+const BOB_FREQ := 2.0
+const BOB_AMP := 0.06
+var t_bob := 0.0
 
-var is_crouching = false
+var is_crouching := false
 @export_range(5, 10, 0.1) var CROUCHING_SPEED : float = 7.0 # Animation speed
 @export var TOGGLE_CROUCH : bool = true
 @export var CROUCH_SHAPECAST : Node3D

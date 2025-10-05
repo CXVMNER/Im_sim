@@ -6,7 +6,7 @@ extends CharacterBody3D
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
-var health = 10
+var health := 10
 var material
 var player = null
 var bullet = preload("res://scenes/bullet.tscn")
@@ -20,11 +20,11 @@ var bullet = preload("res://scenes/bullet.tscn")
 var lastShot := 0.0
 var speed := 1.0
 var startPos
-var engaged = false
-var player_detected = false
+var engaged := false
+var player_detected := false
 
-const SPEED = 1.5
-const ATTACK_RANGE = 2.5
+const SPEED := 1.5
+const ATTACK_RANGE := 2.5
 
 func _ready():
 	player = get_node(PlayerPath)
