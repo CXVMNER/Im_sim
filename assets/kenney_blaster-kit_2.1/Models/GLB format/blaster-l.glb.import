@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://csa5xaw01dwxg"
+uid="uid://dj8n6epvdx6w7"
 path="res://.godot/imported/blaster-l.glb-6249b03a4a852a4ae585649adc2b3c62.scn"
 
 [deps]
@@ -38,5 +38,5 @@ materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
 _subresources={}
-gltf/naming_version=1
+gltf/naming_version=2
 gltf/embedded_image_handling=1

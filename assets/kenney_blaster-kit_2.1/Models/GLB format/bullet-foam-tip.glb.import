@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://khd6klopws5g"
+uid="uid://dmynoaqpyvd4e"
 path="res://.godot/imported/bullet-foam-tip.glb-9b8a204f164367ff02d305e0b58bf367.scn"
 
 [deps]
@@ -38,5 +38,5 @@ materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
 _subresources={}
-gltf/naming_version=1
+gltf/naming_version=2
 gltf/embedded_image_handling=1

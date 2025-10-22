@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bi6d0s0sj2gw1"
+uid="uid://4v7sgjxxkv1j"
 path="res://.godot/imported/crate-small.glb-aa92b6f2d44dbf51bc6d4be0e8dd9d37.scn"
 
 [deps]
@@ -38,5 +38,5 @@ materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
 _subresources={}
-gltf/naming_version=1
+gltf/naming_version=2
 gltf/embedded_image_handling=1
