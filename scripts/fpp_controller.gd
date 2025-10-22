@@ -23,6 +23,7 @@ const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 
 
 const AIR_CONTROL_FACTOR := 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
+const INERTIA_FACTOR := 9.0
 var stored_horizontal_velocity := Vector3.ZERO  # To store the velocity at the moment of jumping
 
 # head bob variables
@@ -50,6 +51,8 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gr
 
 @onready var CameraController = $CameraController
 @onready var camera = $CameraController/Camera3D
+@export var camera_rotation_amount : float = 0.025
+var camera_rotation_factor := 8
 
 var mouse_captured := true
 
@@ -154,8 +157,8 @@ func _physics_process(delta):
 			velocity.x = direction.x * effective_speed
 			velocity.z = direction.z * effective_speed
 		else:
-			velocity.x = move_toward(velocity.x, 0, speed)
-			velocity.z = move_toward(velocity.z, 0, speed)
+			velocity.x = lerp(velocity.x, direction.x * speed, delta * INERTIA_FACTOR)
+			velocity.z = lerp(velocity.z, direction.z * speed, delta * INERTIA_FACTOR)
 	else:
 		# Air control: Allow limited movement but clamp the maximum velocity
 		if direction:
@@ -177,6 +180,7 @@ func _physics_process(delta):
 		# collide with anything except the stairs it's moving up to.
 		move_and_slide()
 		_snap_down_to_stairs_check()
+	camera_tilt(input_dir.x, delta)
 
 func _fire():
 	var now := Time.get_ticks_msec()/1000.0
@@ -326,6 +330,10 @@ func _on_stamina_regen_timeout():
 
 func is_surface_too_steep(normal : Vector3) -> bool:
 	return normal.angle_to(Vector3.UP) > self.floor_max_angle
+
+func camera_tilt(input_x, delta):
+	if camera:
+		camera.rotation.z = lerp(camera.rotation.z, -input_x * camera_rotation_amount, delta * camera_rotation_factor)
 
 # func _run_body_test_motion(from : Transform3D, motion : Vector3, result = null) -> bool:
 # 	if not result: result = PhysicsTestMotionResult3D.new()
