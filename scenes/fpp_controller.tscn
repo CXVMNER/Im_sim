@@ -272,7 +272,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 [node name="WeaponHolder" type="Node3D" parent="CameraController/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/Camera3D/WeaponHolder"]
-transform = Transform3D(0.099357106, -0.113202706, 0, 0.011247504, 0.98718417, 0.011320283, -0.0012814866, -0.11247503, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935709, -0.1132027, 0, 0.011247502, 0.98718405, 0.011320283, -0.0012814865, -0.112475015, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
@@ -308,12 +308,11 @@ wait_time = 3.0
 
 [node name="StairsAheadRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -0.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.6)
 target_position = Vector3(0, -0.3, 0)
 
 [node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
-target_position = Vector3(0, -0.45, 0)
 
 [connection signal="body_entered" from="CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox" to="." method="_on_hitbox_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

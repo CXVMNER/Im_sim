@@ -76,8 +76,8 @@ func perform_melee_attack():
 
 func _ready():
 	# Get mouse input
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
+	# Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	# Set default speed
 	speed = WALK_SPEED
 
@@ -148,10 +148,11 @@ func _physics_process(delta):
 		# Normal movement control on the ground
 		if direction:
 			# Apply speed reduction when "move_backward" is pressed
+			var effective_speed = speed
 			if Input.is_action_pressed("move_backward"):
-				speed *= BACKWARD_SPEED
-			velocity.x = direction.x * speed
-			velocity.z = direction.z * speed
+				effective_speed = speed * BACKWARD_SPEED
+			velocity.x = direction.x * effective_speed
+			velocity.z = direction.z * effective_speed
 		else:
 			velocity.x = move_toward(velocity.x, 0, speed)
 			velocity.z = move_toward(velocity.z, 0, speed)
@@ -206,10 +207,10 @@ func _snap_down_to_stairs_check() -> void:
 	# After move_and_slide off top of stairs, on floor should then be false. Update raycast incase it's not already.
 	%StairsBelowRayCast3D.force_raycast_update()
 	var floor_below : bool = %StairsBelowRayCast3D.is_colliding() and not is_surface_too_steep(%StairsBelowRayCast3D.get_collision_normal())
-	var was_on_floor_last_frame = Engine.get_physics_frames() - _last_frame_was_on_floor
-	if not is_on_floor() and velocity.y <= 0  and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:
-		var body_test_result = PhysicsTestMotionResult3D.new()
-		if _run_body_test_motion(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
+	var was_on_floor_last_frame = Engine.get_physics_frames() == _last_frame_was_on_floor
+	if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:
+		var body_test_result = KinematicCollision3D.new()
+		if self.test_move(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
 			var translate_y = body_test_result.get_travel().y
 			self.position.y += translate_y
 			apply_floor_snap()
@@ -326,12 +327,12 @@ func _on_stamina_regen_timeout():
 func is_surface_too_steep(normal : Vector3) -> bool:
 	return normal.angle_to(Vector3.UP) > self.floor_max_angle
 
-func _run_body_test_motion(from : Transform3D, motion : Vector3, result = null) -> bool:
-	if not result: result = PhysicsTestMotionResult3D.new()
-	var params = PhysicsTestMotionParameters3D.new()
-	params.from = from
-	params.motion = motion
-	return PhysicsServer3D.body_test_motion(self.get_rid(), params, result)
+# func _run_body_test_motion(from : Transform3D, motion : Vector3, result = null) -> bool:
+# 	if not result: result = PhysicsTestMotionResult3D.new()
+# 	var params = PhysicsTestMotionParameters3D.new()
+# 	params.from = from
+# 	params.motion = motion
+# 	return ww.body_test_motion(self.get_rid(), params, result)
 
 # func _on_fallzone_body_entered(body):
 # 	get_tree().change_scene_to_file("res://scenes/level_01.tscn")
