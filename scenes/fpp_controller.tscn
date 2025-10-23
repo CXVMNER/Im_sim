@@ -62,7 +62,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("CameraController/Camera3D/WeaponHolder:rotation")
+tracks/3/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder:rotation")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -74,7 +74,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("CameraController/Camera3D/WeaponHolder/WeaponMesh:position")
+tracks/4/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -86,7 +86,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("CameraController/Camera3D/WeaponHolder/WeaponMesh:rotation")
+tracks/5/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:rotation")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -114,7 +114,7 @@ length = 0.7
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CameraController/Camera3D/WeaponHolder/WeaponMesh:position")
+tracks/0/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -126,7 +126,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CameraController/Camera3D/WeaponHolder/WeaponMesh:rotation")
+tracks/1/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -138,7 +138,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("CameraController/Camera3D/WeaponHolder:rotation")
+tracks/2/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -206,7 +206,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("CameraController/Camera3D/WeaponHolder:rotation")
+tracks/0/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -218,7 +218,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CameraController/Camera3D/WeaponHolder/WeaponMesh:position")
+tracks/1/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -230,7 +230,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("CameraController/Camera3D/WeaponHolder/WeaponMesh:rotation")
+tracks/2/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -267,24 +267,26 @@ skeleton = NodePath("../..")
 [node name="CameraController" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CameraController"]
+[node name="pivotNode3D" type="Node3D" parent="CameraController"]
 
-[node name="WeaponHolder" type="Node3D" parent="CameraController/Camera3D"]
+[node name="Camera3D" type="Camera3D" parent="CameraController/pivotNode3D"]
 
-[node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935708, -0.11320269, 0, 0.011247501, 0.987184, 0.011320283, -0.0012814864, -0.11247501, 0.0993572, 0.45, -0.35, -0.6)
+[node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
+
+[node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
+transform = Transform3D(0.099357076, -0.11320268, 0, 0.0112475, 0.9871839, 0.011320283, -0.0012814862, -0.112475, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
-[node name="Hitbox" type="Area3D" parent="CameraController/Camera3D/WeaponHolder/WeaponMesh"]
+[node name="Hitbox" type="Area3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh"]
 transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 monitoring = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox"]
 transform = Transform3D(1, 1.07102e-07, 0, -9.74978e-10, 1, -9.31323e-10, 0, 0, 1, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_aotb2")
 
-[node name="gun" type="Marker3D" parent="CameraController/Camera3D/WeaponHolder"]
+[node name="gun" type="Marker3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.75)
 
 [node name="HUD" parent="CameraController" instance=ExtResource("2_lq6am")]
@@ -314,7 +316,7 @@ target_position = Vector3(0, -0.3, 0)
 [node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
 
-[connection signal="body_entered" from="CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox" to="." method="_on_hitbox_body_entered"]
+[connection signal="body_entered" from="CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox" to="." method="_on_hitbox_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
 [connection signal="timeout" from="staminaRegen" to="." method="_on_stamina_regen_timeout"]

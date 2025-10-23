@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 class_name Player
 
-@onready var gun = $CameraController/Camera3D/WeaponHolder/gun
+@onready var gun = $CameraController/pivotNode3D/Camera3D/WeaponHolder/gun
 @onready var hud = $CameraController/HUD
 @export var health := 10
 @export var fireSpeed := 0.2
@@ -42,7 +42,7 @@ var is_crouching := false
 @export var CROUCH_SHAPECAST : Node3D
 
 @onready var ANIMATIONPLAYER = $AnimationPlayer
-@onready var hitbox = $CameraController/Camera3D/WeaponHolder/WeaponMesh/Hitbox
+@onready var hitbox = $CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gravity = 9.8
@@ -50,7 +50,8 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gr
 @onready var staminaRegenTimer = $staminaRegen
 
 @onready var CameraController = $CameraController
-@onready var camera = $CameraController/Camera3D
+@onready var pivot_node_3d = $CameraController/pivotNode3D
+@onready var camera_3d = $CameraController/pivotNode3D/Camera3D
 @export var camera_rotation_amount : float = 0.025
 var camera_rotation_factor := 8
 
@@ -96,8 +97,8 @@ func _unhandled_input(event):
 	
 	if event is InputEventMouseMotion and mouse_captured:
 		CameraController.rotate_y(-event.relative.x * SENSITIVITY)
-		camera.rotate_x(-event.relative.y * SENSITIVITY)
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+		pivot_node_3d.rotate_x(-event.relative.y * SENSITIVITY)
+		pivot_node_3d.rotation.x = clamp(pivot_node_3d.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
 	if event.is_action_pressed("toggle_mouse"):
 		mouse_captured = not mouse_captured
@@ -172,7 +173,7 @@ func _physics_process(delta):
 
 	# Head bob (only when on the ground)
 	t_bob += delta * velocity.length() * float(is_on_floor())
-	camera.transform.origin = _headbob(t_bob)
+	camera_3d.transform.origin = _headbob(t_bob)
 	
 	if not _snap_up_stairs_check(delta):
 		# Because _snap_up_stairs_check moves the body manually, don't call move_and_slide
@@ -332,8 +333,8 @@ func is_surface_too_steep(normal : Vector3) -> bool:
 	return normal.angle_to(Vector3.UP) > self.floor_max_angle
 
 func camera_tilt(input_x, delta):
-	if camera:
-		camera.rotation.z = lerp(camera.rotation.z, -input_x * camera_rotation_amount, delta * camera_rotation_factor)
+	if camera_3d:
+		camera_3d.rotation.z = lerp(camera_3d.rotation.z, -input_x * camera_rotation_amount, delta * camera_rotation_factor)
 
 # func _run_body_test_motion(from : Transform3D, motion : Vector3, result = null) -> bool:
 # 	if not result: result = PhysicsTestMotionResult3D.new()
