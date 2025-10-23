@@ -198,6 +198,11 @@ func _fire():
 
 # We can remove the redundant input checks from _process here.
 func _process(_delta):
+	if get_interactable_component_at_shapecast():
+		get_interactable_component_at_shapecast().hover_cursor(self)
+		if Input.is_action_just_pressed("interact"):
+			get_interactable_component_at_shapecast().interact_with(self)
+	
 	if Input.is_action_pressed("attack_2"):
 		_fire()
 
@@ -205,6 +210,16 @@ func _process(_delta):
 	if Input.is_action_just_released("sprint"):
 		speed = WALK_SPEED
 		staminaRegenTimer.start()
+
+func get_interactable_component_at_shapecast() -> InteractableComponent:
+	for i in %InteractShapeCast3D.get_collision_count():
+		# Allow colliding with player
+		if i > 0 and %InteractShapeCast3D.get_collider(0) != $".":
+			return null
+		var collider = %InteractShapeCast3D.get_collider(i)
+		if collider and collider.get_node_or_null("InteractableComponent") is InteractableComponent:
+			return collider.get_node_or_null("InteractableComponent")
+	return null
 
 func _snap_down_to_stairs_check() -> void:
 	var did_snap := false
