@@ -271,16 +271,19 @@ mesh = SubResource("CapsuleMesh_t614e")
 skeleton = NodePath("../..")
 
 [node name="CameraController" type="Node3D" parent="."]
+unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="pivotNode3D" type="Node3D" parent="CameraController"]
+unique_name_in_owner = true
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/pivotNode3D"]
+unique_name_in_owner = true
 
 [node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.099357046, -0.11320263, 0, 0.011247497, 0.98718345, 0.011320283, -0.0012814859, -0.11247495, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935704, -0.11320262, 0, 0.011247496, 0.98718333, 0.011320283, -0.0012814858, -0.11247493, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 

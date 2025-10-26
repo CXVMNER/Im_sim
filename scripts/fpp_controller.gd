@@ -21,9 +21,9 @@ const JUMP_VELOCITY := 4.25
 const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 
-
+const CAMERA_SMOOTH_LIMIT := 0.7
 const AIR_CONTROL_FACTOR := 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
-const INERTIA_FACTOR := 9.0
+const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher the value the less slippery movement
 var stored_horizontal_velocity := Vector3.ZERO  # To store the velocity at the moment of jumping
 
 # head bob variables
@@ -181,6 +181,9 @@ func _physics_process(delta):
 		# collide with anything except the stairs it's moving up to.
 		move_and_slide()
 		_snap_down_to_stairs_check()
+	
+	_slide_camera_smooth_back_to_origin(delta)
+	
 	camera_tilt(input_dir.x, delta)
 
 func _fire():
@@ -221,6 +224,22 @@ func get_interactable_component_at_shapecast() -> InteractableComponent:
 			return collider.get_node_or_null("InteractableComponent")
 	return null
 
+var _saved_camera_global_pos = null
+
+func _save_camera_pos_for_smoothing():
+	if _saved_camera_global_pos == null:
+		_saved_camera_global_pos = %pivotNode3D.global_position
+
+func _slide_camera_smooth_back_to_origin(delta):
+	if _saved_camera_global_pos == null: return
+	%pivotNode3D.global_position.y = _saved_camera_global_pos.y
+	%pivotNode3D.position.y = clampf(%pivotNode3D.position.y, -CAMERA_SMOOTH_LIMIT, CAMERA_SMOOTH_LIMIT) # Clamp incase teleported
+	var move_amount = max(self.velocity.length() * delta, WALK_SPEED/2 * delta) # 
+	%pivotNode3D.position.y = move_toward(%pivotNode3D.position.y, 0.0, move_amount)
+	_saved_camera_global_pos = %pivotNode3D.global_position
+	if %pivotNode3D.position.y == 0:
+		_saved_camera_global_pos = null # Stop smoothing camera
+
 func _snap_down_to_stairs_check() -> void:
 	var did_snap := false
 	# Since it is called after move_and_slide, _last_frame_was_on_floor should still be current frame number.
@@ -231,6 +250,7 @@ func _snap_down_to_stairs_check() -> void:
 	if not is_on_floor() and velocity.y <= 0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:
 		var body_test_result = KinematicCollision3D.new()
 		if self.test_move(self.global_transform, Vector3(0, -MAX_STEP_HEIGHT, 0), body_test_result):
+			_save_camera_pos_for_smoothing()
 			var translate_y = body_test_result.get_travel().y
 			self.position.y += translate_y
 			apply_floor_snap()
@@ -258,7 +278,7 @@ func _snap_up_stairs_check(delta) -> bool:
 		%StairsAheadRayCast3D.global_position = down_check_result.get_position() + Vector3(0,MAX_STEP_HEIGHT,0) + expected_move_motion.normalized() * 0.1
 		%StairsAheadRayCast3D.force_raycast_update()
 		if %StairsAheadRayCast3D.is_colliding() and not is_surface_too_steep(%StairsAheadRayCast3D.get_collision_normal()):
-			# _save_camera_pos_for_smoothing()
+			_save_camera_pos_for_smoothing()
 			self.global_position = step_pos_with_clearance.origin + down_check_result.get_travel()
 			apply_floor_snap()
 			_snapped_to_stairs_last_frame = true
