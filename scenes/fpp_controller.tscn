@@ -4,12 +4,14 @@
 [ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ghtvo"]
+radius = 0.25
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_76fdr"]
 albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_t614e"]
 material = SubResource("StandardMaterial3D_76fdr")
+radius = 0.25
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghtvo"]
 albedo_color = Color(1, 0, 0, 1)
@@ -22,7 +24,7 @@ z_clip_scale = 0.75
 points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ghtvo"]
-radius = 0.25
+radius = 0.125
 
 [sub_resource type="Animation" id="Animation_bp8e0"]
 length = 0.001
@@ -252,6 +254,7 @@ _data = {
 }
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_c503a"]
+radius = 0.25
 
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CROUCH_SHAPECAST")]
 collision_layer = 3
@@ -277,7 +280,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 [node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935707, -0.11320267, 0, 0.0112475, 0.9871838, 0.011320283, -0.0012814861, -0.112474985, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.099357046, -0.11320263, 0, 0.011247497, 0.98718345, 0.011320283, -0.0012814859, -0.11247495, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
@@ -321,7 +324,7 @@ wait_time = 3.0
 
 [node name="StairsAheadRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.5)
 target_position = Vector3(0, -0.3, 0)
 
 [node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]

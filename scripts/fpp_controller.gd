@@ -14,10 +14,10 @@ var lastShot := 0.0
 var bullet = preload("res://scenes/bullet.tscn")
 
 var speed : float
-const WALK_SPEED := 4.0
-const SPRINT_SPEED := 7.0
+const WALK_SPEED := 3.5
+const SPRINT_SPEED := 6.0
 const CROUCH_SPEED := 2.0
-const JUMP_VELOCITY := 4.0
+const JUMP_VELOCITY := 4.25
 const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 
@@ -28,7 +28,7 @@ var stored_horizontal_velocity := Vector3.ZERO  # To store the velocity at the m
 
 # head bob variables
 const BOB_FREQ := 2.0
-const BOB_AMP := 0.06
+const BOB_AMP := 0.05
 var t_bob := 0.0
 
 const MAX_STEP_HEIGHT := 0.25
