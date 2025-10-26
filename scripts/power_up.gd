@@ -13,6 +13,8 @@ enum Type {
 @onready var respawnTimer = $respawn
 @onready var label = $Mesh/Label
 
+@onready var pickup_sound = $PickupSound
+
 var collectable := true
 
 func _ready():
@@ -35,6 +37,7 @@ func _on_body_entered(body):
 	elif type == Type.ammo:
 		body.gainAmmo(qty)
 	pack.visible = false
+	pickup_sound.play()
 	respawnTimer.start()
 
 func _on_respawn_timeout():
