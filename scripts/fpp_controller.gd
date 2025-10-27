@@ -24,7 +24,7 @@ const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 const CAMERA_SMOOTH_LIMIT := 0.75
 const AIR_CONTROL_FACTOR := 0.25  # Controls how much air movement is allowed (0 = no control, 1 = full control)
 const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher the value the less slippery movement
-var direction := Vector3.ZERO  # Store the velocity i.e. at the moment of jumping etc.
+var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumping etc.
 
 # head bob variables
 const BOB_FREQ := 2.0
@@ -348,7 +348,7 @@ func _handle_ladder_physics() -> bool:
 		return false
 	
 	self.velocity = ladder_gtransform.basis * Vector3(ladder_strafe_vel, ladder_climb_vel, 0)
-	# self.velocity = self.velocity.limit_length(CLIMB_SPEED) # Uncomment to turn off ladder boosting
+	self.velocity = self.velocity.limit_length(CLIMB_SPEED) # Comment this line to turn on ladder boosting
 	
 	# Snap player onto ladder
 	pos_rel_to_ladder.z = 0
