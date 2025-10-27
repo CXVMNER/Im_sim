@@ -21,10 +21,10 @@ const JUMP_VELOCITY := 4.25
 const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 
-const CAMERA_SMOOTH_LIMIT := 0.7
-const AIR_CONTROL_FACTOR := 0.3  # Controls how much air movement is allowed (0 = no control, 1 = full control)
+const CAMERA_SMOOTH_LIMIT := 0.75
+const AIR_CONTROL_FACTOR := 0.25  # Controls how much air movement is allowed (0 = no control, 1 = full control)
 const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher the value the less slippery movement
-var stored_horizontal_velocity := Vector3.ZERO  # To store the velocity at the moment of jumping
+var direction := Vector3.ZERO  # Store the velocity i.e. at the moment of jumping etc.
 
 # head bob variables
 const BOB_FREQ := 2.0
@@ -35,6 +35,7 @@ const MAX_STEP_HEIGHT := 0.25
 var _snapped_to_stairs_last_frame := false
 var _last_frame_was_on_floor = -INF
 
+@export var CLIMB_SPEED := 5.0
 
 var is_crouching := false
 @export_range(5, 10, 0.1) var CROUCHING_SPEED : float = 7.0 # Animation speed
@@ -51,7 +52,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gr
 
 @onready var CameraController = $CameraController
 @onready var pivot_node_3d = $CameraController/pivotNode3D
-@onready var camera_3d = $CameraController/pivotNode3D/Camera3D
+@onready var camera_3d = $CameraController/pivotNode3D/Camera3D # The same as %Camera3D
 @export var camera_rotation_amount : float = 0.025
 var camera_rotation_factor := 8
 
@@ -118,8 +119,8 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 		# Store the horizontal velocity when the jump starts
-		stored_horizontal_velocity.x = velocity.x
-		stored_horizontal_velocity.z = velocity.z
+		direction.x = velocity.x
+		direction.z = velocity.z
 
 	# Handle sprint.
 	if Input.is_action_pressed("sprint") and not is_crouching:
@@ -145,42 +146,43 @@ func _physics_process(delta):
 
 	# Get the input direction and handle the movement/deceleration.
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-	var direction = (CameraController.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	direction = (CameraController.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
-	# Modify movement based on whether the player is on the floor or in the air
-	if is_on_floor() or _snapped_to_stairs_last_frame:
-		# Normal movement control on the ground
-		if direction:
-			# Apply speed reduction when "move_backward" is pressed
-			var effective_speed = speed
-			if Input.is_action_pressed("move_backward"):
-				effective_speed = speed * BACKWARD_SPEED
-			velocity.x = direction.x * effective_speed
-			velocity.z = direction.z * effective_speed
+	if not _handle_ladder_physics():
+		# Modify movement based on whether the player is on the floor or in the air
+		if is_on_floor() or _snapped_to_stairs_last_frame:
+			# Normal movement control on the ground
+			if direction:
+				# Apply speed reduction when "move_backward" is pressed
+				var effective_speed = speed
+				if Input.is_action_pressed("move_backward"):
+					effective_speed = speed * BACKWARD_SPEED
+				velocity.x = direction.x * effective_speed
+				velocity.z = direction.z * effective_speed
+			else:
+				velocity.x = lerp(velocity.x, direction.x * speed, delta * INERTIA_FACTOR)
+				velocity.z = lerp(velocity.z, direction.z * speed, delta * INERTIA_FACTOR)
 		else:
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * INERTIA_FACTOR)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * INERTIA_FACTOR)
-	else:
-		# Air control: Allow limited movement but clamp the maximum velocity
-		if direction:
-			# Apply speed reduction when "move_backward" is pressed in air
-			if Input.is_action_pressed("move_backward"):
-				speed *= BACKWARD_SPEED
-			# Allow limited air control by blending stored velocity with input direction
-			var air_control_velocity = stored_horizontal_velocity + (direction * speed * AIR_CONTROL_FACTOR)
-			velocity.x = lerp(velocity.x, air_control_velocity.x, AIR_CONTROL_FACTOR)
-			velocity.z = lerp(velocity.z, air_control_velocity.z, AIR_CONTROL_FACTOR)
+			# Air control: Allow limited movement but clamp the maximum velocity
+			if direction:
+				# Apply speed reduction when "move_backward" is pressed in air
+				if Input.is_action_pressed("move_backward"):
+					speed *= BACKWARD_SPEED
+				# Allow limited air control by blending stored velocity with input direction
+				var air_control_velocity = direction + (direction * speed * AIR_CONTROL_FACTOR)
+				velocity.x = lerp(velocity.x, air_control_velocity.x, AIR_CONTROL_FACTOR)
+				velocity.z = lerp(velocity.z, air_control_velocity.z, AIR_CONTROL_FACTOR)
 
-	# Head bob (only when on the ground)
-	t_bob += delta * velocity.length() * float(is_on_floor())
-	camera_3d.transform.origin = _headbob(t_bob)
-	
-	if not _snap_up_stairs_check(delta):
-		# Because _snap_up_stairs_check moves the body manually, don't call move_and_slide
-		# This should be fine since we ensure with the body_test_motion that it doesn't 
-		# collide with anything except the stairs it's moving up to.
-		move_and_slide()
-		_snap_down_to_stairs_check()
+		# Head bob (only when on the ground)
+		t_bob += delta * velocity.length() * float(is_on_floor())
+		camera_3d.transform.origin = _headbob(t_bob)
+
+		if not _snap_up_stairs_check(delta):
+			# Because _snap_up_stairs_check moves the body manually, don't call move_and_slide
+			# This should be fine since we ensure with the body_test_motion that it doesn't 
+			# collide with anything except the stairs it's moving up to.
+			move_and_slide()
+			_snap_down_to_stairs_check()
 	
 	_slide_camera_smooth_back_to_origin(delta)
 	
@@ -284,6 +286,76 @@ func _snap_up_stairs_check(delta) -> bool:
 			_snapped_to_stairs_last_frame = true
 			return true
 	return false
+
+var _cur_ladder_climbing : Area3D = null
+func _handle_ladder_physics() -> bool:
+	# Keep track of whether already on ladder. If not already, check if overlapping a ladder area3d.
+	var was_climbing_ladder := _cur_ladder_climbing and _cur_ladder_climbing.overlaps_body(self)
+	if not was_climbing_ladder:
+		_cur_ladder_climbing = null
+		for ladder in get_tree().get_nodes_in_group("ladder_area3d"):
+			if ladder.overlaps_body(self):
+				_cur_ladder_climbing = ladder
+				break
+	if _cur_ladder_climbing == null:
+		return false
+	
+	# Set up variables. Most of this is going to be dependent on the player's relative position/velocity/input to the ladder.
+	var ladder_gtransform : Transform3D = _cur_ladder_climbing.global_transform
+	var pos_rel_to_ladder := ladder_gtransform.affine_inverse() * self.global_position
+	
+	var forward_move := Input.get_action_strength("move_forward") - Input.get_action_strength("move_backward")
+	var side_move := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	var ladder_forward_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(0, 0, -forward_move)
+	var ladder_side_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(side_move, 0, 0)
+	
+	# Strafe velocity is simple. Just take x component rel to ladder of both
+	var ladder_strafe_vel : float = CLIMB_SPEED * (ladder_side_move.x + ladder_forward_move.x)
+	# For climb velocity, there are a few things to take into account:
+	# If strafing directly into the ladder, go up, if strafing away, go down
+	var ladder_climb_vel : float = CLIMB_SPEED * -ladder_side_move.z
+	# When pressing forward & facing the ladder, the player likely wants to move up. Vice versa with down.
+	# So we will bias the direction (up/down) towards where we are looking by 45 degrees to give a greater margin for up/down detect.
+	var up_wish := Vector3.UP.rotated(Vector3(1,0,0), deg_to_rad(-45)).dot(ladder_forward_move)
+	ladder_climb_vel += CLIMB_SPEED * up_wish
+	
+	# Only begin climbing ladders when moving towards them & prevent sticking to top of ladder when dismounting
+	# Trying to best match the player's intention when climbing on ladder
+	var should_dismount = false
+	if not was_climbing_ladder:
+		var mounting_from_top = pos_rel_to_ladder.y > _cur_ladder_climbing.get_node("TopOfLadder").position.y
+		if mounting_from_top:
+			# They could be trying to get on from the top of the ladder, or trying to leave the ladder.
+			if ladder_climb_vel > 0: should_dismount = true
+		else:
+			# If not mounting from top, they are either falling or on floor.
+			# In which case, only stick to ladder if intentionally moving towards
+			if (ladder_gtransform.affine_inverse().basis * direction).z >= 0: should_dismount = true
+		# Only stick to ladder if very close. Helps make it easier to get off top & prevents camera jitter
+		if abs(pos_rel_to_ladder.z) > 0.1: should_dismount = true
+	
+	# Let player step off onto floor
+	if is_on_floor() and ladder_climb_vel <= 0: should_dismount = true
+	
+	if should_dismount:
+		_cur_ladder_climbing = null
+		return false
+	
+	# Allow jump off ladder mid climb
+	if was_climbing_ladder and Input.is_action_just_pressed("jump"):
+		self.velocity = _cur_ladder_climbing.global_transform.basis.z * JUMP_VELOCITY * 1.5
+		_cur_ladder_climbing = null
+		return false
+	
+	self.velocity = ladder_gtransform.basis * Vector3(ladder_strafe_vel, ladder_climb_vel, 0)
+	# self.velocity = self.velocity.limit_length(CLIMB_SPEED) # Uncomment to turn off ladder boosting
+	
+	# Snap player onto ladder
+	pos_rel_to_ladder.z = 0
+	self.global_position = ladder_gtransform * pos_rel_to_ladder
+	
+	move_and_slide()
+	return true
 
 func gainAmmo(qty):
 	hud.ammo += qty
