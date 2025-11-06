@@ -22,9 +22,10 @@ const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 
 const CAMERA_SMOOTH_LIMIT := 0.75
-const AIR_CONTROL_FACTOR := 0.25  # Controls how much air movement is allowed (0 = no control, 1 = full control)
+const AIR_CONTROL_FACTOR := 0.15  # Controls how much air movement is allowed (0 = no control, 1 = full control)
 const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher the value the less slippery movement
 var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumping etc.
+var takeoff_velocity := Vector3.ZERO  # Replace 'direction' for momentum
 
 # head bob variables
 const BOB_FREQ := 2.0
@@ -92,14 +93,23 @@ func _ready():
 	hud.health = health
 	hud.updateHud()
 
+# Camera rotation values
+var camera_yaw := 0.0
+var camera_pitch := 0.0
+
 func _unhandled_input(event):
 	if event.is_action_pressed("exit"):
 		get_tree().quit()
 	
 	if event is InputEventMouseMotion and mouse_captured:
-		CameraController.rotate_y(-event.relative.x * SENSITIVITY)
-		pivot_node_3d.rotate_x(-event.relative.y * SENSITIVITY)
-		pivot_node_3d.rotation.x = clamp(pivot_node_3d.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+		# Store RELATIVE rotations (immune to parent snapping)
+		camera_yaw -= event.relative.x * SENSITIVITY
+		camera_pitch -= event.relative.y * SENSITIVITY
+		camera_pitch = clamp(camera_pitch, deg_to_rad(-90), deg_to_rad(90))
+		
+		# Apply rotations
+		CameraController.rotation.y = camera_yaw
+		pivot_node_3d.rotation.x = camera_pitch
 	
 	if event.is_action_pressed("toggle_mouse"):
 		mouse_captured = not mouse_captured
@@ -119,8 +129,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 		# Store the horizontal velocity when the jump starts
-		direction.x = velocity.x
-		direction.z = velocity.z
+		takeoff_velocity = Vector3(velocity.x, 0, velocity.z)
 
 	# Handle sprint.
 	if Input.is_action_pressed("sprint") and not is_crouching:
@@ -152,26 +161,34 @@ func _physics_process(delta):
 		# Modify movement based on whether the player is on the floor or in the air
 		if is_on_floor() or _snapped_to_stairs_last_frame:
 			# Normal movement control on the ground
-			if direction:
+			if direction.length() > 0:
 				# Apply speed reduction when "move_backward" is pressed
-				var effective_speed = speed
+				var current_speed = speed
 				if Input.is_action_pressed("move_backward"):
-					effective_speed = speed * BACKWARD_SPEED
-				velocity.x = direction.x * effective_speed
-				velocity.z = direction.z * effective_speed
+					current_speed *= BACKWARD_SPEED
+				velocity.x = direction.x * current_speed
+				velocity.z = direction.z * current_speed
 			else:
-				velocity.x = lerp(velocity.x, direction.x * speed, delta * INERTIA_FACTOR)
-				velocity.z = lerp(velocity.z, direction.z * speed, delta * INERTIA_FACTOR)
+				velocity.x = lerp(velocity.x, 0.0, delta * INERTIA_FACTOR)
+				velocity.z = lerp(velocity.z, 0.0, delta * INERTIA_FACTOR)
 		else:
 			# Air control: Allow limited movement but clamp the maximum velocity
-			if direction:
+			if direction.length() > 0:
+				var current_speed = speed
 				# Apply speed reduction when "move_backward" is pressed in air
 				if Input.is_action_pressed("move_backward"):
-					speed *= BACKWARD_SPEED
+					current_speed *= BACKWARD_SPEED
+				
+				var control_add = direction * current_speed * AIR_CONTROL_FACTOR
+				var target_vel = takeoff_velocity + control_add
 				# Allow limited air control by blending stored velocity with input direction
-				var air_control_velocity = direction + (direction * speed * AIR_CONTROL_FACTOR)
-				velocity.x = lerp(velocity.x, air_control_velocity.x, AIR_CONTROL_FACTOR)
-				velocity.z = lerp(velocity.z, air_control_velocity.z, AIR_CONTROL_FACTOR)
+				# var air_control_velocity = direction + (direction * speed * AIR_CONTROL_FACTOR)
+				velocity.x = lerp(velocity.x, target_vel.x, AIR_CONTROL_FACTOR)
+				velocity.z = lerp(velocity.z, target_vel.z, AIR_CONTROL_FACTOR)
+			else:
+				# Light air drag when no input
+				velocity.x = lerp(velocity.x, 0.0, delta * 1.0)
+				velocity.z = lerp(velocity.z, 0.0, delta * 1.0)
 
 		# Head bob (only when on the ground)
 		t_bob += delta * velocity.length() * float(is_on_floor())

@@ -283,7 +283,7 @@ unique_name_in_owner = true
 [node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935703, -0.1132026, 0, 0.011247495, 0.9871832, 0.011320283, -0.0012814857, -0.11247492, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935701, -0.11320256, 0, 0.011247492, 0.98718286, 0.011320283, -0.0012814854, -0.11247488, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
