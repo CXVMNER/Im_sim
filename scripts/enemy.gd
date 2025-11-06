@@ -11,9 +11,9 @@ var health := 10
 var material
 var bullet = preload("res://scenes/bullet.tscn")
 
+@onready var vision_ray = $VisionRay
 @onready var gun = $gun
-@onready var sight = $sight
-@onready var engagedTimer = $engaged
+@onready var engaged_timer = $EngagedTimer
 
 var lastShot := 0.0
 var engaged := false
@@ -22,8 +22,15 @@ const ATTACK_RANGE := 2.5
 
 const UPDATE_TIME := 0.2
 const SPEED := 150
-const SMOOTHING_FACTOR := 0.1
+const VIEW_ANGLE: float = 190.0
+const SMOOTHING_FACTOR := 0.2
  
+# --------------------
+# STATE MACHINE
+# --------------------
+enum State { IDLE, PATROL, INVESTIGATE, CHASE, ATTACK, RETURN }
+var state: State = State.IDLE
+
 var target
 var update_timer := 0.0
  
@@ -70,7 +77,7 @@ func move_to_agent(delta: float, speed: float = SPEED):
 func takeDamage(dmg):
 	health -= dmg
 	engaged = true
-	engagedTimer.start()
+	engaged_timer.start()
 	if health < 1:
 		queue_free()
 	var tween = get_tree().create_tween()

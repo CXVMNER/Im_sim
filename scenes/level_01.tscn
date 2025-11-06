@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=4 uid="uid://bb4nkm70jejd8"]
+[gd_scene load_steps=54 format=4 uid="uid://bb4nkm70jejd8"]
 
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_avbq2"]
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="3_lwi15"]
@@ -64,83 +64,73 @@ points = PackedVector3Array(1.01587, 0.0610863, 1.01587, -1.01587, -0.0658482, -
 
 [sub_resource type="Animation" id="Animation_px6rj"]
 length = 0.001
-tracks/0/type = "bezier"
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:position:x")
+tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:position:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:position:z")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_e6mo4"]
 resource_name = "platform"
 length = 6.0
 loop_mode = 1
-tracks/0/type = "bezier"
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:position:x")
+tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1, 3, 4, 6)
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, -8)]
 }
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:position:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1, 3, 4, 6)
-}
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:position:z")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, -4, -0.25, 0, 0.25, 0, -4, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 1, 3, 4, 6)
+
+[sub_resource type="Animation" id="Animation_cr2eh"]
+resource_name = "lift"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 5, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2ucnx"]
 _data = {
 &"RESET": SubResource("Animation_px6rj"),
+&"lift": SubResource("Animation_cr2eh"),
 &"platform": SubResource("Animation_e6mo4")
 }
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cy6r3"]
+points = PackedVector3Array(1.0158731, 0.061086252, 1.0158731, -1.0158731, -0.06584816, -1.0158731, -1.0158731, -0.06584816, 1.0158731, -1.0158731, 0.061086252, -1.0158731, 1.0158731, -0.06584816, -1.0158731, -1.0158731, 0.061086252, 1.0158731, 1.0158731, -0.06584816, 1.0158731, 1.0158731, 0.061086252, -1.0158731)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0tv6x"]
+albedo_texture = ExtResource("7_1b6n0")
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_42ncp"]
+material = SubResource("StandardMaterial3D_0tv6x")
+size = Vector3(0.5, 1, 0.5)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_0tv6x"]
+points = PackedVector3Array(-0.2499604, -0.49254447, -0.25, 0.2499892, 0.4771525, 0.25, 0.25, 0.47717345, -0.24207433, -0.2499604, 0.49254447, -0.25, -0.2420247, -0.4771525, 0.25, 0.25, -0.47717345, -0.24207433, -0.2420247, 0.4771525, 0.25, 0.2499892, -0.4771525, 0.25)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_llcge"]
 
@@ -508,6 +498,32 @@ libraries = {
 &"": SubResource("AnimationLibrary_2ucnx")
 }
 autoplay = "platform"
+
+[node name="movingPlatform2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0.06584811, -22)
+
+[node name="AnimatableBody3D" type="AnimatableBody3D" parent="movingPlatform2"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="movingPlatform2/AnimatableBody3D"]
+material_override = SubResource("StandardMaterial3D_llcge")
+mesh = SubResource("BoxMesh_t0ybu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="movingPlatform2/AnimatableBody3D"]
+shape = SubResource("ConvexPolygonShape3D_cy6r3")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="movingPlatform2/AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4341519, -0.75)
+mesh = SubResource("BoxMesh_42ncp")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="movingPlatform2/AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4341519, -0.75)
+shape = SubResource("ConvexPolygonShape3D_0tv6x")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="movingPlatform2/AnimatableBody3D"]
+libraries = {
+&"": SubResource("AnimationLibrary_2ucnx")
+}
+autoplay = "lift"
 
 [node name="Ladder" parent="." instance=ExtResource("10_px6rj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, -2.4999993, -20.499998)

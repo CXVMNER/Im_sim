@@ -35,16 +35,15 @@ debug_enabled = true
 debug_use_custom = true
 debug_path_custom_color = Color(1, 0, 0, 1)
 
+[node name="VisionRay" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+target_position = Vector3(0, 0, -10)
+
 [node name="gun" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.25)
 
-[node name="sight" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0)
-target_position = Vector3(0, -10, 0)
-collision_mask = 3
-
-[node name="engaged" type="Timer" parent="."]
+[node name="EngagedTimer" type="Timer" parent="."]
 wait_time = 3.0
 
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
-[connection signal="timeout" from="engaged" to="." method="_on_engaged_timeout"]
+[connection signal="timeout" from="EngagedTimer" to="." method="_on_engaged_timeout"]
