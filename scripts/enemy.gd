@@ -1,6 +1,7 @@
 extends CharacterBody3D
-
-@export var PlayerPath : NodePath
+ 
+@onready var agent = $NavigationAgent3D
+ 
 @export var color : Color
 # @export var aggroRange := 5.0
 @export var fireSpeed := 0.2
@@ -8,34 +9,63 @@ extends CharacterBody3D
 
 var health := 10
 var material
-var player = null
 var bullet = preload("res://scenes/bullet.tscn")
 
 @onready var gun = $gun
 @onready var sight = $sight
 @onready var engagedTimer = $engaged
-@onready var nav_agent = $NavigationAgent3D
-@onready var detection_area = $Area3D
 
 var lastShot := 0.0
-var speed := 1.0
-var startPos
 var engaged := false
-var player_detected := false
 
-const SPEED := 1.5
 const ATTACK_RANGE := 2.5
 
+const UPDATE_TIME := 0.2
+const SPEED := 150
+const SMOOTHING_FACTOR := 0.1
+ 
+var target
+var update_timer := 0.0
+ 
 func _ready():
-	player = get_node(PlayerPath)
-	startPos = global_position
+	target = PlayerManager.player
 	var mat = StandardMaterial3D.new()
 	mat.emission_enabled = true
 	$%body.set_surface_override_material(0, mat)
 	$%nose.set_surface_override_material(1, mat)
 	material = mat
-	# Connect detection area signals
-	detection_area.body_entered.connect(_on_area_3d_body_entered)
+ 
+func _physics_process(delta):
+	move_to_agent(delta)
+ 
+func set_target(pos = target.position):
+	agent.set_target_position(pos)
+ 
+func move_to_agent(delta: float, speed: float = SPEED):
+	update_timer -= delta
+	if update_timer <= 0.0:
+		update_timer = UPDATE_TIME
+		if target:
+			set_target(target.position)
+ 
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+		move_and_slide()
+		return
+ 
+	if agent.is_navigation_finished():
+		return
+ 
+	var next_pos = agent.get_next_path_position()
+	var dir = (next_pos - global_position).normalized()
+	dir.y = 0
+ 
+	var current_facing = -global_transform.basis.z
+	var new_dir = current_facing.slerp(dir, SMOOTHING_FACTOR).normalized()
+	look_at(global_position + new_dir, Vector3.UP)
+ 
+	velocity = velocity.lerp(dir * speed * delta, SMOOTHING_FACTOR)
+	move_and_slide()
 
 func takeDamage(dmg):
 	health -= dmg
@@ -58,49 +88,11 @@ func _fire():
 	b.global_transform = gun.global_transform # Position the bullet at the gun's location.
 	get_parent().add_child(b) # Add the bullet to the scene.
 
-func _process(delta):
-	velocity = Vector3.ZERO
-	var current_location = global_transform.origin  # Current enemy location
-
-	if player_detected and player:
-		# Navigate toward the player if detected
-		var player_location = player.global_transform.origin
-		if sight.is_colliding() and sight.get_collider() == player:
-			_fire()
-		nav_agent.set_target_position(player_location)
-		var next_nav_point = nav_agent.get_next_path_position()
-		velocity = (next_nav_point - current_location).normalized() * SPEED
-		face_player(player_location) # Rotate to face the player
-	else:
-		# Return to start position if player not detected
-		nav_agent.set_target_position(startPos)
-
-	move_and_slide()
-
 func _target_in_range():
-	return global_position.distance_to(player.global_position) < ATTACK_RANGE
+	return global_position.distance_to(target.global_position) < ATTACK_RANGE
 
 func _hit_finished():
-	player.hit()
-
-func update_target_location(target_location):
-	nav_agent.set_target_position(target_location)
-
-func _on_navigation_agent_3d_velocity_computed(safe_velocity):
-	velocity = velocity.move_toward(safe_velocity, 0.25)
-	move_and_slide()
-
-func _on_area_3d_body_entered(body):
-	if body is CharacterBody3D and body.name == "CharacterBody3D":
-		player = body
-		player_detected = true  # Set to true permanently once player is detected
-
-func face_player(player_location):
-	var direction_to_player = player_location - global_transform.origin
-	direction_to_player.y = 0 # Ignore the vertical component
-	direction_to_player = direction_to_player.normalized()
-	var target_rotation = Vector3(0, atan2(direction_to_player.x, direction_to_player.z), 0)
-	rotation = target_rotation
+	target.hit()
 
 func _on_engaged_timeout():
 	engaged = false

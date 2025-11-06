@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="7_ky2cw"]
 [ext_resource type="PackedScene" uid="uid://b1ovqgjwms7u4" path="res://scenes/ladder.tscn" id="10_px6rj"]
 [ext_resource type="Script" uid="uid://d38lde0ccowa0" path="res://scripts/InteractableComponent.gd" id="11_e6mo4"]
-[ext_resource type="Script" uid="uid://bkp4fo0yol1r8" path="res://scenes/Door.gd" id="13_2ucnx"]
+[ext_resource type="Script" uid="uid://bkp4fo0yol1r8" path="res://scripts/Door.gd" id="13_2ucnx"]
 [ext_resource type="Texture2D" uid="uid://b24j8lhe6xahh" path="res://assets/kenney_prototype-textures/PNG/Red/texture_02.png" id="14_cr2eh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qfypb"]
@@ -471,12 +471,10 @@ use_collision = true
 num_stairs = 8
 
 [node name="Enemy" parent="." instance=ExtResource("6_haycg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, -25)
-PlayerPath = NodePath("../CharacterBody3D")
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -2.5, 0, -25)
 
 [node name="Enemy2" parent="." instance=ExtResource("6_haycg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -18)
-PlayerPath = NodePath("../CharacterBody3D")
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5, 0, -18)
 
 [node name="powerUp" parent="." instance=ExtResource("7_ky2cw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.75, 8)

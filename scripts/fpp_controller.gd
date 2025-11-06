@@ -22,10 +22,9 @@ const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 
 const CAMERA_SMOOTH_LIMIT := 0.75
-const AIR_CONTROL_FACTOR := 0.15  # Controls how much air movement is allowed (0 = no control, 1 = full control)
+const AIR_CONTROL_FACTOR := 0.5  # Controls how much air movement is allowed (0 = no control, 1 = full control)
 const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher the value the less slippery movement
 var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumping etc.
-var takeoff_velocity := Vector3.ZERO  # Replace 'direction' for momentum
 
 # head bob variables
 const BOB_FREQ := 2.0
@@ -84,6 +83,9 @@ func _ready():
 	# Get mouse input
 	# Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	PlayerManager.player = self
+	
 	# Set default speed
 	speed = WALK_SPEED
 
@@ -129,7 +131,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 		# Store the horizontal velocity when the jump starts
-		takeoff_velocity = Vector3(velocity.x, 0, velocity.z)
+		direction = Vector3(velocity.x, 0, velocity.z).normalized()
 
 	# Handle sprint.
 	if Input.is_action_pressed("sprint") and not is_crouching:
@@ -161,7 +163,7 @@ func _physics_process(delta):
 		# Modify movement based on whether the player is on the floor or in the air
 		if is_on_floor() or _snapped_to_stairs_last_frame:
 			# Normal movement control on the ground
-			if direction.length() > 0:
+			if direction:
 				# Apply speed reduction when "move_backward" is pressed
 				var current_speed = speed
 				if Input.is_action_pressed("move_backward"):
@@ -173,16 +175,15 @@ func _physics_process(delta):
 				velocity.z = lerp(velocity.z, 0.0, delta * INERTIA_FACTOR)
 		else:
 			# Air control: Allow limited movement but clamp the maximum velocity
-			if direction.length() > 0:
+			if direction:
 				var current_speed = speed
 				# Apply speed reduction when "move_backward" is pressed in air
 				if Input.is_action_pressed("move_backward"):
 					current_speed *= BACKWARD_SPEED
 				
 				var control_add = direction * current_speed * AIR_CONTROL_FACTOR
-				var target_vel = takeoff_velocity + control_add
+				var target_vel = direction + control_add
 				# Allow limited air control by blending stored velocity with input direction
-				# var air_control_velocity = direction + (direction * speed * AIR_CONTROL_FACTOR)
 				velocity.x = lerp(velocity.x, target_vel.x, AIR_CONTROL_FACTOR)
 				velocity.z = lerp(velocity.z, target_vel.z, AIR_CONTROL_FACTOR)
 			else:
