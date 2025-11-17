@@ -1,8 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene load_steps=23 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
-[ext_resource type="PackedScene" uid="uid://lsleh0tm40gq" path="res://scenes/blaster_b.tscn" id="2_uwixu"]
+[ext_resource type="PackedScene" uid="uid://cv2f48rkkap2q" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-b.glb" id="2_up7xj"]
+[ext_resource type="AudioStream" uid="uid://ycrpsx6fno23" path="res://sounds/8bit_gunloop_explosion.wav" id="3_bww43"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ghtvo"]
 radius = 0.25
@@ -26,6 +27,125 @@ points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ghtvo"]
 radius = 0.125
+
+[sub_resource type="Animation" id="Animation_m0t4e"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_s2p62"]
+resource_name = "equip"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, -0.15, -0.2), Vector3(0, 0.1, -0.07), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(1.0472, 0, 0), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_j3alf"]
+resource_name = "shooting"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.139626, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, -0.02), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_afvol"]
+resource_name = "unequip"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.15, -0.2)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(1.0472, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jsxak"]
+_data = {
+&"RESET": SubResource("Animation_m0t4e"),
+&"equip": SubResource("Animation_s2p62"),
+&"shooting": SubResource("Animation_j3alf"),
+&"unequip": SubResource("Animation_afvol")
+}
 
 [sub_resource type="Animation" id="Animation_bp8e0"]
 length = 0.001
@@ -282,9 +402,10 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
+visible = false
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.099356994, -0.113202535, 0, 0.011247491, 0.9871827, 0.011320283, -0.0012814852, -0.11247485, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935698, -0.11320252, 0, 0.01124749, 0.98718256, 0.011320283, -0.001281485, -0.11247484, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
@@ -296,9 +417,6 @@ monitoring = false
 transform = Transform3D(1, 1.07102e-07, 0, -9.74978e-10, 1, -9.31323e-10, 0, 0, 1, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_aotb2")
 
-[node name="gun" type="Marker3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.75)
-
 [node name="InteractShapeCast3D" type="ShapeCast3D" parent="CameraController/pivotNode3D/Camera3D"]
 unique_name_in_owner = true
 shape = SubResource("SphereShape3D_ghtvo")
@@ -307,9 +425,31 @@ max_results = 2
 collision_mask = 9
 collide_with_areas = true
 
-[node name="Node3D" parent="CameraController/pivotNode3D/Camera3D" instance=ExtResource("2_uwixu")]
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController/pivotNode3D/Camera3D/InteractShapeCast3D"]
+
+[node name="Node3D" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.25, -0.2, -0.5)
-visible = false
+
+[node name="model" type="Node3D" parent="CameraController/pivotNode3D/Camera3D/Node3D"]
+
+[node name="blaster-b2" parent="CameraController/pivotNode3D/Camera3D/Node3D/model" instance=ExtResource("2_up7xj")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CameraController/pivotNode3D/Camera3D/Node3D"]
+stream = ExtResource("3_bww43")
+volume_db = -5.0
+
+[node name="RayCast3D" type="RayCast3D" parent="CameraController/pivotNode3D/Camera3D/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.013, 0.2)
+target_position = Vector3(0, 0, 50)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CameraController/pivotNode3D/Camera3D/Node3D"]
+libraries = {
+&"": SubResource("AnimationLibrary_jsxak")
+}
+
+[node name="gun" type="Marker3D" parent="CameraController/pivotNode3D/Camera3D/Node3D"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.0040296167, 0.015375018, 0.25)
 
 [node name="HUD" parent="CameraController" instance=ExtResource("2_lq6am")]
 unique_name_in_owner = true

@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 class_name Player
 
-@onready var gun = $CameraController/pivotNode3D/Camera3D/WeaponHolder/gun
+@onready var gun = $CameraController/pivotNode3D/Camera3D/Node3D/gun
 @onready var hud = $CameraController/HUD
 @export var health := 100
 @export var fireSpeed := 0.2
@@ -219,6 +219,8 @@ func _fire():
 	hud.ammo -= 1
 	hud.updateHud()
 
+@onready var animation_player = $CameraController/pivotNode3D/Camera3D/Node3D/AnimationPlayer
+
 # We can remove the redundant input checks from _process here.
 func _process(_delta):
 	if get_interactable_component_at_shapecast():
@@ -227,8 +229,8 @@ func _process(_delta):
 			get_interactable_component_at_shapecast().interact_with(self)
 	
 	if Input.is_action_pressed("attack_2"):
+		animation_player.play("shooting")
 		_fire()
-
 	# Releasing sprint initiates stamina regeneration
 	if Input.is_action_just_released("sprint"):
 		speed = WALK_SPEED
