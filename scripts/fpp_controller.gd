@@ -4,7 +4,7 @@ class_name Player
 
 @onready var gun = $CameraController/pivotNode3D/Camera3D/WeaponHolder/gun
 @onready var hud = $CameraController/HUD
-@export var health := 10
+@export var health := 100
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
