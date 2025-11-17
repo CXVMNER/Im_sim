@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://lsleh0tm40gq"]
 
-[ext_resource type="PackedScene" uid="uid://b2abkj55ujeoy" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-b.glb" id="1_j3alf"]
-[ext_resource type="AudioStream" uid="uid://duhya2smr8yac" path="res://sounds/8bit_gunloop_explosion.wav" id="2_m0t4e"]
+[ext_resource type="PackedScene" uid="uid://cv2f48rkkap2q" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-b.glb" id="1_j3alf"]
+[ext_resource type="AudioStream" uid="uid://ycrpsx6fno23" path="res://sounds/8bit_gunloop_explosion.wav" id="2_m0t4e"]
 
 [sub_resource type="Animation" id="Animation_m0t4e"]
 length = 0.001
@@ -123,6 +123,7 @@ _data = {
 }
 
 [node name="Node3D" type="Node3D"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="model" type="Node3D" parent="."]
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene load_steps=17 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
+[ext_resource type="PackedScene" uid="uid://lsleh0tm40gq" path="res://scenes/blaster_b.tscn" id="2_uwixu"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ghtvo"]
 radius = 0.25
@@ -283,7 +284,7 @@ unique_name_in_owner = true
 [node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.099357, -0.11320255, 0, 0.011247491, 0.98718274, 0.011320283, -0.0012814853, -0.112474866, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.099356994, -0.113202535, 0, 0.011247491, 0.9871827, 0.011320283, -0.0012814852, -0.11247485, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
@@ -305,6 +306,10 @@ target_position = Vector3(0, 0, -2)
 max_results = 2
 collision_mask = 9
 collide_with_areas = true
+
+[node name="Node3D" parent="CameraController/pivotNode3D/Camera3D" instance=ExtResource("2_uwixu")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.25, -0.2, -0.5)
+visible = false
 
 [node name="HUD" parent="CameraController" instance=ExtResource("2_lq6am")]
 unique_name_in_owner = true

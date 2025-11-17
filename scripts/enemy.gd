@@ -134,7 +134,7 @@ func _state_attack() -> void:
 	# TODO: better handle player capture
 	if global_position.distance_to(target.global_position) < 1.0:
 		if target.has_method("takeDamage"):
-			target.takeDamage(1) # 1 damage per frame while touching
+			target.takeDamage(attackPower) # 1 damage per frame while touching
 	
 	_enter_state(State.CHASE)
  
