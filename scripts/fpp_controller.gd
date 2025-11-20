@@ -2,7 +2,10 @@ extends CharacterBody3D
 
 class_name Player
 
-@onready var gun = $CameraController/pivotNode3D/Camera3D/Node3D/gun
+@onready var gun_barrel = $"CameraController/pivotNode3D/Camera3D/blaster-b/RayCast3D"
+@onready var gun_animation_player = $"CameraController/pivotNode3D/Camera3D/blaster-b/AnimationPlayer"
+@onready var gun_audio_stream_player = $"CameraController/pivotNode3D/Camera3D/blaster-b/AudioStreamPlayer"
+
 @onready var hud = $CameraController/HUD
 @export var health := 100
 @export var fireSpeed := 0.2
@@ -11,7 +14,8 @@ class_name Player
 var regenStamina := false
 var lastShot := 0.0
 
-var bullet = preload("res://scenes/bullet.tscn")
+var bullet = load("res://scenes/bullet.tscn")
+var instance
 
 var speed : float
 const WALK_SPEED := 3.5
@@ -205,6 +209,18 @@ func _physics_process(delta):
 	_slide_camera_smooth_back_to_origin(delta)
 	
 	camera_tilt(input_dir.x, delta)
+	
+	if Input.is_action_just_pressed("attack_2"):
+		if !gun_animation_player.is_playing():
+			gun_animation_player.play("shooting")
+			gun_audio_stream_player.play()
+			instance = bullet.instantiate()
+			instance.position = gun_barrel.global_position
+			instance.global_transform = gun_barrel.global_transform
+			get_parent().add_child(instance)
+			
+			_fire()
+	
 
 func _fire():
 	var now := Time.get_ticks_msec()/1000.0
@@ -214,12 +230,10 @@ func _fire():
 	lastShot = now
 	var b = bullet.instantiate()
 	b.damage = attackPower
-	b.global_transform = gun.global_transform
+	b.global_transform = gun_barrel.global_transform
 	get_parent().add_child(b)
 	hud.ammo -= 1
 	hud.updateHud()
-
-@onready var animation_player = $CameraController/pivotNode3D/Camera3D/Node3D/AnimationPlayer
 
 # We can remove the redundant input checks from _process here.
 func _process(_delta):
@@ -228,9 +242,6 @@ func _process(_delta):
 		if Input.is_action_just_pressed("interact"):
 			get_interactable_component_at_shapecast().interact_with(self)
 	
-	if Input.is_action_pressed("attack_2"):
-		animation_player.play("shooting")
-		_fire()
 	# Releasing sprint initiates stamina regeneration
 	if Input.is_action_just_released("sprint"):
 		speed = WALK_SPEED

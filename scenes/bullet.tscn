@@ -1,10 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://c5rd5w4e4xwdh"]
+[gd_scene load_steps=4 format=3 uid="uid://c5rd5w4e4xwdh"]
 
 [ext_resource type="Script" uid="uid://cpompqv4s5khy" path="res://scripts/bullet.gd" id="1_5d747"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0amf2"]
-radius = 0.05
-height = 0.1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7r31d"]
 albedo_color = Color(1, 0, 0, 1)
@@ -13,23 +9,11 @@ albedo_color = Color(1, 0, 0, 1)
 material = SubResource("StandardMaterial3D_7r31d")
 size = Vector3(0.05, 0.05, 0.05)
 
-[node name="bullet" type="RigidBody3D"]
-collision_layer = 4
-mass = 0.01
-gravity_scale = 0.0
-continuous_cd = true
-contact_monitor = true
-max_contacts_reported = 1
+[node name="bullet" type="Node3D"]
 script = ExtResource("1_5d747")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_0amf2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_ikyb7")
 
-[node name="Timer" type="Timer" parent="."]
-autostart = true
-
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[node name="GunRayCast3D" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -0.1)
