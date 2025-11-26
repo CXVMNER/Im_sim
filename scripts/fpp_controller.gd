@@ -210,7 +210,7 @@ func _physics_process(delta):
 	
 	camera_tilt(input_dir.x, delta)
 	
-	if Input.is_action_just_pressed("attack_2"):
+	if Input.is_action_pressed("attack_2"):
 		if !gun_animation_player.is_playing():
 			gun_animation_player.play("shooting")
 			gun_audio_stream_player.play()

@@ -1,7 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7iiv5kc4qkwa"]
+[gd_scene load_steps=6 format=3 uid="uid://b7iiv5kc4qkwa"]
 
 [ext_resource type="PackedScene" uid="uid://cv2f48rkkap2q" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-b.glb" id="1_krvfs"]
 [ext_resource type="AudioStream" uid="uid://ycrpsx6fno23" path="res://sounds/8bit_gunloop_explosion.wav" id="2_m0t4e"]
+
+[sub_resource type="Animation" id="Animation_j3alf"]
+resource_name = "new_animation"
+length = 0.2
+
+[sub_resource type="Animation" id="Animation_m0t4e"]
+resource_name = "shooting"
+length = 0.2
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m0t4e"]
+_data = {
+&"new_animation": SubResource("Animation_j3alf"),
+&"shooting": SubResource("Animation_m0t4e")
+}
 
 [node name="blaster-b" instance=ExtResource("1_krvfs")]
 
@@ -14,3 +28,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.013, -0.3)
 target_position = Vector3(0, 0, -1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+libraries = {
+&"": SubResource("AnimationLibrary_m0t4e")
+}

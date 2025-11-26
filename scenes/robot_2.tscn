@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bx8fodp5jewpn"]
+
+[ext_resource type="PackedScene" uid="uid://cyitav3lwr84g" path="res://assets/models/robot/robot.gltf" id="1_gefrq"]
+
+[node name="robot2" instance=ExtResource("1_gefrq")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)

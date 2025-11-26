@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://c8161in0xfnar"]
+[gd_scene load_steps=7 format=3 uid="uid://c8161in0xfnar"]
 
 [ext_resource type="Script" uid="uid://hccjbr8u4syc" path="res://scripts/enemy.gd" id="1_gxcth"]
+[ext_resource type="PackedScene" uid="uid://bx8fodp5jewpn" path="res://scenes/robot_2.tscn" id="2_md0e3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_slbbk"]
 
@@ -45,6 +46,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.25)
 
 [node name="EngagedTimer" type="Timer" parent="."]
 wait_time = 3.0
+
+[node name="robot2" parent="." instance=ExtResource("2_md0e3")]
 
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="timeout" from="EngagedTimer" to="." method="_on_engaged_timeout"]
