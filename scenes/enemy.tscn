@@ -1,16 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8161in0xfnar"]
+[gd_scene load_steps=4 format=3 uid="uid://c8161in0xfnar"]
 
 [ext_resource type="Script" uid="uid://hccjbr8u4syc" path="res://scripts/enemy.gd" id="1_gxcth"]
 [ext_resource type="PackedScene" uid="uid://bx8fodp5jewpn" path="res://scenes/robot_2.tscn" id="2_md0e3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_slbbk"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_harsj"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_t1ljk"]
-material = SubResource("StandardMaterial3D_harsj")
-
-[sub_resource type="BoxMesh" id="BoxMesh_ps1lc"]
+radius = 0.35
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
 script = ExtResource("1_gxcth")
@@ -19,15 +13,8 @@ script = ExtResource("1_gxcth")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_slbbk")
 
-[node name="body" type="MeshInstance3D" parent="CollisionShape3D"]
-unique_name_in_owner = true
-mesh = SubResource("CapsuleMesh_t1ljk")
-skeleton = NodePath("../..")
-
-[node name="nose" type="MeshInstance3D" parent="CollisionShape3D"]
-unique_name_in_owner = true
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.5, -0.5)
-mesh = SubResource("BoxMesh_ps1lc")
+[node name="robot2" parent="CollisionShape3D" instance=ExtResource("2_md0e3")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, -1, 0)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_height_offset = 0.5
@@ -46,8 +33,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.25)
 
 [node name="EngagedTimer" type="Timer" parent="."]
 wait_time = 3.0
-
-[node name="robot2" parent="." instance=ExtResource("2_md0e3")]
 
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="timeout" from="EngagedTimer" to="." method="_on_engaged_timeout"]

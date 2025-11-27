@@ -22,14 +22,15 @@ const UPDATE_TIME := 0.2
 const SPEED := 150
 const VIEW_ANGLE: float = 190.0
 const SMOOTHING_FACTOR := 0.2
- 
+@onready var animation_player = $CollisionShape3D/robot2/AnimationPlayer
+
 # --------------------
 # CONFIG
 # --------------------
 @export var patrol_points: Array[Node3D] = []
 @export var speed_walk: float = 1.7
 @export var speed_run: float = 3.0
-@export var attack_range: float = 2.0
+@export var attack_range: float = 2.5
 @export var investigate_wait_time: float = 4.0
 @export var patrol_wait_time: float = 3.0
 @export var update_interval: float = 0.2
@@ -52,11 +53,11 @@ var update_timer := 0.0
 
 func _ready():
 	target = PlayerManager.player
-	var mat = StandardMaterial3D.new()
-	mat.emission_enabled = true
-	$%body.set_surface_override_material(0, mat)
-	$%nose.set_surface_override_material(1, mat)
-	material = mat
+	# var mat = StandardMaterial3D.new()
+	# mat.emission_enabled = true
+	# $%body.set_surface_override_material(0, mat)
+	# $%nose.set_surface_override_material(1, mat)
+	# material = mat
 	_enter_state( State.IDLE if patrol_points.is_empty() else State.PATROL)
  
 # --------------------
@@ -129,8 +130,8 @@ func _state_chase(delta: float) -> void:
  
 func _state_attack() -> void:
 	velocity = Vector3.ZERO
-#	anim.play("Attack")
-#	await anim.animation_finished
+	animation_player.play("attackwithhand")
+	await animation_player.animation_finished
 	# TODO: better handle player capture
 	if global_position.distance_to(target.global_position) < 1.0:
 		if target.has_method("takeDamage"):
@@ -175,12 +176,12 @@ func _update_agent_target() -> void:
 			agent.set_target_position(return_position)
  
 func _walk_to(next_pos: Vector3, speed: float) -> void:
-#	anim.play("Walk")
+	animation_player.play("walking")
 	_move_towards(next_pos, speed)
  
 func _stop_and_idle() -> void:
 	velocity = Vector3.ZERO
-#	anim.play("Idle")
+	animation_player.play("iddle")
  
 func _go_to_next_patrol_point() -> void:
 	patrol_index = ( patrol_index + 1 ) % patrol_points.size()
