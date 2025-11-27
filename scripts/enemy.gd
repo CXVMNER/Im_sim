@@ -7,7 +7,7 @@ extends CharacterBody3D
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
-var health := 10
+var health := 5
 var material
 var bullet = preload("res://scenes/bullet.tscn")
 
@@ -30,7 +30,7 @@ const SMOOTHING_FACTOR := 0.2
 @export var patrol_points: Array[Node3D] = []
 @export var speed_walk: float = 1.7
 @export var speed_run: float = 3.0
-@export var attack_range: float = 2.5
+@export var attack_range: float = 1.5
 @export var investigate_wait_time: float = 4.0
 @export var patrol_wait_time: float = 3.0
 @export var update_interval: float = 0.2
@@ -133,7 +133,7 @@ func _state_attack() -> void:
 	animation_player.play("attackwithhand")
 	await animation_player.animation_finished
 	# TODO: better handle player capture
-	if global_position.distance_to(target.global_position) < 1.0:
+	if global_position.distance_to(target.global_position) < 1.5:
 		if target.has_method("takeDamage"):
 			target.takeDamage(attackPower) # 1 damage per frame while touching
 	
@@ -249,9 +249,9 @@ func takeDamage(dmg):
 	engaged_timer.start()
 	if health < 1:
 		queue_free()
-	var tween = get_tree().create_tween()
-	tween.tween_property(material, "emission", Color(2, 1, 1, 1), 0.02)
-	tween.tween_property(material, "emission", Color(0, 0, 0, 1), 0.2)
+	# var tween = get_tree().create_tween()
+	# tween.tween_property(material, "emission", Color(2, 1, 1, 1), 0.02)
+	# tween.tween_property(material, "emission", Color(0, 0, 0, 1), 0.2)
 
 func _fire():
 	var now := Time.get_ticks_msec() / 1000.0

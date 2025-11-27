@@ -2,9 +2,9 @@ extends CharacterBody3D
 
 class_name Player
 
-@onready var gun_barrel = $"CameraController/pivotNode3D/Camera3D/blaster-b/RayCast3D"
-@onready var gun_animation_player = $"CameraController/pivotNode3D/Camera3D/blaster-b/AnimationPlayer"
-@onready var gun_audio_stream_player = $"CameraController/pivotNode3D/Camera3D/blaster-b/AudioStreamPlayer"
+@onready var gun_barrel = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/RayCast3D"
+@onready var gun_animation_player = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AnimationPlayer"
+@onready var gun_audio_stream_player = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AudioStreamPlayer"
 
 @onready var hud = $CameraController/HUD
 @export var health := 100

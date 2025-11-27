@@ -285,7 +285,7 @@ unique_name_in_owner = true
 visible = false
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935698, -0.11320249, 0, 0.01124749, 0.9871823, 0.011320283, -0.001281485, -0.112474814, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935698, -0.11320242, 0, 0.01124749, 0.9871817, 0.011320283, -0.001281485, -0.11247475, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
@@ -307,8 +307,10 @@ collide_with_areas = true
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraController/pivotNode3D/Camera3D/InteractShapeCast3D"]
 
-[node name="blaster-b" parent="CameraController/pivotNode3D/Camera3D" instance=ExtResource("2_uwixu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.2, -0.5)
+[node name="GunHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.2, -0.5)
+
+[node name="blaster-b" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("2_uwixu")]
 
 [node name="HUD" parent="CameraController" instance=ExtResource("2_lq6am")]
 unique_name_in_owner = true
