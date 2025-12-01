@@ -11,11 +11,23 @@ class_name Player
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
+@onready var aim_ray_cast_3d = $CameraController/pivotNode3D/Camera3D/AimRayCast3D
+@onready var aim_ray_end = $CameraController/pivotNode3D/Camera3D/AimRayEnd
+
 var regenStamina := false
 var lastShot := 0.0
 
 var bullet = load("res://scenes/bullet.tscn")
 var instance
+
+# Weapon switching
+enum weapons {
+	BLASTER_B,
+	BLASTER_M
+}
+var weapon = weapons.BLASTER_B
+var can_shoot = true
+
 
 var speed : float
 const WALK_SPEED := 3.5
@@ -210,17 +222,46 @@ func _physics_process(delta):
 	
 	camera_tilt(input_dir.x, delta)
 	
-	if Input.is_action_pressed("attack_2"):
-		if !gun_animation_player.is_playing():
-			gun_animation_player.play("shooting")
-			gun_audio_stream_player.play()
-			instance = bullet.instantiate()
-			instance.position = gun_barrel.global_position
-			instance.global_transform = gun_barrel.global_transform
-			get_parent().add_child(instance)
-			
-			_fire()
+	if Input.is_action_pressed("attack_2") and can_shoot:
+		match weapon:
+			weapons.BLASTER_B:
+				_shoot_B()
+			weapons.BLASTER_M:
+				_shoot_M()
 	
+	if Input.is_action_just_pressed("weapon_one") and weapon != weapons.BLASTER_B:
+		_raise_weapon(weapons.BLASTER_B)
+	if Input.is_action_just_pressed("weapon_two") and weapon != weapons.BLASTER_M:
+		_raise_weapon(weapons.BLASTER_M)
+
+func _shoot_B():
+	if !gun_animation_player.is_playing():
+		gun_animation_player.play("shooting")
+		gun_audio_stream_player.play()
+		instance = bullet.instantiate()
+		instance.position = gun_barrel.global_position
+		get_parent().add_child(instance)
+		if aim_ray_cast_3d.is_colliding():
+			instance._set_velocity(aim_ray_cast_3d.get_collision_point())
+		else:
+			instance._set_velocity(aim_ray_end.global_position)
+		_fire()
+
+@onready var gun_barrel_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D"
+@onready var gun_animation_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer"
+@onready var gun_audio_stream_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer"
+func _shoot_M():
+	if !gun_animation_player_m.is_playing():
+		gun_animation_player_m.play("shooting")
+		gun_audio_stream_player_m.play()
+		instance = bullet.instantiate()
+		instance.position = gun_barrel_m.global_position
+		get_parent().add_child(instance)
+		if aim_ray_cast_3d.is_colliding():
+			instance._set_velocity(aim_ray_cast_3d.get_collision_point())
+		else:
+			instance._set_velocity(aim_ray_end.global_position)
+		_fire()
 
 func _fire():
 	var now := Time.get_ticks_msec()/1000.0
@@ -234,6 +275,25 @@ func _fire():
 	get_parent().add_child(b)
 	hud.ammo -= 1
 	hud.updateHud()
+
+func _lower_weapon():
+	match weapon:
+		weapons.BLASTER_B:
+			ANIMATIONPLAYER.play("lower_blaster_b")
+		weapons.BLASTER_M:
+			ANIMATIONPLAYER.play("lower_blaster_m")
+
+func _raise_weapon(new_weapon):
+	can_shoot = false
+	_lower_weapon()
+	await get_tree().create_timer(0.3).timeout
+	match new_weapon:
+		weapons.BLASTER_B:
+			ANIMATIONPLAYER.play_backwards("lower_blaster_b")
+		weapons.BLASTER_M:
+			ANIMATIONPLAYER.play_backwards("lower_blaster_m")
+	weapon = new_weapon
+	can_shoot = true
 
 # We can remove the redundant input checks from _process here.
 func _process(_delta):
