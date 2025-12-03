@@ -276,12 +276,17 @@ func _fire():
 	hud.ammo -= 1
 	hud.updateHud()
 
+@onready var inc = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b"
+@onready var incm = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2"
+
 func _lower_weapon():
 	match weapon:
 		weapons.BLASTER_B:
 			ANIMATIONPLAYER.play("lower_blaster_b")
+			inc.visible = false
 		weapons.BLASTER_M:
 			ANIMATIONPLAYER.play("lower_blaster_m")
+			incm.visible = false
 
 func _raise_weapon(new_weapon):
 	can_shoot = false
@@ -289,8 +294,10 @@ func _raise_weapon(new_weapon):
 	await get_tree().create_timer(0.3).timeout
 	match new_weapon:
 		weapons.BLASTER_B:
+			inc.visible = true
 			ANIMATIONPLAYER.play_backwards("lower_blaster_b")
 		weapons.BLASTER_M:
+			incm.visible = true
 			ANIMATIONPLAYER.play_backwards("lower_blaster_m")
 	weapon = new_weapon
 	can_shoot = true
