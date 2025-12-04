@@ -6,6 +6,10 @@ class_name Player
 @onready var gun_animation_player = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AnimationPlayer"
 @onready var gun_audio_stream_player = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AudioStreamPlayer"
 
+@onready var gun_barrel_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D"
+@onready var gun_animation_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer"
+@onready var gun_audio_stream_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer"
+
 @onready var hud = $CameraController/HUD
 @export var health := 100
 @export var fireSpeed := 0.2
@@ -41,6 +45,10 @@ const CAMERA_SMOOTH_LIMIT := 0.75
 const AIR_CONTROL_FACTOR := 0.5  # Controls how much air movement is allowed (0 = no control, 1 = full control)
 const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher the value the less slippery movement
 var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumping etc.
+
+var grabbed_object:RigidBody3D = null
+@onready var grabbed_anchor = $CameraController/pivotNode3D/Camera3D/SpringArm3D/GrabbedAnchor
+
 
 # head bob variables
 const BOB_FREQ := 2.0
@@ -89,6 +97,37 @@ func _input(event):
 			crouching(false)
 		elif CROUCH_SHAPECAST.is_colliding() == true:
 			uncrouch_check()
+
+	if Input.is_action_just_pressed("interact"):
+		if grabbed_object:
+			grabbed_object = null
+		elif %InteractShapeCast3D.is_colliding():
+			var collided = %InteractShapeCast3D.get_collision_result()[0]["collider"]
+			if collided is RigidBox:
+				if !grabbed_object:
+					try_grabbing(collided)
+	elif Input.is_action_just_pressed("interact_2"):
+		if grabbed_object:
+			throw_object()
+
+
+func try_grabbing(collided:RigidBody3D):
+	grabbed_object = collided
+
+func throw_object():
+	# Define constants for control
+	const THROW_FORCE = 5.0      # Overall throwing power
+	const UPWARD_BIAS_FACTOR = 0.5  # How much to mix in a constant upward vector
+	# Get the direction the camera is looking (forward direction)
+	var forward_direction = -camera_3d.global_basis.z
+	# Add an upward bias to the forward direction
+	var upward_vector = Vector3.UP
+	# Blend the forward direction and the upward vector
+	var throw_direction = (forward_direction + upward_vector * UPWARD_BIAS_FACTOR).normalized()
+	# Apply the impulse
+	grabbed_object.apply_impulse(throw_direction * THROW_FORCE)
+	# Release the object
+	grabbed_object = null
 
 # This function performs the melee attack logic (animation and hit detection)
 func perform_melee_attack():
@@ -220,6 +259,9 @@ func _physics_process(delta):
 	
 	_slide_camera_smooth_back_to_origin(delta)
 	
+	if grabbed_object:
+		_object_grabbing(grabbed_object, delta)
+	
 	camera_tilt(input_dir.x, delta)
 	
 	if Input.is_action_pressed("attack_2") and can_shoot:
@@ -234,15 +276,25 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("weapon_two") and weapon != weapons.BLASTER_M:
 		_raise_weapon(weapons.BLASTER_M)
 
+func _object_grabbing(grabbed_object:RigidBody3D, delta):
+	var target_pos:Vector3 = grabbed_anchor.global_position
+	var current_pos:Vector3 = grabbed_object.global_position
+	
+	var new_direction = target_pos - current_pos
+	
+	var required_velocity = new_direction / delta
+	
+	var velocity_correction = required_velocity - grabbed_object.linear_velocity
+	grabbed_object.linear_velocity = required_velocity
+	
+	grabbed_object.angular_velocity *= 0.5 # decreases the unwanted velocity
+
+
 func _shoot_B():
 	if !gun_animation_player.is_playing():
 		gun_animation_player.play("shooting")
 		gun_audio_stream_player.play()
 		_fire(gun_barrel) # Pass the correct barrel RayCast3D
-
-@onready var gun_barrel_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D"
-@onready var gun_animation_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer"
-@onready var gun_audio_stream_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer"
 
 func _shoot_M():
 	if !gun_animation_player_m.is_playing():
