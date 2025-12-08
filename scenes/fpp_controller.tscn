@@ -318,6 +318,7 @@ radius = 0.25
 
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CROUCH_SHAPECAST")]
 collision_layer = 3
+collision_mask = 9
 wall_min_slide_angle = 0.5235988
 floor_constant_speed = true
 script = ExtResource("1_888b0")
@@ -345,7 +346,7 @@ unique_name_in_owner = true
 visible = false
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935698, -0.11320238, 0, 0.01124749, 0.9871813, 0.011320283, -0.001281485, -0.112474695, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935698, -0.11320237, 0, 0.01124749, 0.98718125, 0.011320283, -0.001281485, -0.112474695, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 

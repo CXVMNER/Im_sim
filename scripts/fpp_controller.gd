@@ -40,6 +40,8 @@ const CROUCH_SPEED := 2.0
 const JUMP_VELOCITY := 4.25
 const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
+const push_force := 10
+
 
 const CAMERA_SMOOTH_LIMIT := 0.75
 const AIR_CONTROL_FACTOR := 0.5  # Controls how much air movement is allowed (0 = no control, 1 = full control)
@@ -256,6 +258,12 @@ func _physics_process(delta):
 			# collide with anything except the stairs it's moving up to.
 			move_and_slide()
 			_snap_down_to_stairs_check()
+	
+	for i in get_slide_collision_count():
+		var c = get_slide_collision(i)
+		if c.get_collider() is RigidBody3D:
+			c.get_collider().apply_central_impulse(-c.get_normal() * push_force)
+	
 	
 	_slide_camera_smooth_back_to_origin(delta)
 	
