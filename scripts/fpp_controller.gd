@@ -117,7 +117,6 @@ func try_grabbing(collided:RigidBody3D):
 	grabbed_object = collided
 
 func throw_object():
-	# Define constants for control
 	const THROW_FORCE = 5.0      # Overall throwing power
 	const UPWARD_BIAS_FACTOR = 0.5  # How much to mix in a constant upward vector
 	# Get the direction the camera is looking (forward direction)
@@ -164,7 +163,7 @@ func _unhandled_input(event):
 		# Store RELATIVE rotations (immune to parent snapping)
 		camera_yaw -= event.relative.x * SENSITIVITY
 		camera_pitch -= event.relative.y * SENSITIVITY
-		camera_pitch = clamp(camera_pitch, deg_to_rad(-90), deg_to_rad(90))
+		camera_pitch = clamp(camera_pitch, deg_to_rad(-89), deg_to_rad(89))
 		
 		# Apply rotations
 		CameraController.rotation.y = camera_yaw

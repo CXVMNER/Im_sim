@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqpsqlw1vj0qf"]
+
+[ext_resource type="PackedScene" uid="uid://b4g5vfunninfh" path="res://assets/models/keycard/keycard.glb" id="1_5o5dt"]
+
+[node name="keycard" instance=ExtResource("1_5o5dt")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)

@@ -361,7 +361,7 @@ shape = SubResource("ConvexPolygonShape3D_aotb2")
 [node name="InteractShapeCast3D" type="ShapeCast3D" parent="CameraController/pivotNode3D/Camera3D"]
 unique_name_in_owner = true
 shape = SubResource("SphereShape3D_ghtvo")
-target_position = Vector3(0, 0, -2)
+target_position = Vector3(0, 0, -2.25)
 max_results = 2
 collision_mask = 9
 collide_with_areas = true
