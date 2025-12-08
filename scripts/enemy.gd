@@ -7,6 +7,8 @@ extends CharacterBody3D
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
+var is_dead := false
+
 var health := 5
 var material
 var bullet = preload("res://scenes/bullet.tscn")
@@ -23,6 +25,8 @@ const SPEED := 150
 const VIEW_ANGLE: float = 190.0
 const SMOOTHING_FACTOR := 0.2
 @onready var animation_player = $CollisionShape3D/robot2/AnimationPlayer
+@onready var anim_player = $AnimPlayer
+
 
 # --------------------
 # CONFIG
@@ -64,6 +68,9 @@ func _ready():
 # MAIN LOOP
 # --------------------
 func _physics_process(delta: float) -> void:
+	if is_dead:
+		return # Completely stop all AI/movement logic
+	
 	_update_path(delta)
  
 	match state:
@@ -247,11 +254,27 @@ func takeDamage(dmg):
 	health -= dmg
 	engaged = true
 	engaged_timer.start()
-	if health < 1:
-		queue_free()
+	if health < 1 and not is_dead:
+		_die()
+		# anim_player.play("death")
+		# $CollisionShape3D.set_deferred("disabled", true)
+		# agent.set_deferred("navigation_enabled", false)
+		# queue_free()
 	# var tween = get_tree().create_tween()
 	# tween.tween_property(material, "emission", Color(2, 1, 1, 1), 0.02)
 	# tween.tween_property(material, "emission", Color(0, 0, 0, 1), 0.2)
+
+func _die() -> void:
+	is_dead = true
+	velocity = Vector3.ZERO
+	$CollisionShape3D.set_deferred("disabled", true)
+	if agent: agent.set_deferred("navigation_enabled", false)
+	set_physics_process(false)
+	anim_player.play("death")
+
+func _on_anim_player_animation_finished(anim_name: StringName):
+	if anim_name == "death":
+		queue_free()
 
 func _fire():
 	var now := Time.get_ticks_msec() / 1000.0
