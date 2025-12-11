@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqpsqlw1vj0qf"]
+[gd_scene load_steps=5 format=3 uid="uid://dqpsqlw1vj0qf"]
 
 [ext_resource type="PackedScene" uid="uid://b4g5vfunninfh" path="res://assets/models/keycard/keycard.glb" id="1_5o5dt"]
+[ext_resource type="Script" uid="uid://d3usx5nm8gq5m" path="res://scripts/keycard.gd" id="2_oxx7j"]
+[ext_resource type="Script" uid="uid://d38lde0ccowa0" path="res://scripts/InteractableComponent.gd" id="3_ujkgs"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ujkgs"]
+points = PackedVector3Array(-0.085815, -0.908422, -1.199238, -0.085815, 0.5984347, -1.199238, 0.085815, -0.908422, -1.199238, -0.085815, -0.908422, 1.1180929, -0.085815, 0.9033178, -0.8821248, 0.085815, 0.9034952, -0.8821248, 0.085815, 0.5984347, -1.199238, 0.085815, -0.908422, 1.1180929, -0.085815, 0.9034952, 1.1180929, 0.085815, 0.9034952, 1.1180929)
 
 [node name="keycard" instance=ExtResource("1_5o5dt")]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+script = ExtResource("2_oxx7j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_ujkgs")
+
+[node name="InteractableComponent" type="Node" parent="." index="2"]
+script = ExtResource("3_ujkgs")
+metadata/_custom_type_script = "uid://d38lde0ccowa0"
+
+[connection signal="interacted" from="InteractableComponent" to="." method="update_key"]

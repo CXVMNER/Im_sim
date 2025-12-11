@@ -18,6 +18,9 @@ class_name Player
 @onready var aim_ray_cast_3d = $CameraController/pivotNode3D/Camera3D/AimRayCast3D
 @onready var aim_ray_end = $CameraController/pivotNode3D/Camera3D/AimRayEnd
 
+@onready var pause_menu: Control = $PauseMenu
+
+
 var regenStamina := false
 var lastShot := 0.0
 
@@ -37,7 +40,7 @@ var speed : float
 const WALK_SPEED := 3.5
 const SPRINT_SPEED := 6.0
 const CROUCH_SPEED := 2.0
-const JUMP_VELOCITY := 4.25
+const JUMP_VELOCITY := 4.0
 const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 const push_force := 10
@@ -84,7 +87,21 @@ var camera_rotation_factor := 8
 
 var mouse_captured := true
 
+var is_paused = false
+
+func pause_game():
+	is_paused = !is_paused
+	pause_menu.visible = is_paused
+	get_tree().set_pause(is_paused)
+
 func _input(event):
+	if event is InputEventKey:
+		if Input.is_action_just_pressed("pause"):
+			pause_game()
+	
+	if is_paused:
+		return
+	
 	# Melee attack (animation and hitbox enablement)
 	if event.is_action_pressed("attack"):
 		perform_melee_attack()
@@ -117,7 +134,7 @@ func try_grabbing(collided:RigidBody3D):
 	grabbed_object = collided
 
 func throw_object():
-	const THROW_FORCE = 5.0      # Overall throwing power
+	const THROW_FORCE = 25.0      # Overall throwing power
 	const UPWARD_BIAS_FACTOR = 0.5  # How much to mix in a constant upward vector
 	# Get the direction the camera is looking (forward direction)
 	var forward_direction = -camera_3d.global_basis.z
@@ -135,7 +152,8 @@ func perform_melee_attack():
 	ANIMATIONPLAYER.play("attack")
 	hitbox.monitoring = true  # Enable hitbox to detect collisions for melee damage
 
-func _ready():
+func _ready() -> void:
+	pause_menu.hide()
 	# Get mouse input
 	# Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -156,8 +174,6 @@ var camera_yaw := 0.0
 var camera_pitch := 0.0
 
 func _unhandled_input(event):
-	if event.is_action_pressed("exit"):
-		get_tree().quit()
 	
 	if event is InputEventMouseMotion and mouse_captured:
 		# Store RELATIVE rotations (immune to parent snapping)
@@ -177,6 +193,9 @@ func _unhandled_input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _physics_process(delta):
+	if is_paused:
+		return
+	
 	if is_on_floor(): _last_frame_was_on_floor = Engine.get_physics_frames()
 	
 	# Handle gravity.
