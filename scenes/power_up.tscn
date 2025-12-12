@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bjoc7m7517768"]
+[gd_scene load_steps=7 format=3 uid="uid://bjoc7m7517768"]
 
 [ext_resource type="Script" uid="uid://b4o2p0x6on732" path="res://scripts/power_up.gd" id="1_5ojnv"]
+[ext_resource type="PackedScene" uid="uid://dqpsqlw1vj0qf" path="res://scenes/keycard.tscn" id="2_bmfpq"]
 [ext_resource type="AudioStream" uid="uid://dopp4cjebji3q" path="res://sounds/Powerup.wav" id="2_ig136"]
-
-[sub_resource type="PrismMesh" id="PrismMesh_q8nen"]
+[ext_resource type="PackedScene" uid="uid://bdef2j3tk2s4b" path="res://scenes/health_kit.tscn" id="3_l224l"]
+[ext_resource type="PackedScene" uid="uid://b1apj56y263ax" path="res://scenes/crate_small.tscn" id="4_p7g7m"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6buf5"]
 points = PackedVector3Array(0, 0.5, 0.5, 0.5, -0.5, 0.5, 0, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
@@ -12,8 +13,15 @@ points = PackedVector3Array(0, 0.5, 0.5, 0.5, -0.5, 0.5, 0, 0.5, -0.5, -0.5, -0.
 collision_mask = 2
 script = ExtResource("1_5ojnv")
 
-[node name="Mesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("PrismMesh_q8nen")
+[node name="Mesh" type="Node3D" parent="."]
+
+[node name="HealthKit2" parent="Mesh" instance=ExtResource("3_l224l")]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, -0.25, 0)
+
+[node name="crate-small2" parent="Mesh" instance=ExtResource("4_p7g7m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+
+[node name="keycard" parent="Mesh" instance=ExtResource("2_bmfpq")]
 
 [node name="Label" type="Label3D" parent="Mesh"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

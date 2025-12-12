@@ -586,6 +586,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.75, 4)
 type = 1
 qty = 10
 
+[node name="powerUp3" parent="." instance=ExtResource("7_ky2cw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.75, 0)
+type = 2
+qty = 10
+
 [node name="CSGBox3D5" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.997, 0.25, 11)
 use_collision = true
@@ -787,13 +792,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -23)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
 [node name="keycard" parent="." instance=ExtResource("15_cy6r3")]
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 10.669988, 0.77952325, 10.598135)
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 10.25, 0.77952325, 10.5)
 
 [node name="HealthKit2" parent="." instance=ExtResource("16_0tv6x")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.539907, 0.5, 11.432748)
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 10.5, 0.5, 11.5)
 
 [node name="crate-small2" parent="." instance=ExtResource("17_42ncp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.254909, 0.52, 11)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.25, 0.52, 11)
 
 [connection signal="interacted" from="movingPlatform2/AnimatableBody3D/InteractableComponent" to="movingPlatform2/AnimatableBody3D" method="toggle_open"]
 [connection signal="interacted" from="buttonStaticBody3D/InteractableComponent" to="movableDoor/AnimatableBody3D" method="toggle_open"]
