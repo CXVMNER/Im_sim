@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=4 uid="uid://bb4nkm70jejd8"]
+[gd_scene load_steps=63 format=4 uid="uid://bb4nkm70jejd8"]
 
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_avbq2"]
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="3_lwi15"]
@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ddaxsx88p1yyv" path="res://assets/kenney_prototype-textures/PNG/Green/texture_02.png" id="3_t0ybu"]
 [ext_resource type="Texture2D" uid="uid://dy4bkgmkb7wsy" path="res://assets/kenney_prototype-textures/PNG/Light/texture_02.png" id="4_e6mo4"]
 [ext_resource type="PackedScene" uid="uid://c8161in0xfnar" path="res://scenes/enemy.tscn" id="6_haycg"]
-[ext_resource type="PackedScene" path="res://scenes/CSGStairMaker3D.tscn" id="6_llcge"]
+[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://scenes/CSGStairMaker3D.tscn" id="6_llcge"]
 [ext_resource type="Texture2D" uid="uid://dtvac31mepgcl" path="res://assets/kenney_prototype-textures/PNG/Orange/texture_02.png" id="7_1b6n0"]
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="7_ky2cw"]
 [ext_resource type="PackedScene" uid="uid://b1ovqgjwms7u4" path="res://scenes/ladder.tscn" id="10_px6rj"]
@@ -15,6 +15,8 @@
 [ext_resource type="Script" uid="uid://bkp4fo0yol1r8" path="res://scripts/Door.gd" id="13_2ucnx"]
 [ext_resource type="Texture2D" uid="uid://b24j8lhe6xahh" path="res://assets/kenney_prototype-textures/PNG/Red/texture_02.png" id="14_cr2eh"]
 [ext_resource type="PackedScene" uid="uid://dqpsqlw1vj0qf" path="res://scenes/keycard.tscn" id="15_cy6r3"]
+[ext_resource type="PackedScene" uid="uid://bdef2j3tk2s4b" path="res://scenes/health_kit.tscn" id="16_0tv6x"]
+[ext_resource type="PackedScene" uid="uid://b1apj56y263ax" path="res://scenes/crate_small.tscn" id="17_42ncp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qfypb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -786,6 +788,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
 [node name="keycard" parent="." instance=ExtResource("15_cy6r3")]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 10.669988, 0.77952325, 10.598135)
+
+[node name="HealthKit2" parent="." instance=ExtResource("16_0tv6x")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.539907, 0.5, 11.432748)
+
+[node name="crate-small2" parent="." instance=ExtResource("17_42ncp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.254909, 0.52, 11)
 
 [connection signal="interacted" from="movingPlatform2/AnimatableBody3D/InteractableComponent" to="movingPlatform2/AnimatableBody3D" method="toggle_open"]
 [connection signal="interacted" from="buttonStaticBody3D/InteractableComponent" to="movableDoor/AnimatableBody3D" method="toggle_open"]

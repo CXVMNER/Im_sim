@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1apj56y263ax"]
+
+[ext_resource type="PackedScene" uid="uid://4v7sgjxxkv1j" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/crate-small.glb" id="1_y1yfb"]
+
+[node name="crate-small2" instance=ExtResource("1_y1yfb")]

@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdef2j3tk2s4b"]
+
+[ext_resource type="PackedScene" uid="uid://bru22i22dar8m" path="res://assets/models/healthkit/HealthKit.glb" id="1_nskbh"]
+
+[node name="HealthKit2" instance=ExtResource("1_nskbh")]
