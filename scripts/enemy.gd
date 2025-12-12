@@ -17,6 +17,8 @@ var bullet = preload("res://scenes/bullet.tscn")
 @onready var gun = $gun
 @onready var engaged_timer = $EngagedTimer
 
+@onready var death_audio_stream_player_3d = $DeathAudioStreamPlayer3D
+
 var lastShot := 0.0
 var engaged := false
 
@@ -232,7 +234,7 @@ func _looking() -> void:
 	if not target:
 		return
 
-	var target_eye_pos = target.get_eye_position()
+	var target_eye_pos = target.get_eye_position() #Function from fpp_controller.gd
 	var to_player = (target_eye_pos - vision_ray.global_transform.origin).normalized()
 	
 	var forward = -global_transform.basis.z
@@ -272,6 +274,7 @@ func _die() -> void:
 	$CollisionShape3D.set_deferred("disabled", true)
 	if agent: agent.set_deferred("navigation_enabled", false)
 	set_physics_process(false)
+	death_audio_stream_player_3d.play()
 	anim_player.play("death")
 
 func _on_anim_player_animation_finished(anim_name: StringName):

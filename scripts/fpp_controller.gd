@@ -10,7 +10,7 @@ class_name Player
 @onready var gun_animation_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer"
 @onready var gun_audio_stream_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer"
 
-@onready var hud = $CameraController/HUD
+@onready var hud = $HUD
 @export var health := 100
 @export var fireSpeed := 0.2
 @export var attackPower := 1

@@ -1,5 +1,6 @@
 extends Control
 
+class_name MainMenu
 
 func _on_start_button_pressed():
 	GameManager.load_scene_with_loading_screen("res://scenes/level_01.tscn")

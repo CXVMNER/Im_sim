@@ -348,7 +348,7 @@ unique_name_in_owner = true
 visible = false
 
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935698, -0.11320235, 0, 0.01124749, 0.987181, 0.011320283, -0.001281485, -0.112474665, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935698, -0.11320234, 0, 0.01124749, 0.98718095, 0.011320283, -0.001281485, -0.11247466, 0.0993572, 0.45, -0.35, -0.6)
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
 
@@ -390,10 +390,6 @@ collide_with_areas = true
 [node name="AimRayEnd" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -101)
 
-[node name="HUD" parent="CameraController" instance=ExtResource("2_lq6am")]
-unique_name_in_owner = true
-mouse_filter = 1
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_myidv")
@@ -416,6 +412,10 @@ target_position = Vector3(0, -0.3, 0)
 
 [node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
+
+[node name="HUD" parent="." instance=ExtResource("2_lq6am")]
+unique_name_in_owner = true
+mouse_filter = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("5_bww43")]
 
