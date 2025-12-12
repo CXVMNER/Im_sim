@@ -231,8 +231,10 @@ func _can_see_player() -> bool:
 func _looking() -> void:
 	if not target:
 		return
- 
-	var to_player = (target.global_transform.origin - global_transform.origin).normalized()
+
+	var target_eye_pos = target.get_eye_position()
+	var to_player = (target_eye_pos - vision_ray.global_transform.origin).normalized()
+	
 	var forward = -global_transform.basis.z
 	var angle_deg = rad_to_deg(acos(clamp(forward.dot(to_player), -1.0, 1.0)))
 	if angle_deg > VIEW_ANGLE * 0.5:

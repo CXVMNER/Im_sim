@@ -625,15 +625,8 @@ func camera_tilt(input_x, delta):
 	if camera_3d:
 		camera_3d.rotation.z = lerp(camera_3d.rotation.z, -input_x * camera_rotation_amount, delta * camera_rotation_factor)
 
-# func _run_body_test_motion(from : Transform3D, motion : Vector3, result = null) -> bool:
-# 	if not result: result = PhysicsTestMotionResult3D.new()
-# 	var params = PhysicsTestMotionParameters3D.new()
-# 	params.from = from
-# 	params.motion = motion
-# 	return ww.body_test_motion(self.get_rid(), params, result)
-
-# func _on_fallzone_body_entered(body):
-# 	get_tree().change_scene_to_file("res://scenes/level_01.tscn")
-
-# func _on_new_level_body_entered(body):
-# 	get_tree().change_scene_to_file("res://scenes/level_02.tscn")
+# This is a safe function to expose the point where the enemy should be looking.
+# It automatically accounts for standing and crouching height.
+func get_eye_position() -> Vector3:
+	var camera_controller = camera_3d 
+	return camera_controller.global_transform.origin
