@@ -1,13 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://bjoc7m7517768"]
+[gd_scene load_steps=8 format=3 uid="uid://bjoc7m7517768"]
 
 [ext_resource type="Script" uid="uid://b4o2p0x6on732" path="res://scripts/power_up.gd" id="1_5ojnv"]
 [ext_resource type="PackedScene" uid="uid://dqpsqlw1vj0qf" path="res://scenes/keycard.tscn" id="2_bmfpq"]
 [ext_resource type="AudioStream" uid="uid://dopp4cjebji3q" path="res://sounds/Powerup.wav" id="2_ig136"]
 [ext_resource type="PackedScene" uid="uid://bdef2j3tk2s4b" path="res://scenes/health_kit.tscn" id="3_l224l"]
 [ext_resource type="PackedScene" uid="uid://b1apj56y263ax" path="res://scenes/crate_small.tscn" id="4_p7g7m"]
+[ext_resource type="AudioStream" uid="uid://0sr151k0587b" path="res://sounds/key-176034.wav" id="6_l224l"]
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6buf5"]
-points = PackedVector3Array(0, 0.5, 0.5, 0.5, -0.5, 0.5, 0, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_bmfpq"]
+height = 0.65
+radius = 0.4
 
 [node name="powerUp" type="Area3D"]
 collision_mask = 2
@@ -28,13 +30,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 billboard = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("ConvexPolygonShape3D_6buf5")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+shape = SubResource("CylinderShape3D_bmfpq")
 
 [node name="respawn" type="Timer" parent="."]
 wait_time = 3.0
 
 [node name="PickupSound" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("2_ig136")
+
+[node name="KeyPickupSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("6_l224l")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="respawn" to="." method="_on_respawn_timeout"]

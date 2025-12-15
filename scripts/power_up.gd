@@ -7,8 +7,9 @@ enum Type {
 }
 
 @export var type := Type.health
-
 @export var qty: int
+# Exported value for keys, allowing designers to specify which key it is (e.g., "red_door", "level_2")
+@export var pass_value: String = ""
 
 # $Mesh (pack) is the rotating parent node for all visuals and the label.
 @onready var pack = $Mesh
@@ -21,6 +22,8 @@ enum Type {
 @onready var keycard = $Mesh/keycard
 
 @onready var pickup_sound = $PickupSound
+@onready var key_pickup_sound = $KeyPickupSound # New Key pickup sound node
+
 var collectable := true
 
 # Helper function to return the currently intended visual node
@@ -35,28 +38,24 @@ func get_active_visual_node():
 	return null
 
 func _ready():
-	# 1. Hide the generic pack's mesh visual (the prism) by setting its mesh to null.
-	#    The 'pack' node remains visible to handle rotation and the label.
-#	pack.mesh = null
-	
-	# 2. Hide all specific models initially.
+	# 1. Hide all specific models initially.
 	health_kit_2.visible = false
 	crate_small_2.visible = false
 	keycard.visible = false
 	
-	# 3. Make ONLY the correct specific model visible based on the 'type'.
+	# 2. Make ONLY the correct specific model visible based on the 'type'.
 	var active_node = get_active_visual_node()
 	if active_node:
 		active_node.visible = true
 	
-	# 4. Set the label text.
+	# 3. Set the label text.
 	match type:
 		Type.health:
 			label.text = "Health"
 		Type.ammo:
 			label.text = "Ammo"
 		Type.key:
-			label.text = "Key"
+			label.text = "Key: " + pass_value # Display the pass value on the key label
 
 func _process(delta):
 	# This rotates the parent node, which rotates the active specific model and the label.
@@ -65,14 +64,21 @@ func _process(delta):
 func _on_body_entered(body):
 	if not collectable:
 		return
-	
+		
+	# Process pickup logic
 	match type:
 		Type.health:
 			body.gainHealth(qty)
+			
 		Type.ammo:
 			body.gainAmmo(qty)
+			
 		Type.key:
-			pass
+			# Pass the key's unique value to the player (assuming player has a collect_key method)
+			if body.has_method("collect_key"):
+				body.collect_key(pass_value)
+				
+	# --- VISUALS & CLEANUP ---
 	
 	# 1. Find the active visual node and hide it.
 	var active_node = get_active_visual_node()
@@ -83,9 +89,24 @@ func _on_body_entered(body):
 	label.visible = false
 	
 	collectable = false
-	pickup_sound.play()
-	respawnTimer.start()
+	
+	# 3. Determine sound, respawn, and deletion logic based on type.
+	if type == Type.key:
+		key_pickup_sound.play()
+		# FIX: Reparent the sound player to the root so it can finish playing.
+		key_pickup_sound.reparent(get_tree().get_root())
+		# FIX: Schedule the sound player to delete itself when it finishes.
+		key_pickup_sound.finished.connect(key_pickup_sound.queue_free, CONNECT_ONE_SHOT)
+		
+		# Delete the main power-up node immediately (sound will continue playing).
+		queue_free()
+	else:
+		pickup_sound.play() # Play the generic pickup sound
+		# Health and Ammo respawn.
+		respawnTimer.start()
 
+
+# This function is only called for Type.health and Type.ammo items now.
 func _on_respawn_timeout():
 	collectable = true
 	

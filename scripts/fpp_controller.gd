@@ -32,9 +32,9 @@ enum weapons {
 	BLASTER_B,
 	BLASTER_M
 }
+
 var weapon = weapons.BLASTER_B
 var can_shoot = true
-
 
 var speed : float
 const WALK_SPEED := 3.5
