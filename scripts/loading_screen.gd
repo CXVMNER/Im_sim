@@ -4,7 +4,7 @@ class_name LoadingScreen
 
 signal scene_loaded
 
-@export var forced_delay:float = 1.0
+@export var forced_delay:float = 0.0 # Can be set to 1.0 to showcase the loading screen
 @export var next_scene_path:String = ""
 var scene_load_status = 0
 var progress = [0.0]

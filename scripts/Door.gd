@@ -5,7 +5,10 @@ extends AnimatableBody3D
 		if value != open:
 			open = value
 			update_door()
-	
+
+# NEW: Exported variable for the specific key ID required to open this door
+@export var required_key: String = ""
+
 func update_door():
 	if open:
 		$AnimationPlayer.play("open")

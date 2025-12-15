@@ -54,6 +54,8 @@ var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumpi
 var grabbed_object:RigidBody3D = null
 @onready var grabbed_anchor = $CameraController/pivotNode3D/Camera3D/SpringArm3D/GrabbedAnchor
 
+# Variable to hold all collected key strings (The 'Pass Value' from your power-up)
+var keys_collected: Array[String] = []
 
 # head bob variables
 const BOB_FREQ := 2.0
