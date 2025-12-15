@@ -18,8 +18,8 @@ class_name Player
 @onready var aim_ray_cast_3d = $CameraController/pivotNode3D/Camera3D/AimRayCast3D
 @onready var aim_ray_end = $CameraController/pivotNode3D/Camera3D/AimRayEnd
 
-@onready var pause_menu: Control = $PauseMenu
-
+@onready var pause_menu: PauseMenu = $PauseMenu
+@export var is_dead: bool = false # NEW: Flag for the player's death status
 
 var regenStamina := false
 var lastShot := 0.0
@@ -89,15 +89,46 @@ var mouse_captured := true
 
 var is_paused = false
 
-func pause_game():
-	is_paused = !is_paused
-	pause_menu.visible = is_paused
-	get_tree().set_pause(is_paused)
+# Function to handle the player dying
+func die():
+	if is_dead:
+		return
+		
+	is_dead = true
+	
+	# 1. Pause the game
+	# We call pause_game with the 'game_over' argument set to true
+	pause_game(true, true)
+	
+	# 2. Show the "Game Over" label
+	pause_menu.set_game_over(true)
+	
+	# Additional actions on death (e.g., disable movement, show cursor)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+# MODIFIED: Refactor the pause_game function to accept a 'game_over' argument
+func pause_game(state: bool = true, game_over: bool = false):
+	# If the game is in a Game Over state, we prevent unpausing.
+	if is_dead and state == false and game_over == false:
+		print("Cannot unpause: Game Over.")
+		return
+
+	if state:
+		# Pause
+		pause_menu.show()
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		get_tree().paused = true
+	else:
+		# Unpause
+		pause_menu.hide()
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		get_tree().paused = false
 
 func _input(event):
 	if event is InputEventKey:
 		if Input.is_action_just_pressed("pause"):
-			pause_game()
+			if !is_dead: 
+				pause_game(!get_tree().paused)
 	
 	if is_paused:
 		return
@@ -193,7 +224,7 @@ func _unhandled_input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _physics_process(delta):
-	if is_paused:
+	if get_tree().paused: # if is_paused:
 		return
 	
 	if is_on_floor(): _last_frame_was_on_floor = Engine.get_physics_frames()
@@ -556,9 +587,8 @@ func takeDamage(qty):
 	health -= qty
 	hud.health = health
 	if health <=0:
-		hud.gameOver()
-		get_tree().set_pause(true)
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		health = 0
+		die()
 	else:
 		hud.addUpdate(qty, "Damage", Color(1,0,0,1))
 		hud.screenGlow(Color(1,0,0,0.7))
