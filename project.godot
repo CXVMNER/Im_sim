@@ -20,6 +20,10 @@ config/icon="res://icon.svg"
 PlayerManager="*res://scenes/player_manager.tscn"
 GameManager="*res://scripts/game_manager.gd"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+
 [input]
 
 move_forward={

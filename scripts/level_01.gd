@@ -1,5 +1,5 @@
 extends Node3D
-@onready var player = $CharacterBody3D
+@onready var player := $CharacterBody3D
 
-func _physics_process(delta):
+func _physics_process(delta) -> void:
 	get_tree().call_group("enemies", "update_target_location", player.global_transform.origin)

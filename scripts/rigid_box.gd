@@ -1,4 +1,5 @@
 extends RigidBody3D
+
 class_name RigidBox
 
 @export var groundDampSpeed: float = 1.0

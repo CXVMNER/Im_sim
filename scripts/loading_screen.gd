@@ -7,9 +7,9 @@ signal scene_loaded
 @export var forced_delay:float = 0.0 # Can be set to 1.0 to showcase the loading screen
 @export var next_scene_path:String = ""
 var scene_load_status = 0
-var progress = [0.0]
+var progress := [0.0]
 var loaded_scene:PackedScene
-@onready var progress_label = $ColorRect/ProgressLabel
+@onready var progress_label := $ColorRect/ProgressLabel
 
 # var change_scene_to : String
 
@@ -23,7 +23,7 @@ func _process(delta: float) -> void:
 	
 	scene_load_status = ResourceLoader.load_threaded_get_status(next_scene_path, progress)
 	var actual_progress = progress[0] * 100
-	var rounded_progress = int(floor(actual_progress))
+	var rounded_progress := int(floor(actual_progress))
 	
 	if scene_load_status == ResourceLoader.THREAD_LOAD_LOADED:
 		await get_tree().create_timer(forced_delay).timeout
@@ -34,7 +34,7 @@ func _process(delta: float) -> void:
 	elif scene_load_status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 		progress_label.text = str(rounded_progress) + "%"
 		
-func start_loading_scene(path:String):
+func start_loading_scene(path:String) -> void:
 	await get_tree().create_timer(forced_delay).timeout
 	next_scene_path = path
 	print("loading scene " + path)

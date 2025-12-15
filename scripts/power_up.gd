@@ -12,17 +12,17 @@ enum Type {
 @export var pass_value: String = ""
 
 # $Mesh (pack) is the rotating parent node for all visuals and the label.
-@onready var pack = $Mesh
-@onready var respawnTimer = $respawn
-@onready var label = $Mesh/Label
+@onready var pack := $Mesh
+@onready var respawnTimer := $respawn
+@onready var label := $Mesh/Label
 
 # Specific models are children of the rotating parent.
-@onready var health_kit_2 = $Mesh/HealthKit2
-@onready var crate_small_2 = $"Mesh/crate-small2"
-@onready var keycard = $Mesh/keycard
+@onready var health_kit_2 := $Mesh/HealthKit2
+@onready var crate_small_2 := $"Mesh/crate-small2"
+@onready var keycard := $Mesh/keycard
 
-@onready var pickup_sound = $PickupSound
-@onready var key_pickup_sound = $KeyPickupSound # New Key pickup sound node
+@onready var pickup_sound := $PickupSound
+@onready var key_pickup_sound := $KeyPickupSound # New Key pickup sound node
 
 var collectable := true
 
@@ -107,13 +107,13 @@ func _on_body_entered(body):
 
 
 # This function is only called for Type.health and Type.ammo items now.
-func _on_respawn_timeout():
+func _on_respawn_timeout() -> void:
 	collectable = true
 	
-	# 1. Find the active visual node and show it again.
+	# Find the active visual node and show it again.
 	var active_node = get_active_visual_node()
 	if active_node:
 		active_node.visible = true
 		
-	# 2. Show the label.
+	# Show the label.
 	label.visible = true

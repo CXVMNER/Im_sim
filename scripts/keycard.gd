@@ -4,16 +4,16 @@ extends Node3D
 
 var picked_up: bool = false
 
-func _ready():
+func _ready() -> void:
 	interactable.interacted.connect(_on_interacted)
 
-func _on_interacted():
+func _on_interacted() -> void:
 	if picked_up:
 		return
 	picked_up = true
 	disappear()
 
-func disappear():
+func disappear() -> void:
 	# Option 1: just hide it
 	# visible = false
 

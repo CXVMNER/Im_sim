@@ -1,6 +1,6 @@
 extends CharacterBody3D
  
-@onready var agent = $NavigationAgent3D
+@onready var agent := $NavigationAgent3D
  
 @export var color : Color
 # @export var aggroRange := 5.0
@@ -10,14 +10,14 @@ extends CharacterBody3D
 var is_dead := false
 
 var health := 5
-var material
-var bullet = preload("res://scenes/bullet.tscn")
+#var material
+var bullet := preload("res://scenes/bullet.tscn")
 
-@onready var vision_ray = $VisionRay
-@onready var gun = $gun
-@onready var engaged_timer = $EngagedTimer
+@onready var vision_ray := $VisionRay
+@onready var gun := $gun
+@onready var engaged_timer := $EngagedTimer
 
-@onready var death_audio_stream_player_3d = $DeathAudioStreamPlayer3D
+@onready var death_audio_stream_player_3d := $DeathAudioStreamPlayer3D
 
 var lastShot := 0.0
 var engaged := false
@@ -26,8 +26,8 @@ const UPDATE_TIME := 0.2
 const SPEED := 150
 const VIEW_ANGLE: float = 190.0
 const SMOOTHING_FACTOR := 0.2
-@onready var animation_player = $CollisionShape3D/robot2/AnimationPlayer
-@onready var anim_player = $AnimPlayer
+@onready var animation_player := $CollisionShape3D/robot2/AnimationPlayer
+@onready var anim_player := $AnimPlayer
 
 
 # --------------------
@@ -57,7 +57,7 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var update_timer := 0.0
 
 
-func _ready():
+func _ready() -> void:
 	target = PlayerManager.player
 	# var mat = StandardMaterial3D.new()
 	# mat.emission_enabled = true
@@ -197,7 +197,7 @@ func _go_to_next_patrol_point() -> void:
 	agent.set_target_position(patrol_points[patrol_index].global_transform.origin)
  
 func _move_towards(next_pos: Vector3, speed: float) -> void:
-	var dir = (next_pos - global_transform.origin)
+	var dir := (next_pos - global_transform.origin)
 	dir.y = 0.0
 	if  is_zero_approx( dir.length() ):
 		velocity.x = lerp(velocity.x, 0.0, SMOOTHING_FACTOR)
@@ -205,14 +205,14 @@ func _move_towards(next_pos: Vector3, speed: float) -> void:
 		return
  
 	dir = dir.normalized()
-	var current_facing = -global_transform.basis.z
-	var new_dir = current_facing.slerp(dir, 0.12).normalized()
+	var current_facing := -global_transform.basis.z
+	var new_dir := current_facing.slerp(dir, 0.12).normalized()
 	look_at(global_transform.origin + new_dir, Vector3.UP)
  
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
  
-func _update_path(delta):
+func _update_path(delta) -> void:
 	update_timer -= delta
 	if update_timer <= 0.0:
 		_update_agent_target()
@@ -237,8 +237,8 @@ func _looking() -> void:
 	var target_eye_pos = target.get_eye_position() #Function from fpp_controller.gd
 	var to_player = (target_eye_pos - vision_ray.global_transform.origin).normalized()
 	
-	var forward = -global_transform.basis.z
-	var angle_deg = rad_to_deg(acos(clamp(forward.dot(to_player), -1.0, 1.0)))
+	var forward := -global_transform.basis.z
+	var angle_deg := rad_to_deg(acos(clamp(forward.dot(to_player), -1.0, 1.0)))
 	if angle_deg > VIEW_ANGLE * 0.5:
 		return
  
@@ -254,7 +254,7 @@ func hear_noise(pos: Vector3) -> void:
 		investigate_position = pos
 		_enter_state(State.INVESTIGATE)
 
-func takeDamage(dmg):
+func takeDamage(dmg) -> void:
 	health -= dmg
 	engaged = true
 	engaged_timer.start()
@@ -277,16 +277,16 @@ func _die() -> void:
 	death_audio_stream_player_3d.play()
 	anim_player.play("death")
 
-func _on_anim_player_animation_finished(anim_name: StringName):
+func _on_anim_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name == "death":
 		queue_free()
 
-func _fire():
+func _fire() -> void:
 	var now := Time.get_ticks_msec() / 1000.0
 	if now < lastShot + fireSpeed:
 		return
 	lastShot = now
-	var b = bullet.instantiate() # Create the bullet instance.
+	var b := bullet.instantiate() # Create the bullet instance.
 	b.damage = attackPower # Set the bullet's damage value.
 	b.shooter = self # Assign the enemy as the shooter of the bullet.
 	b.global_transform = gun.global_transform # Position the bullet at the gun's location.
@@ -295,8 +295,8 @@ func _fire():
 func _target_in_range():
 	return global_position.distance_to(target.global_position) < attack_range
 
-func _hit_finished():
+func _hit_finished() -> void:
 	target.hit()
 
-func _on_engaged_timeout():
+func _on_engaged_timeout() -> void:
 	engaged = false

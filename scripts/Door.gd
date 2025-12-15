@@ -9,12 +9,12 @@ extends AnimatableBody3D
 # NEW: Exported variable for the specific key ID required to open this door
 @export var required_key: String = ""
 
-func update_door():
+func update_door() -> void:
 	if open:
 		$AnimationPlayer.play("open")
 	else:
 		$AnimationPlayer.play_backwards("open")
 	$AnimationPlayer.set_active(true)
 	
-func toggle_open():
+func toggle_open() -> void:
 	open = !open

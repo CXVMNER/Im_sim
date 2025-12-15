@@ -5,13 +5,13 @@ var damage := 1
 var velocity := Vector3.ZERO
 var shooter = null # Added to prevent bullet hitting the shooter immediately
 
-@onready var mesh_instance_3d = $MeshInstance3D
-@onready var ray_cast_3d = $GunRayCast3D
+@onready var mesh_instance_3d := $MeshInstance3D
+@onready var ray_cast_3d := $GunRayCast3D
 
-func _ready():
+func _ready() -> void:
 	pass
 
-func _process(delta):
+func _process(delta) -> void:
 	# Calculate the travel vector for this frame
 	var motion = velocity * delta
 	
@@ -54,13 +54,13 @@ func _process(delta):
 	# 3. No collision, move the bullet forward for this frame.
 	position += motion
 	
-func _set_velocity(target):
+func _set_velocity(target) -> void:
 	# Align the bullet's forward (-Z) with the direction to the target
 	look_at(target)
 	velocity = position.direction_to(target) * speed
 
 # Function called by the Timer node (set to 10.0s in bullet.tscn)
 # This handles the cleanup if the bullet misses everything.
-func _on_timer_timeout():
+func _on_timer_timeout() -> void:
 	# Safely delete the bullet after the timer runs out
 	queue_free()

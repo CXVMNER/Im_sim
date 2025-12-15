@@ -2,12 +2,12 @@ extends Control
 
 class_name PauseMenu
 
-@onready var label = $Label
-@onready var game_over_label = $GameOverLabel
+@onready var label := $Label
+@onready var game_over_label := $GameOverLabel
 
 var is_game_over: bool = false # A flag to prevent unpausing
 
-func set_game_over(state: bool):
+func set_game_over(state: bool) -> void:
 	is_game_over = state
 	game_over_label.visible = state # Show/Hide the "GAME OVER" label
 	
