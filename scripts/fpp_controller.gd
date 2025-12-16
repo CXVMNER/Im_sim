@@ -74,6 +74,8 @@ var is_crouching := false
 @export var CROUCH_SHAPECAST : Node3D
 
 @onready var ANIMATIONPLAYER := $AnimationPlayer
+@onready var crouch_animation_player := $CrouchAnimationPlayer
+
 @onready var hitbox := $CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -167,16 +169,15 @@ func try_grabbing(collided:RigidBody3D):
 	grabbed_object = collided
 
 func throw_object():
-	const THROW_FORCE = 25.0      # Overall throwing power
-	const UPWARD_BIAS_FACTOR = 0.5  # How much to mix in a constant upward vector
+	const THROW_FORCE = 20.0 # Overall throwing power
 	# Get the direction the camera is looking (forward direction)
 	var forward_direction = -camera_3d.global_basis.z
-	# Add an upward bias to the forward direction
-	var upward_vector = Vector3.UP
-	# Blend the forward direction and the upward vector
-	var throw_direction = (forward_direction + upward_vector * UPWARD_BIAS_FACTOR).normalized()
-	# Apply the impulse
-	grabbed_object.apply_impulse(throw_direction * THROW_FORCE)
+	# Upward boost
+	var upward_vector = Vector3(0.0, 10.0, 0.0)
+	# Combine directions
+	var impulse = (forward_direction * THROW_FORCE) + upward_vector
+	# Apply impulse
+	grabbed_object.apply_impulse(impulse)
 	# Release the object
 	grabbed_object = null
 
