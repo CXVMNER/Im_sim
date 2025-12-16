@@ -17,15 +17,15 @@ albedo_color = Color(1, 0, 0, 1)
 material = SubResource("StandardMaterial3D_76fdr")
 radius = 0.25
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_aotb2"]
-points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghtvo"]
 albedo_color = Color(1, 0, 0, 1)
 use_z_clip_scale = true
 z_clip_scale = 0.75
 
 [sub_resource type="BoxMesh" id="BoxMesh_fg1av"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_aotb2"]
+points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ghtvo"]
 radius = 0.125
@@ -346,20 +346,13 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
+visible = false
 
 [node name="Sword" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder" instance=ExtResource("4_rqmhu")]
 transform = Transform3D(0.9935719, -0.11320321, 0, 0.11247553, 0.98718506, 0.11320321, -0.012814967, -0.11247553, 0.9935719, 0.45, -0.35, -0.6)
 
-[node name="Hitbox" type="Area3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder/Sword"]
-transform = Transform3D(1.1000003, 3.5390258e-08, -9.313226e-10, 1.3096724e-10, 1.1, -1.8626451e-09, 2.7939677e-09, -1.1920929e-07, 1.1000004, 0, 0, 0)
-monitoring = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder/Sword/Hitbox"]
-transform = Transform3D(1, 1.07102e-07, 0, -9.74978e-10, 1, -9.31323e-10, 0, 0, 1, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_aotb2")
-
 [node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935698, -0.11320232, 0, 0.01124749, 0.98718077, 0.011320283, -0.001281485, -0.112474635, 0.0993572, 0.45, -0.35, -0.6)
+transform = Transform3D(0.09935698, -0.11320231, 0, 0.01124749, 0.9871807, 0.011320283, -0.001281485, -0.11247463, 0.0993572, 0.45, -0.35, -0.6)
 visible = false
 material_override = SubResource("StandardMaterial3D_ghtvo")
 mesh = SubResource("BoxMesh_fg1av")
@@ -389,7 +382,6 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.2, -0.5)
 
 [node name="blaster-b" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("2_uwixu")]
-visible = false
 
 [node name="blaster-m2" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("3_up7xj")]
 visible = false

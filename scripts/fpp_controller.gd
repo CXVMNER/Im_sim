@@ -2,21 +2,21 @@ extends CharacterBody3D
 
 class_name Player
 
-@onready var gun_barrel = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/RayCast3D"
-@onready var gun_animation_player = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AnimationPlayer"
-@onready var gun_audio_stream_player = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AudioStreamPlayer"
+@onready var gun_barrel := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/RayCast3D"
+@onready var gun_animation_player := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AnimationPlayer"
+@onready var gun_audio_stream_player := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AudioStreamPlayer"
 
-@onready var gun_barrel_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D"
-@onready var gun_animation_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer"
-@onready var gun_audio_stream_player_m = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer"
+@onready var gun_barrel_m := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D"
+@onready var gun_animation_player_m := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer"
+@onready var gun_audio_stream_player_m := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer"
 
-@onready var hud = $HUD
+@onready var hud := $HUD
 @export var health := 100
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
-@onready var aim_ray_cast_3d = $CameraController/pivotNode3D/Camera3D/AimRayCast3D
-@onready var aim_ray_end = $CameraController/pivotNode3D/Camera3D/AimRayEnd
+@onready var aim_ray_cast_3d := $CameraController/pivotNode3D/Camera3D/AimRayCast3D
+@onready var aim_ray_end := $CameraController/pivotNode3D/Camera3D/AimRayEnd
 
 @onready var pause_menu: PauseMenu = $PauseMenu
 @export var is_dead: bool = false # NEW: Flag for the player's death status
@@ -24,7 +24,7 @@ class_name Player
 var regenStamina := false
 var lastShot := 0.0
 
-var bullet = load("res://scenes/bullet.tscn")
+var bullet := load("res://scenes/bullet.tscn")
 var instance
 
 # Weapon switching
@@ -33,8 +33,8 @@ enum weapons {
 	BLASTER_M
 }
 
-var weapon = weapons.BLASTER_B
-var can_shoot = true
+var weapon := weapons.BLASTER_B
+var can_shoot := true
 
 var speed : float
 const WALK_SPEED := 3.5
@@ -52,7 +52,7 @@ const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher t
 var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumping etc.
 
 var grabbed_object:RigidBody3D = null
-@onready var grabbed_anchor = $CameraController/pivotNode3D/Camera3D/SpringArm3D/GrabbedAnchor
+@onready var grabbed_anchor := $CameraController/pivotNode3D/Camera3D/SpringArm3D/GrabbedAnchor
 
 # Variable to hold all collected key strings (The 'Pass Value' from your power-up)
 var keys_collected: Array[String] = []
@@ -64,7 +64,7 @@ var t_bob := 0.0
 
 const MAX_STEP_HEIGHT := 0.25
 var _snapped_to_stairs_last_frame := false
-var _last_frame_was_on_floor = -INF
+var _last_frame_was_on_floor := -INF
 
 @export var CLIMB_SPEED := 5.0
 
@@ -73,23 +73,23 @@ var is_crouching := false
 @export var TOGGLE_CROUCH : bool = true
 @export var CROUCH_SHAPECAST : Node3D
 
-@onready var ANIMATIONPLAYER = $AnimationPlayer
-@onready var hitbox = $CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox
+@onready var ANIMATIONPLAYER := $AnimationPlayer
+@onready var hitbox := $CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gravity = 9.8
 
-@onready var staminaRegenTimer = $staminaRegen
+@onready var staminaRegenTimer := $staminaRegen
 
-@onready var CameraController = $CameraController
-@onready var pivot_node_3d = $CameraController/pivotNode3D
-@onready var camera_3d = $CameraController/pivotNode3D/Camera3D # The same as %Camera3D
+@onready var CameraController := $CameraController
+@onready var pivot_node_3d := $CameraController/pivotNode3D
+@onready var camera_3d := $CameraController/pivotNode3D/Camera3D # The same as %Camera3D
 @export var camera_rotation_amount : float = 0.025
 var camera_rotation_factor := 8
 
 var mouse_captured := true
 
-var is_paused = false
+var is_paused := false
 
 # Function to handle the player dying
 func die():
@@ -264,7 +264,7 @@ func _physics_process(delta):
 		speed = CROUCH_SPEED
 
 	# Get the input direction and handle the movement/deceleration.
-	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	direction = (CameraController.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
 	if not _handle_ladder_physics():
@@ -273,7 +273,7 @@ func _physics_process(delta):
 			# Normal movement control on the ground
 			if direction:
 				# Apply speed reduction when "move_backward" is pressed
-				var current_speed = speed
+				var current_speed := speed
 				if Input.is_action_pressed("move_backward"):
 					current_speed *= BACKWARD_SPEED
 				velocity.x = direction.x * current_speed
@@ -284,13 +284,13 @@ func _physics_process(delta):
 		else:
 			# Air control: Allow limited movement but clamp the maximum velocity
 			if direction:
-				var current_speed = speed
+				var current_speed := speed
 				# Apply speed reduction when "move_backward" is pressed in air
 				if Input.is_action_pressed("move_backward"):
 					current_speed *= BACKWARD_SPEED
 				
-				var control_add = direction * current_speed * AIR_CONTROL_FACTOR
-				var target_vel = direction + control_add
+				var control_add := direction * current_speed * AIR_CONTROL_FACTOR
+				var target_vel := direction + control_add
 				# Allow limited air control by blending stored velocity with input direction
 				velocity.x = lerp(velocity.x, target_vel.x, AIR_CONTROL_FACTOR)
 				velocity.z = lerp(velocity.z, target_vel.z, AIR_CONTROL_FACTOR)
@@ -393,8 +393,8 @@ func _fire(gun_barrel_raycast):
 	hud.ammo -= 1
 	hud.updateHud()
 
-@onready var inc = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b"
-@onready var incm = $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2"
+@onready var inc := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b"
+@onready var incm := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2"
 
 func _lower_weapon():
 	match weapon:
@@ -660,5 +660,5 @@ func camera_tilt(input_x, delta):
 # This is a safe function to expose the point where the enemy should be looking.
 # It automatically accounts for standing and crouching height.
 func get_eye_position() -> Vector3:
-	var camera_controller = camera_3d 
+	var camera_controller := camera_3d 
 	return camera_controller.global_transform.origin

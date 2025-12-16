@@ -1,15 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dqpsqlw1vj0qf"]
+[gd_scene load_steps=2 format=3 uid="uid://dqpsqlw1vj0qf"]
 
 [ext_resource type="PackedScene" uid="uid://b4g5vfunninfh" path="res://assets/models/keycard/keycard.glb" id="1_5o5dt"]
-[ext_resource type="Script" uid="uid://d3usx5nm8gq5m" path="res://scripts/keycard.gd" id="2_oxx7j"]
-[ext_resource type="Script" uid="uid://d38lde0ccowa0" path="res://scripts/InteractableComponent.gd" id="3_ujkgs"]
 
 [node name="keycard" instance=ExtResource("1_5o5dt")]
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
-script = ExtResource("2_oxx7j")
-
-[node name="InteractableComponent" type="Node" parent="." index="1"]
-script = ExtResource("3_ujkgs")
-metadata/_custom_type_script = "uid://d38lde0ccowa0"
-
-[connection signal="interacted" from="InteractableComponent" to="." method="update_key"]
