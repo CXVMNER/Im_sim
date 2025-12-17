@@ -663,3 +663,16 @@ func camera_tilt(input_x, delta):
 func get_eye_position() -> Vector3:
 	var camera_controller := camera_3d 
 	return camera_controller.global_transform.origin
+
+# Function to add a key password to the player's inventory
+func collect_key(key_value: String):
+	if not keys_collected.has(key_value):
+		keys_collected.append(key_value)
+		print("Collected key: ", key_value)
+
+# Function to check if the player has a specific password
+func has_key(key_value: String) -> bool:
+	# If the door has no password required, it is always "unlocked"
+	if key_value == "":
+		return true
+	return keys_collected.has(key_value)

@@ -74,7 +74,7 @@ func _on_body_entered(body):
 			body.gainAmmo(qty)
 			
 		Type.key:
-			# Pass the key's unique value to the player (assuming player has a collect_key method)
+			# Pass the key's unique value to the player
 			if body.has_method("collect_key"):
 				body.collect_key(pass_value)
 				

@@ -1,6 +1,6 @@
 extends Control
 
-@export var ammo := 200
+@export var ammo := 20
 @export var stamina := 100
 
 @onready var healthValue := $%health
