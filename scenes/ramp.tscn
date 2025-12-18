@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b0q6pyngabf6s"]
+
+[ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="1_iffpq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0b1uk"]
+albedo_texture = ExtResource("1_iffpq")
+uv1_triplanar = true
+
+[node name="Ramp" type="Node3D"]
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="."]
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 1, 1, 1, 4, 0)
+material = SubResource("StandardMaterial3D_0b1uk")
