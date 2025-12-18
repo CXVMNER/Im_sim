@@ -12,6 +12,8 @@ class_name Player
 
 @onready var hud := $HUD
 @export var health := 100
+@export var ammo := 20
+@export var stamina := 100
 @export var fireSpeed := 0.2
 @export var attackPower := 1
 
@@ -201,6 +203,8 @@ func _ready() -> void:
 	CROUCH_SHAPECAST.add_exception(self)
 
 	hud.health = health
+	hud.ammo = ammo
+	hud.stamina = stamina
 	hud.updateHud()
 
 # Camera rotation values
@@ -362,14 +366,14 @@ func _shoot_M():
 		gun_audio_stream_player_m.play()
 		_fire(gun_barrel_m) # Pass the correct barrel RayCast3D
 
-func _fire(gun_barrel_raycast):
+func _fire(gun_barrel_raycast) -> void:
 	var now := Time.get_ticks_msec()/1000.0
-	if hud.ammo < 1: return
+	if ammo < 1: return
 	if now < lastShot + fireSpeed: return
-
+	
 	if not gun_barrel_raycast.is_inside_tree() or not camera_3d.is_inside_tree():
 		return
-
+	
 	lastShot = now
 	
 	var new_bullet = bullet.instantiate()
@@ -377,7 +381,7 @@ func _fire(gun_barrel_raycast):
 	
 	# Set the position to the barrel's global position (This was the previous error line, now protected)
 	new_bullet.global_position = gun_barrel_raycast.global_position
-
+	
 	# IMPORTANT: Add the bullet to the scene tree *before* calling _set_velocity()
 	get_parent().add_child(new_bullet)
 	
@@ -390,8 +394,9 @@ func _fire(gun_barrel_raycast):
 		target_position = camera_3d.global_position - camera_3d.global_transform.basis.z * 101.0
 	
 	new_bullet._set_velocity(target_position)
-		
-	hud.ammo -= 1
+	
+	ammo -= 1
+	hud.ammo = ammo
 	hud.updateHud()
 
 @onready var inc := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b"
@@ -574,7 +579,8 @@ func _handle_ladder_physics() -> bool:
 	return true
 
 func gainAmmo(qty):
-	hud.ammo += qty
+	ammo += qty
+	hud.ammo = ammo
 	hud.addUpdate(qty, "Ammo", Color(0,0,1,1))
 	hud.screenGlow(Color(1,0.843137,0,1))
 	hud.updateHud()

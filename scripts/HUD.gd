@@ -1,16 +1,16 @@
 extends Control
 
-@export var ammo := 20
-@export var stamina := 100
+@onready var updates := $HUDUpdate
+@onready var overlay := $Overlay
 
 @onready var healthValue := $%health
 @onready var ammoValue := $%ammo
 @onready var staminaValue := $%stamina
 
-@onready var updates := $HUDUpdate
-@onready var overlay := $Overlay
-
 var health : int
+var ammo : int
+var stamina : int
+
 var item := preload("res://scenes/hud_item.tscn")
 
 func _ready() -> void:
