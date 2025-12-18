@@ -15,6 +15,14 @@ func set_game_over(state: bool) -> void:
 	if $Label:
 		$Label.visible = !state
 
-# To have logic to handle buttons like 'Resume', I'd need to modify them here as well.
-# Since this script does not show have button logic, 
+# To have logic to handle buttons like 'Resume', 
 # we rely on the controller to prevent unpausing.
+
+func _on_menu_button_pressed() -> void:
+	get_tree().current_scene.process_mode = Node.PROCESS_MODE_DISABLED
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	GameManager.load_scene_with_loading_screen("res://scenes/main_menu.tscn")
+
+func _on_exit_button_pressed() -> void:
+	get_tree().quit()

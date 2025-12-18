@@ -99,14 +99,13 @@ var is_paused := false
 func die():
 	if is_dead:
 		return
-		
+	
 	is_dead = true
 	
-	# 1. Pause the game
-	# We call pause_game with the 'game_over' argument set to true
+	# Pause the game
 	pause_game(true, true)
 	
-	# 2. Show the "Game Over" label
+	# Show the "Game Over" label
 	pause_menu.set_game_over(true)
 	
 	# Additional actions on death (e.g., disable movement, show cursor)
@@ -340,7 +339,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("weapon_two") and weapon != weapons.BLASTER_M:
 		_raise_weapon(weapons.BLASTER_M)
 
-func _object_grabbing(grabbed_object:RigidBody3D, delta):
+func _object_grabbing(grabbed_object:RigidBody3D, delta) -> void:
 	var target_pos:Vector3 = grabbed_anchor.global_position
 	var current_pos:Vector3 = grabbed_object.global_position
 	
@@ -354,17 +353,23 @@ func _object_grabbing(grabbed_object:RigidBody3D, delta):
 	grabbed_object.angular_velocity *= 0.5 # decreases the unwanted velocity
 
 
-func _shoot_B():
-	if !gun_animation_player.is_playing():
-		gun_animation_player.play("shooting")
-		gun_audio_stream_player.play()
-		_fire(gun_barrel) # Pass the correct barrel RayCast3D
+func _shoot_B() -> void:
+	if ammo > 0:
+		if !gun_animation_player.is_playing():
+			gun_animation_player.play("shooting")
+			gun_audio_stream_player.play()
+			_fire(gun_barrel) # Pass the correct barrel RayCast3D
+	else:
+		print("Out of ammo!")
 
-func _shoot_M():
-	if !gun_animation_player_m.is_playing():
-		gun_animation_player_m.play("shooting")
-		gun_audio_stream_player_m.play()
-		_fire(gun_barrel_m) # Pass the correct barrel RayCast3D
+func _shoot_M() -> void:
+	if ammo > 0:
+		if !gun_animation_player_m.is_playing():
+			gun_animation_player_m.play("shooting")
+			gun_audio_stream_player_m.play()
+			_fire(gun_barrel_m) # Pass the correct barrel RayCast3D
+	else:
+		print("Out of ammo!")
 
 func _fire(gun_barrel_raycast) -> void:
 	var now := Time.get_ticks_msec()/1000.0

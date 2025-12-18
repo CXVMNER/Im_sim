@@ -11,8 +11,6 @@ var progress := [0.0]
 var loaded_scene:PackedScene
 @onready var progress_label := $ColorRect/ProgressLabel
 
-# var change_scene_to : String
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
