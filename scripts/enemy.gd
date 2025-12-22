@@ -22,7 +22,7 @@ var engaged := false
 
 const UPDATE_TIME := 0.2
 const SPEED := 150
-const VIEW_ANGLE: float = 190.0
+const VIEW_ANGLE: float = 180.0
 const SMOOTHING_FACTOR := 0.2
 @onready var animation_player := $CollisionShape3D/robot2/AnimationPlayer
 @onready var anim_player := $AnimPlayer
@@ -136,7 +136,7 @@ func deal_attack_damage() -> void:
 	if is_dead or is_attacking == false:  # extra safety
 		return
 	if target and target.has_method("takeDamage"):
-		if global_position.distance_to(target.global_position) <= attack_range + 0.5:
+		if global_position.distance_to(target.global_position) <= attack_range + 0.3:
 			target.takeDamage(attackPower)
 
 func _state_return(delta: float) -> void:
