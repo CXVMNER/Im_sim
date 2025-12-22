@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene load_steps=19 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
@@ -16,16 +16,6 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_t614e"]
 material = SubResource("StandardMaterial3D_76fdr")
 radius = 0.25
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ghtvo"]
-albedo_color = Color(1, 0, 0, 1)
-use_z_clip_scale = true
-z_clip_scale = 0.75
-
-[sub_resource type="BoxMesh" id="BoxMesh_fg1av"]
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_aotb2"]
-points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ghtvo"]
 radius = 0.125
@@ -71,70 +61,34 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder:rotation")
+tracks/3/path = NodePath("headShapeCast3D:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, 0, 0)]
+"values": [Vector3(0, 1.5, 0)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:position")
+tracks/4/path = NodePath("CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0.45, -0.35, -0.6)]
+"values": [Vector3(0, 0, 0)]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:rotation")
+tracks/5/path = NodePath("CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(-0.113446, 0, 0.113446)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("headShapeCast3D:position")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 1.5, 0)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b:position")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2:position")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -144,42 +98,6 @@ tracks/8/keys = {
 [sub_resource type="Animation" id="Animation_pa70x"]
 resource_name = "attack"
 length = 0.7
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(1.4, -0.2, -0.2)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(-0.113446, 2.42604e-09, -1.309)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.7),
-"transitions": PackedFloat32Array(-2, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 2.53073, 0)]
-}
 
 [sub_resource type="Animation" id="Animation_8bnx4"]
 resource_name = "crouch"
@@ -236,42 +154,6 @@ tracks/3/keys = {
 resource_name = "idle"
 length = 3.0
 loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.5),
-"transitions": PackedFloat32Array(1, -2),
-"update": 0,
-"values": [Vector3(0.45, -0.35, -0.6), Vector3(0.45, -0.4, -0.6)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 1.5),
-"transitions": PackedFloat32Array(1, -2),
-"update": 0,
-"values": [Vector3(-0.113446, 0, 0.113446), Vector3(-0.148353, -0.0261799, 0.113446)]
-}
 
 [sub_resource type="Animation" id="Animation_up7xj"]
 resource_name = "new_animation"
@@ -345,26 +227,6 @@ unique_name_in_owner = true
 [node name="Camera3D" type="Camera3D" parent="CameraController/pivotNode3D"]
 unique_name_in_owner = true
 
-[node name="WeaponHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
-visible = false
-
-[node name="Sword" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder" instance=ExtResource("4_rqmhu")]
-transform = Transform3D(0.9935719, -0.11320321, 0, 0.11247553, 0.98718506, 0.11320321, -0.012814967, -0.11247553, 0.9935719, 0.45, -0.35, -0.6)
-
-[node name="WeaponMesh" type="MeshInstance3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder"]
-transform = Transform3D(0.09935698, -0.113202274, 0, 0.01124749, 0.9871804, 0.011320283, -0.001281485, -0.1124746, 0.0993572, 0.45, -0.35, -0.6)
-visible = false
-material_override = SubResource("StandardMaterial3D_ghtvo")
-mesh = SubResource("BoxMesh_fg1av")
-
-[node name="Hitbox" type="Area3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh"]
-transform = Transform3D(1.1000003, 3.5390258e-08, -9.313226e-10, 1.3096724e-10, 1.1, -1.8626451e-09, 2.7939677e-09, -1.1920929e-07, 1.1000004, 0, 0, 0)
-monitoring = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox"]
-transform = Transform3D(1, 1.07102e-07, 0, -9.74978e-10, 1, -9.31323e-10, 0, 0, 1, 0, 0, 0)
-shape = SubResource("ConvexPolygonShape3D_aotb2")
-
 [node name="InteractShapeCast3D" type="ShapeCast3D" parent="CameraController/pivotNode3D/Camera3D"]
 unique_name_in_owner = true
 shape = SubResource("SphereShape3D_ghtvo")
@@ -380,6 +242,9 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0
 
 [node name="GunHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.2, -0.5)
+
+[node name="Sword" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("4_rqmhu")]
+visible = false
 
 [node name="blaster-b" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("2_uwixu")]
 
@@ -426,7 +291,6 @@ mouse_filter = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("5_bww43")]
 
-[connection signal="body_entered" from="CameraController/pivotNode3D/Camera3D/WeaponHolder/WeaponMesh/Hitbox" to="." method="_on_hitbox_body_entered"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
 [connection signal="timeout" from="staminaRegen" to="." method="_on_stamina_regen_timeout"]
