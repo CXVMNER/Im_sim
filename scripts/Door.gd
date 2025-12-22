@@ -6,8 +6,10 @@ extends AnimatableBody3D
 			open = value
 			update_door()
 
-# NEW: Exported variable for the specific key ID required to open this door
+# Exported variable for the specific key ID required to open this door
 @export var required_key: String = ""
+
+@onready var label_3d: Label3D = $DoorLabel3D
 
 func update_door() -> void:
 	if open:
@@ -32,4 +34,31 @@ func toggle_open() -> void:
 				open = !open
 				return
 	
-	print("Door is locked. Interaction from this source (Button/Player) denied.")
+	print("Door is locked. Interaction denied.")
+
+func _ready() -> void:
+	add_to_group("doors")
+	if label_3d:
+		label_3d.visible = false
+
+func set_label_visibility(is_visible: bool, player: Player) -> void:
+	if not label_3d:
+		return
+		
+	label_3d.visible = is_visible
+	
+	if is_visible:
+		update_label_text(player)
+
+func update_label_text(player: Player) -> void:
+	# If the door is already open, we don't need the locked message
+	if open:
+		label_3d.text = "Press [E] to Close"
+		return
+
+	# If no key is required, or the player has the required key
+	if required_key == "" or player.has_key(required_key):
+		label_3d.text = "Press [E] to Open"
+	else:
+		# Dynamic message for missing key
+		label_3d.text = "Door locked, required key: " + required_key

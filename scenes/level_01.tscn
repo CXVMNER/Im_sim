@@ -509,13 +509,11 @@ qty = 10
 [node name="powerUp3" parent="." instance=ExtResource("7_ky2cw")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.5, 0.75, -8.5)
 type = 2
-qty = 10
 pass_value = "red"
 
 [node name="powerUp4" parent="." instance=ExtResource("7_ky2cw")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.5, 0.75, -6.5)
 type = 2
-qty = 10
 pass_value = "blu"
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="."]
@@ -652,6 +650,10 @@ libraries = {
 script = ExtResource("11_e6mo4")
 metadata/_custom_type_script = "uid://d38lde0ccowa0"
 
+[node name="DoorLabel3D" type="Label3D" parent="movableDoor2/AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.5, -0.6)
+billboard = 1
+
 [node name="movableDoor3" type="Node3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27, 0, 4)
 
@@ -675,6 +677,10 @@ libraries = {
 [node name="InteractableComponent" type="Node" parent="movableDoor3/AnimatableBody3D"]
 script = ExtResource("11_e6mo4")
 metadata/_custom_type_script = "uid://d38lde0ccowa0"
+
+[node name="DoorLabel3D" type="Label3D" parent="movableDoor3/AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.5, -0.6)
+billboard = 1
 
 [node name="PatrolPoints" type="Node3D" parent="."]
 

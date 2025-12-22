@@ -430,12 +430,24 @@ func _raise_weapon(new_weapon):
 	weapon = new_weapon
 	can_shoot = true
 
-# We can remove the redundant input checks from _process here.
-func _process(_delta):
-	if get_interactable_component_at_shapecast():
-		get_interactable_component_at_shapecast().hover_cursor(self)
+func _process(_delta) -> void:
+	# Get the interactable component from the shapecast
+	var interactable = get_interactable_component_at_shapecast()
+	
+	# Handle Door Label Visibility and Text
+	# We search for all doors to hide their labels initially (or you can optimize this with a 'last_hovered' variable)
+	get_tree().call_group("doors", "set_label_visibility", false, self)
+
+	if interactable:
+		interactable.hover_cursor(self)
+		
+		# If the interactable is part of a door, show its label and update text
+		var parent = interactable.get_parent()
+		if parent.has_method("set_label_visibility"):
+			parent.set_label_visibility(true, self)
+			
 		if Input.is_action_just_pressed("interact"):
-			get_interactable_component_at_shapecast().interact_with(self)
+			interactable.interact_with(self)
 	
 	# Releasing sprint initiates stamina regeneration
 	if Input.is_action_just_released("sprint"):
@@ -684,6 +696,6 @@ func collect_key(key_value: String):
 # Function to check if the player has a specific password
 func has_key(key_value: String) -> bool:
 	# If the door has no password required, it is always "unlocked"
-	if key_value == "":
-		return true
+	#if key_value == "":
+	#	return true
 	return keys_collected.has(key_value)

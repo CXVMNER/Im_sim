@@ -73,4 +73,8 @@ libraries = {
 script = ExtResource("3_0gupw")
 metadata/_custom_type_script = "uid://d38lde0ccowa0"
 
+[node name="DoorLabel3D" type="Label3D" parent="AnimatableBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.5, -0.6)
+billboard = 1
+
 [connection signal="interacted" from="AnimatableBody3D/InteractableComponent" to="AnimatableBody3D" method="toggle_open"]

@@ -1,7 +1,8 @@
 extends Control
 
-@onready var updates := $HUDUpdate
 @onready var overlay := $Overlay
+@onready var updates := $HUDUpdate
+@onready var interaction_label := $InteractionLabel
 
 @onready var healthValue := $%health
 @onready var ammoValue := $%ammo
