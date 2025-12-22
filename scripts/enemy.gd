@@ -3,14 +3,12 @@ extends CharacterBody3D
 @onready var agent := $NavigationAgent3D
  
 @export var color : Color
-# @export var aggroRange := 5.0
 @export var fireSpeed := 0.2
-@export var attackPower := 1
+@export var attackPower := 20
 
 var is_dead := false
 
 var health := 5
-#var material
 var bullet := preload("res://scenes/bullet.tscn")
 
 @onready var vision_ray := $VisionRay
@@ -28,7 +26,6 @@ const VIEW_ANGLE: float = 190.0
 const SMOOTHING_FACTOR := 0.2
 @onready var animation_player := $CollisionShape3D/robot2/AnimationPlayer
 @onready var anim_player := $AnimPlayer
-
 
 # --------------------
 # CONFIG
@@ -56,19 +53,12 @@ var target: Node3D
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var update_timer := 0.0
 
+var is_attacking := false
 
 func _ready() -> void:
 	target = PlayerManager.player
-	# var mat = StandardMaterial3D.new()
-	# mat.emission_enabled = true
-	# $%body.set_surface_override_material(0, mat)
-	# $%nose.set_surface_override_material(1, mat)
-	# material = mat
-	_enter_state( State.IDLE if patrol_points.is_empty() else State.PATROL)
- 
-# --------------------
-# MAIN LOOP
-# --------------------
+	_enter_state(State.IDLE if patrol_points.is_empty() else State.PATROL)
+
 func _physics_process(delta: float) -> void:
 	if is_dead:
 		return # Completely stop all AI/movement logic
@@ -86,14 +76,14 @@ func _physics_process(delta: float) -> void:
 	_looking()
 	_apply_gravity(delta)
 	move_and_slide()
- 
+
 # --------------------
 # STATE HANDLERS
 # --------------------
 func _state_idle() -> void:
 	if _can_see_player():
 		_enter_state(State.CHASE)
- 
+
 func _state_patrol(delta: float) -> void:
 	if agent.is_navigation_finished():
 		if patrol_timer <= 0.0:
@@ -105,10 +95,9 @@ func _state_patrol(delta: float) -> void:
 				_go_to_next_patrol_point()
 	else:
 		_walk_to(agent.get_next_path_position(), speed_walk)
- 
 	if _can_see_player():
 		_enter_state(State.CHASE)
- 
+
 func _state_investigate(delta: float) -> void:
 	if agent.is_navigation_finished():
 		if investigate_timer <= 0.0:
@@ -120,34 +109,36 @@ func _state_investigate(delta: float) -> void:
 				_enter_state(State.RETURN)
 	else:
 		_walk_to(agent.get_next_path_position(), speed_walk)
- 
 	if _can_see_player():
 		_enter_state(State.CHASE)
- 
+
 func _state_chase(delta: float) -> void:
 	if not target:
 		_enter_state(State.RETURN)
 		return
- 
 	_walk_to(agent.get_next_path_position(), speed_run)
- 
-	if global_transform.origin.distance_to(target.global_transform.origin) < attack_range:
+	if global_transform.origin.distance_to(target.global_transform.origin) < attack_range and not is_attacking:
 		_enter_state(State.ATTACK)
 	elif not _can_see_player():
 		investigate_position = target.global_transform.origin
 		_enter_state(State.INVESTIGATE)
- 
+
 func _state_attack() -> void:
+	is_attacking = true
 	velocity = Vector3.ZERO
 	animation_player.play("attackwithhand")
 	await animation_player.animation_finished
-	# TODO: better handle player capture
-	if global_position.distance_to(target.global_position) < 1.5:
-		if target.has_method("takeDamage"):
-			target.takeDamage(attackPower) # 1 damage per frame while touching
-	
+	deal_attack_damage()
+	is_attacking = false
 	_enter_state(State.CHASE)
- 
+
+func deal_attack_damage() -> void:
+	if is_dead or is_attacking == false:  # extra safety
+		return
+	if target and target.has_method("takeDamage"):
+		if global_position.distance_to(target.global_position) <= attack_range + 0.5:
+			target.takeDamage(attackPower)
+
 func _state_return(delta: float) -> void:
 	if agent.is_navigation_finished():
 		_enter_state(State.PATROL)
@@ -155,7 +146,7 @@ func _state_return(delta: float) -> void:
 		_enter_state(State.CHASE)
 	else:
 		_walk_to(agent.get_next_path_position(), speed_walk)
- 
+
 # --------------------
 # HELPERS
 # --------------------
@@ -170,7 +161,7 @@ func _enter_state(new_state: State) -> void:
 			agent.set_target_position(investigate_position)
 		State.CHASE, State.INVESTIGATE:
 			return_position = global_transform.origin
- 
+
 func _update_agent_target() -> void:
 	match state:
 		State.PATROL:
@@ -183,71 +174,66 @@ func _update_agent_target() -> void:
 				agent.set_target_position(target.global_transform.origin)
 		State.RETURN:
 			agent.set_target_position(return_position)
- 
+
 func _walk_to(next_pos: Vector3, speed: float) -> void:
 	animation_player.play("walking")
 	_move_towards(next_pos, speed)
- 
+
 func _stop_and_idle() -> void:
 	velocity = Vector3.ZERO
 	animation_player.play("iddle")
- 
+
 func _go_to_next_patrol_point() -> void:
-	patrol_index = ( patrol_index + 1 ) % patrol_points.size()
+	patrol_index = (patrol_index + 1) % patrol_points.size()
 	agent.set_target_position(patrol_points[patrol_index].global_transform.origin)
- 
+
 func _move_towards(next_pos: Vector3, speed: float) -> void:
 	var dir := (next_pos - global_transform.origin)
 	dir.y = 0.0
-	if  is_zero_approx( dir.length() ):
+	if is_zero_approx(dir.length()):
 		velocity.x = lerp(velocity.x, 0.0, SMOOTHING_FACTOR)
 		velocity.z = lerp(velocity.z, 0.0, SMOOTHING_FACTOR)
 		return
- 
 	dir = dir.normalized()
 	var current_facing := -global_transform.basis.z
 	var new_dir := current_facing.slerp(dir, 0.12).normalized()
 	look_at(global_transform.origin + new_dir, Vector3.UP)
- 
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
- 
+
 func _update_path(delta) -> void:
 	update_timer -= delta
 	if update_timer <= 0.0:
 		_update_agent_target()
 		update_timer = update_interval
- 
+
 func _apply_gravity(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
 		velocity.y = 0.0
- 
+
 # --------------------
 # VISION
 # --------------------
 func _can_see_player() -> bool:
 	return target and vision_ray.is_colliding() and vision_ray.get_collider() == target
- 
+
 func _looking() -> void:
 	if not target:
 		return
-
-	var target_eye_pos = target.get_eye_position() #Function from fpp_controller.gd
+	var target_eye_pos = target.get_eye_position() # Function from fpp_controller.gd
 	var to_player = (target_eye_pos - vision_ray.global_transform.origin).normalized()
-	
 	var forward := -global_transform.basis.z
 	var angle_deg := rad_to_deg(acos(clamp(forward.dot(to_player), -1.0, 1.0)))
 	if angle_deg > VIEW_ANGLE * 0.5:
 		return
- 
 	var ray_forward = -vision_ray.global_transform.basis.z
 	var new_dir = ray_forward.slerp(to_player, SMOOTHING_FACTOR).normalized()
 	vision_ray.look_at(vision_ray.global_transform.origin + new_dir, Vector3.UP)
- 
+
 # --------------------
-# SOUND
+# SOUND & DAMAGE
 # --------------------
 func hear_noise(pos: Vector3) -> void:
 	if state not in [State.CHASE, State.ATTACK]:
