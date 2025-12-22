@@ -8,6 +8,8 @@ extends Control
 @onready var ammoValue := $%ammo
 @onready var staminaValue := $%stamina
 
+@onready var keys_label = $MarginContainer2/VBoxContainer/HBoxContainer/KeysLabel
+
 var health : int
 var ammo : int
 var stamina : int
@@ -34,3 +36,9 @@ func screenGlow(color) -> void:
 	var tween := get_tree().create_tween()
 	tween.tween_property(overlay, "color", color, 0.1)
 	tween.tween_property(overlay, "color", Color(1,0,0,0), 0.7)
+	
+func update_keys(collected_keys: Array[String], total_keys: int) -> void:
+	var text := "Keys collected %d/%d:\n" % [collected_keys.size(), total_keys]
+	for key_name in collected_keys:
+		text += " - %s\n" % key_name
+	keys_label.text = text

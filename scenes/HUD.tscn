@@ -72,6 +72,22 @@ text = "Stamina"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 1
+offset_right = 99.0
+offset_bottom = 97.0
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="KeysLabel" type="Label" parent="MarginContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
 [node name="HUDUpdate" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 8

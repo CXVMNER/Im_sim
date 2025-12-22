@@ -38,6 +38,7 @@ func get_active_visual_node():
 	return null
 
 func _ready():
+	add_to_group("power_ups")
 	# 1. Hide all specific models initially.
 	health_kit_2.visible = false
 	crate_small_2.visible = false

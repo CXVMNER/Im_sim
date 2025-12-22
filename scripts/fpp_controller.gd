@@ -58,6 +58,7 @@ var grabbed_object:RigidBody3D = null
 
 # Variable to hold all collected key strings (The 'Pass Value' from your power-up)
 var keys_collected: Array[String] = []
+var total_keys_in_map := 0
 
 # head bob variables
 const BOB_FREQ := 2.0
@@ -688,14 +689,20 @@ func get_eye_position() -> Vector3:
 	return camera_controller.global_transform.origin
 
 # Function to add a key password to the player's inventory
-func collect_key(key_value: String):
+func collect_key(key_value: String) -> void:
 	if not keys_collected.has(key_value):
 		keys_collected.append(key_value)
 		print("Collected key: ", key_value)
+		# Update the HUD list and counter
+		if hud.has_method("update_keys"):
+			hud.update_keys(keys_collected, total_keys_in_map)
 
 # Function to check if the player has a specific password
 func has_key(key_value: String) -> bool:
-	# If the door has no password required, it is always "unlocked"
-	#if key_value == "":
-	#	return true
 	return keys_collected.has(key_value)
+	
+func set_total_keys(total: int) -> void:
+	total_keys_in_map = total
+	# Immediately update the HUD with the initial count
+	if hud.has_method("update_keys"):
+		hud.update_keys(keys_collected, total_keys_in_map)
