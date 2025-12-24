@@ -6,11 +6,11 @@ var characters_hovering = {}
 signal interacted()
 signal interacted_by_character(character : CharacterBody3D)
 
-func interact_with(character : CharacterBody3D):
+func interact_with(character : CharacterBody3D) -> void:
 	interacted.emit()
 	interacted_by_character.emit(character)
 
-func hover_cursor(character : CharacterBody3D):
+func hover_cursor(character : CharacterBody3D) -> void:
 	characters_hovering[character] = Engine.get_process_frames()
 
 func get_character_hovered_by_cur_camera() -> CharacterBody3D:
@@ -20,7 +20,7 @@ func get_character_hovered_by_cur_camera() -> CharacterBody3D:
 			return character
 	return null
 
-func _process(_delta):
+func _process(_delta) -> void:
 	for character in characters_hovering.keys():
 		if Engine.get_process_frames() - characters_hovering[character] > 1:
 			characters_hovering.erase(character)

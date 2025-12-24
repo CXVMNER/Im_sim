@@ -8,7 +8,7 @@ extends CharacterBody3D
 
 var is_dead := false
 
-var health := 5
+@export var health := 5
 var bullet := preload("res://scenes/bullet.tscn")
 
 @onready var vision_ray := $VisionRay

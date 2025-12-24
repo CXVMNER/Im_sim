@@ -61,4 +61,4 @@ func update_label_text(player: Player) -> void:
 		label_3d.text = "Press [E] to Open"
 	else:
 		# Dynamic message for missing key
-		label_3d.text = "Door locked, required key: " + required_key
+		label_3d.text = "Door locked,\nrequired key: " + required_key
