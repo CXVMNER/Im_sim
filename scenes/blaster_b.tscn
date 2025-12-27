@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=4 uid="uid://b7iiv5kc4qkwa"]
 
 [ext_resource type="PackedScene" uid="uid://cv2f48rkkap2q" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-b.glb" id="1_krvfs"]
-[ext_resource type="AudioStream" uid="uid://ycrpsx6fno23" path="res://sounds/8bit_gunloop_explosion.wav" id="2_m0t4e"]
 [ext_resource type="Texture2D" uid="uid://bywcdxt1k3oa7" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/Textures/colormap.png" id="2_s2p62"]
+[ext_resource type="AudioStream" uid="uid://v71obi2enuwf" path="res://sounds/Shoot.wav" id="3_m0t4e"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sl78r"]
 resource_name = "colormap"
@@ -182,8 +182,8 @@ _data = {
 mesh = SubResource("ArrayMesh_jsxak")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." index="1"]
-stream = ExtResource("2_m0t4e")
-volume_db = -5.0
+stream = ExtResource("3_m0t4e")
+volume_db = -9.0
 
 [node name="RayCast3D" type="RayCast3D" parent="." index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.013, -0.3)

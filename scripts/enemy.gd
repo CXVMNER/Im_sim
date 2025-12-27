@@ -240,6 +240,7 @@ func hear_noise(pos: Vector3) -> void:
 
 func takeDamage(dmg: int) -> void:
 	health -= dmg
+	print("Enemy hit! Damage: %d | Health Left: %d" % [dmg, health])
 	engaged = true
 	engaged_timer.start()
 	if health < 1 and not is_dead:

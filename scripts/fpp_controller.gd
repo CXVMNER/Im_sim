@@ -6,8 +6,6 @@ class_name Player
 @export var health := 100
 @export var ammo := 20
 @export var stamina := 100
-@export var fireSpeed := 0.2
-@export var attackPower := 1
 
 @onready var aim_ray_cast_3d := $CameraController/pivotNode3D/Camera3D/AimRayCast3D
 @onready var aim_ray_end := $CameraController/pivotNode3D/Camera3D/AimRayEnd
@@ -218,14 +216,20 @@ func _ready() -> void:
 			"barrel": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/RayCast3D",
 			"anim_player": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AnimationPlayer",
 			"audio": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AudioStreamPlayer",
-			"lower_anim": "lower_blaster_b"
+			"lowered_pos": Vector3(0, -1, 0), # lowered position as in last frame of "lower_anim"
+			"lower_anim": "lower_blaster_b",
+			"fire_speed": 0.2,
+			"damage": 1
 		},
 		WeaponState.WEAPON_2: {
 			"holder": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2",
 			"barrel": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D",
 			"anim_player": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer",
 			"audio": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer",
-			"lower_anim": "lower_blaster_m"
+			"lowered_pos": Vector3(0, -1, 0), # lowered position as in last frame of "lower_anim"
+			"lower_anim": "lower_blaster_m",
+			"fire_speed": 0.5,
+			"damage": 3
 		}
 	}
 	
@@ -262,11 +266,15 @@ func _switch_weapon(new_weapon: WeaponState) -> void:
 	# Update state
 	current_weapon = new_weapon
 	
+	# Setup the new weapon's starting position before showing it
+	var new_data = weapons_data[new_weapon]
+	if new_data.holder:
+		new_data.holder.position = new_data.lowered_pos
+	
 	# Instantly show new weapon (at lowered position)
 	_update_weapon_visibility()
 	
 	# Raise new weapon (play lower animation backwards)
-	var new_data = weapons_data[new_weapon]
 	if new_data.has("lower_anim") and new_data.lower_anim:
 		ANIMATIONPLAYER.play_backwards(new_data.lower_anim)
 		await ANIMATIONPLAYER.animation_finished
@@ -400,7 +408,8 @@ func _shoot_current_weapon() -> void:
 		return
 	
 	var now := Time.get_ticks_msec() / 1000.0
-	if now < lastShot + fireSpeed:
+	var current_fire_speed = data.get("fire_speed")
+	if now < lastShot + current_fire_speed:
 		return
 	
 	if !data.barrel.is_inside_tree():
@@ -413,12 +422,18 @@ func _shoot_current_weapon() -> void:
 		data.anim_player.play("shooting")
 	if data.audio:
 		data.audio.play()
-	
-	_fire_bullet(data.barrel)
+		
+	# Pass the data (Dictionary)
+	_fire_bullet(data)
 
-func _fire_bullet(barrel_raycast: RayCast3D) -> void:
+func _fire_bullet(data: Dictionary) -> void:
 	var new_bullet = bullet.instantiate()
-	new_bullet.damage = attackPower
+	
+	# Apply weapon-specific damage (Dictionary lookup)
+	new_bullet.damage = data.get("damage")
+	
+	# Extract the barrel RayCast3D from the dictionary
+	var barrel_raycast = data.barrel
 	new_bullet.global_position = barrel_raycast.global_position
 	
 	get_parent().add_child(new_bullet)
@@ -678,11 +693,6 @@ func set_movement_speed(state : String):
 			speed = WALK_SPEED
 		"crouching":
 			speed = CROUCH_SPEED
-
-func _on_hitbox_body_entered(body):
-	# print("Collision detected with", body)
-	if body.is_in_group("enemies"):
-		print("enemy hit")
 
 func _on_stamina_regen_timeout() -> void:
 	regenStamina = true
