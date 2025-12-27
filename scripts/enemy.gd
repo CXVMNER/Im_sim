@@ -20,8 +20,6 @@ var bullet := preload("res://scenes/bullet.tscn")
 var lastShot := 0.0
 var engaged := false
 
-const UPDATE_TIME := 0.2
-const SPEED := 150
 const VIEW_ANGLE: float = 180.0
 const SMOOTHING_FACTOR := 0.2
 @onready var animation_player := $CollisionShape3D/robot2/AnimationPlayer
@@ -240,7 +238,7 @@ func hear_noise(pos: Vector3) -> void:
 		investigate_position = pos
 		_enter_state(State.INVESTIGATE)
 
-func takeDamage(dmg) -> void:
+func takeDamage(dmg: int) -> void:
 	health -= dmg
 	engaged = true
 	engaged_timer.start()

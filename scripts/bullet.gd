@@ -11,7 +11,7 @@ var shooter = null # Added to prevent bullet hitting the shooter immediately
 func _ready() -> void:
 	pass
 
-func _process(delta) -> void:
+func _process(delta: float) -> void:
 	# Calculate the travel vector for this frame
 	var motion = velocity * delta
 	

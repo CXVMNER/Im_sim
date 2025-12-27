@@ -2,14 +2,6 @@ extends CharacterBody3D
 
 class_name Player
 
-@onready var gun_barrel := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/RayCast3D"
-@onready var gun_animation_player := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AnimationPlayer"
-@onready var gun_audio_stream_player := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AudioStreamPlayer"
-
-@onready var gun_barrel_m := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D"
-@onready var gun_animation_player_m := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer"
-@onready var gun_audio_stream_player_m := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer"
-
 @onready var hud := $HUD
 @export var health := 100
 @export var ammo := 20
@@ -21,23 +13,14 @@ class_name Player
 @onready var aim_ray_end := $CameraController/pivotNode3D/Camera3D/AimRayEnd
 
 @onready var pause_menu: PauseMenu = $PauseMenu
-@export var is_dead: bool = false # NEW: Flag for the player's death status
+@export var is_dead: bool = false # Flag for the player's death status
 
 var regenStamina := false
 var lastShot := 0.0
 
 var bullet := load("res://scenes/bullet.tscn")
-var instance
 
-# Weapon switching
-enum weapons {
-	BLASTER_B,
-	BLASTER_M
-}
-
-var weapon := weapons.BLASTER_B
-var can_shoot := true
-
+# Movement constants
 var speed : float
 const WALK_SPEED := 3.5
 const SPRINT_SPEED := 6.0
@@ -46,7 +29,6 @@ const JUMP_VELOCITY := 4.0
 const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 const push_force := 10
-
 
 const CAMERA_SMOOTH_LIMIT := 0.75
 const AIR_CONTROL_FACTOR := 0.5  # Controls how much air movement is allowed (0 = no control, 1 = full control)
@@ -94,6 +76,28 @@ var mouse_captured := true
 
 var is_paused := false
 
+# Camera rotation values
+var camera_yaw := 0.0
+var camera_pitch := 0.0
+
+# ==================== WEAPON SYSTEM ====================
+enum WeaponState {
+	NO_WEAPON,
+	WEAPON_1,	# blaster-b
+	WEAPON_2	# blaster-m2
+}
+
+var current_weapon : WeaponState = WeaponState.WEAPON_1
+var can_shoot : bool = true
+
+# Weapon-specific node references (easy to expand)
+var weapons_data : Dictionary = {}
+
+# Optional: melee weapon (sword already in scene)
+@onready var sword_holder := $"CameraController/pivotNode3D/Camera3D/GunHolder/Sword"
+
+# ======================================================
+
 # Function to handle the player dying
 func die():
 	if is_dead:
@@ -130,12 +134,19 @@ func pause_game(state: bool = true, game_over: bool = false):
 
 func _input(event):
 	if event is InputEventKey:
-		if Input.is_action_just_pressed("pause"):
-			if !is_dead: 
-				pause_game(!get_tree().paused)
+		if Input.is_action_just_pressed("pause") and !is_dead: 
+			pause_game(!get_tree().paused)
 	
 	if is_paused:
 		return
+	
+	# Weapon switching
+	if Input.is_action_just_pressed("weapon_one"):
+		_switch_weapon(WeaponState.WEAPON_1)
+	if Input.is_action_just_pressed("weapon_two"):
+		_switch_weapon(WeaponState.WEAPON_2)
+	if Input.is_action_just_pressed("weapon_holster"):  # Optional: holster to no weapon
+		_switch_weapon(WeaponState.NO_WEAPON)
 	
 	# Crouch logic
 	if event.is_action_pressed("crouch") and is_on_floor() and TOGGLE_CROUCH == true:
@@ -195,13 +206,74 @@ func _ready() -> void:
 	hud.ammo = ammo
 	hud.stamina = stamina
 	hud.updateHud()
+	
+	# === BUILD WEAPONS DATA ONLY NOW (nodes exist!) ===
+	weapons_data = {
+		WeaponState.NO_WEAPON: {
+			"holder": null,
+			"visible": false
+		},
+		WeaponState.WEAPON_1: {
+			"holder": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b",
+			"barrel": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/RayCast3D",
+			"anim_player": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AnimationPlayer",
+			"audio": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b/AudioStreamPlayer",
+			"lower_anim": "lower_blaster_b"
+		},
+		WeaponState.WEAPON_2: {
+			"holder": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2",
+			"barrel": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/RayCast3D",
+			"anim_player": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AnimationPlayer",
+			"audio": $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2/AudioStreamPlayer",
+			"lower_anim": "lower_blaster_m"
+		}
+	}
+	
+	# Safety check - warn if any node is missing
+	for ws in weapons_data:
+		var data = weapons_data[ws]
+		if data.has("barrel") and data.barrel == null:
+			push_error("Weapon barrel missing for %s! Check node path." % ws)
+	
+	# Initial weapon visibility setup
+	_update_weapon_visibility()
 
-# Camera rotation values
-var camera_yaw := 0.0
-var camera_pitch := 0.0
+func _update_weapon_visibility() -> void:
+	for ws in weapons_data:
+		var data = weapons_data[ws]
+		if data.holder:
+			data.holder.visible = (ws == current_weapon)
+	
+	# Sword visible only in no-weapon state (or customize later)
+	# sword_holder.visible = (current_weapon == WeaponState.NO_WEAPON)
+
+func _switch_weapon(new_weapon: WeaponState) -> void:
+	if current_weapon == new_weapon:
+		return
+	
+	can_shoot = false
+	
+	# Lower current weapon if it has a lower animation
+	var current_data = weapons_data[current_weapon]
+	if current_data.has("lower_anim") and current_data.lower_anim:
+		ANIMATIONPLAYER.play(current_data.lower_anim)
+		await ANIMATIONPLAYER.animation_finished
+	
+	# Update state
+	current_weapon = new_weapon
+	
+	# Instantly show new weapon (at lowered position)
+	_update_weapon_visibility()
+	
+	# Raise new weapon (play lower animation backwards)
+	var new_data = weapons_data[new_weapon]
+	if new_data.has("lower_anim") and new_data.lower_anim:
+		ANIMATIONPLAYER.play_backwards(new_data.lower_anim)
+		await ANIMATIONPLAYER.animation_finished
+	
+	can_shoot = true
 
 func _unhandled_input(event):
-	
 	if event is InputEventMouseMotion and mouse_captured:
 		# Store RELATIVE rotations (immune to parent snapping)
 		camera_yaw -= event.relative.x * SENSITIVITY
@@ -213,7 +285,7 @@ func _unhandled_input(event):
 		pivot_node_3d.rotation.x = camera_pitch
 	
 	if event.is_action_pressed("toggle_mouse"):
-		mouse_captured = not mouse_captured
+		mouse_captured = !mouse_captured
 		if mouse_captured:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		else:
@@ -223,7 +295,8 @@ func _physics_process(delta):
 	if get_tree().paused: # if is_paused:
 		return
 	
-	if is_on_floor(): _last_frame_was_on_floor = Engine.get_physics_frames()
+	if is_on_floor():
+		_last_frame_was_on_floor = Engine.get_physics_frames()
 	
 	# Handle gravity.
 	if not is_on_floor():
@@ -235,18 +308,15 @@ func _physics_process(delta):
 		# Store the horizontal velocity when the jump starts
 		direction = Vector3(velocity.x, 0, velocity.z).normalized()
 
-	# Handle sprint.
-	if Input.is_action_pressed("sprint") and not is_crouching:
-		if hud.stamina > 0:
-			regenStamina = false
-			speed = SPRINT_SPEED
-			hud.stamina -= 1
-			hud.updateHud()  # Update the HUD after sprinting
-		else:
-			speed = WALK_SPEED  # Prevent sprinting if no stamina
-
-	elif not is_crouching:
-		speed = WALK_SPEED
+	# Sprint & Stamina
+	if Input.is_action_pressed("sprint") and !is_crouching and hud.stamina > 0:
+		regenStamina = false
+		speed = SPRINT_SPEED
+		hud.stamina -= 1
+		hud.updateHud()
+	else:
+		if !is_crouching:
+			speed = WALK_SPEED
 
 	# Stamina regeneration logic (triggered by the timer)
 	if regenStamina and hud.stamina < 100:
@@ -304,11 +374,11 @@ func _physics_process(delta):
 			move_and_slide()
 			_snap_down_to_stairs_check()
 	
+	# Push rigidbodies
 	for i in get_slide_collision_count():
 		var c = get_slide_collision(i)
 		if c.get_collider() is RigidBody3D:
 			c.get_collider().apply_central_impulse(-c.get_normal() * push_force)
-	
 	
 	_slide_camera_smooth_back_to_origin(delta)
 	
@@ -317,17 +387,53 @@ func _physics_process(delta):
 	
 	camera_tilt(input_dir.x, delta)
 	
-	if Input.is_action_pressed("attack") and can_shoot:
-		match weapon:
-			weapons.BLASTER_B:
-				_shoot_B()
-			weapons.BLASTER_M:
-				_shoot_M()
+	# Shooting
+	if Input.is_action_pressed("attack") and can_shoot and current_weapon != WeaponState.NO_WEAPON:
+		var weapon_data = weapons_data[current_weapon]
+		if weapon_data.has("anim_player"):
+			_shoot_current_weapon()
+
+# =============== SHOOTING ===============
+func _shoot_current_weapon() -> void:
+	var data = weapons_data[current_weapon]
+	if ammo <= 0:
+		return
 	
-	if Input.is_action_just_pressed("weapon_one") and weapon != weapons.BLASTER_B:
-		_raise_weapon(weapons.BLASTER_B)
-	if Input.is_action_just_pressed("weapon_two") and weapon != weapons.BLASTER_M:
-		_raise_weapon(weapons.BLASTER_M)
+	var now := Time.get_ticks_msec() / 1000.0
+	if now < lastShot + fireSpeed:
+		return
+	
+	if !data.barrel.is_inside_tree():
+		return
+	
+	lastShot = now
+	
+	# Play animation and sound
+	if data.anim_player and !data.anim_player.is_playing():
+		data.anim_player.play("shooting")
+	if data.audio:
+		data.audio.play()
+	
+	_fire_bullet(data.barrel)
+
+func _fire_bullet(barrel_raycast: RayCast3D) -> void:
+	var new_bullet = bullet.instantiate()
+	new_bullet.damage = attackPower
+	new_bullet.global_position = barrel_raycast.global_position
+	
+	get_parent().add_child(new_bullet)
+	
+	var target_position: Vector3
+	if aim_ray_cast_3d.is_colliding():
+		target_position = aim_ray_cast_3d.get_collision_point()
+	else:
+		target_position = camera_3d.global_position - camera_3d.global_transform.basis.z * 101.0
+	
+	new_bullet._set_velocity(target_position)
+	
+	ammo -= 1
+	hud.ammo = ammo
+	hud.updateHud()
 
 func _object_grabbing(grabbed_object:RigidBody3D, delta) -> void:
 	var target_pos:Vector3 = grabbed_anchor.global_position
@@ -341,84 +447,6 @@ func _object_grabbing(grabbed_object:RigidBody3D, delta) -> void:
 	grabbed_object.linear_velocity = required_velocity
 	
 	grabbed_object.angular_velocity *= 0.5 # decreases the unwanted velocity
-
-
-func _shoot_B() -> void:
-	if ammo > 0:
-		if !gun_animation_player.is_playing():
-			gun_animation_player.play("shooting")
-			gun_audio_stream_player.play()
-			_fire(gun_barrel) # Pass the correct barrel RayCast3D
-	else:
-		print("Out of ammo!")
-
-func _shoot_M() -> void:
-	if ammo > 0:
-		if !gun_animation_player_m.is_playing():
-			gun_animation_player_m.play("shooting")
-			gun_audio_stream_player_m.play()
-			_fire(gun_barrel_m) # Pass the correct barrel RayCast3D
-	else:
-		print("Out of ammo!")
-
-func _fire(gun_barrel_raycast) -> void:
-	var now := Time.get_ticks_msec()/1000.0
-	if ammo < 1: return
-	if now < lastShot + fireSpeed: return
-	
-	if not gun_barrel_raycast.is_inside_tree() or not camera_3d.is_inside_tree():
-		return
-	
-	lastShot = now
-	
-	var new_bullet = bullet.instantiate()
-	new_bullet.damage = attackPower
-	
-	# Set the position to the barrel's global position (This was the previous error line, now protected)
-	new_bullet.global_position = gun_barrel_raycast.global_position
-	
-	# IMPORTANT: Add the bullet to the scene tree *before* calling _set_velocity()
-	get_parent().add_child(new_bullet)
-	
-	# Calculate and set the bullet's velocity
-	var target_position: Vector3
-	
-	if aim_ray_cast_3d.is_colliding():
-		target_position = aim_ray_cast_3d.get_collision_point()
-	else:
-		target_position = camera_3d.global_position - camera_3d.global_transform.basis.z * 101.0
-	
-	new_bullet._set_velocity(target_position)
-	
-	ammo -= 1
-	hud.ammo = ammo
-	hud.updateHud()
-
-@onready var inc := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b"
-@onready var incm := $"CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2"
-
-func _lower_weapon():
-	match weapon:
-		weapons.BLASTER_B:
-			ANIMATIONPLAYER.play("lower_blaster_b")
-		weapons.BLASTER_M:
-			ANIMATIONPLAYER.play("lower_blaster_m")
-
-func _raise_weapon(new_weapon):
-	can_shoot = false
-	_lower_weapon()
-	await get_tree().create_timer(0.3).timeout # Wait for the lowering animation (0.3s)
-	match new_weapon:
-		weapons.BLASTER_B:
-			inc.visible = true # INSTANTLY show the new weapon at the lowered position
-			ANIMATIONPLAYER.play_backwards("lower_blaster_b") # Start the raising animation
-			await ANIMATIONPLAYER.animation_finished # Wait for the raise to finish
-		weapons.BLASTER_M:
-			incm.visible = true # INSTANTLY show the new weapon at the lowered position
-			ANIMATIONPLAYER.play_backwards("lower_blaster_m") # Start the raising animation
-			await ANIMATIONPLAYER.animation_finished # Wait for the raise to finish
-	weapon = new_weapon
-	can_shoot = true
 
 func _process(_delta) -> void:
 	# Get the interactable component from the shapecast
@@ -656,7 +684,7 @@ func _on_hitbox_body_entered(body):
 	if body.is_in_group("enemies"):
 		print("enemy hit")
 
-func _on_stamina_regen_timeout():
+func _on_stamina_regen_timeout() -> void:
 	regenStamina = true
 
 func is_surface_too_steep(normal : Vector3) -> bool:
