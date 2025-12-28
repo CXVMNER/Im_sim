@@ -20,6 +20,3 @@ func count_all_keys() -> int:
 		if p.get("type") == 2: 
 			count += 1
 	return count
-
-func _physics_process(delta) -> void:
-	get_tree().call_group("enemies", "update_target_location", player.global_transform.origin)

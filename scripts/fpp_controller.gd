@@ -30,8 +30,10 @@ const AIR_CONTROL_FACTOR := 0.5  # Controls how much air movement is allowed (0 
 const INERTIA_FACTOR := 10.0  # Controls how much the character slides. Higher the value the less slippery movement
 var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumping etc.
 
+@onready var interact_cast := $CameraController/pivotNode3D/Camera3D/InteractionManager/InteractShapeCast3D
+@onready var grabbed_anchor := $CameraController/pivotNode3D/Camera3D/InteractionManager/SpringArm3D/GrabbedAnchor
+
 var grabbed_object:RigidBody3D = null
-@onready var grabbed_anchor := $CameraController/pivotNode3D/Camera3D/SpringArm3D/GrabbedAnchor
 
 # Variable to hold all collected key strings (The 'Pass Value' from your power-up)
 var keys_collected: Array[String] = []
@@ -141,8 +143,8 @@ func _input(event):
 	if Input.is_action_just_pressed("interact"):
 		if grabbed_object:
 			grabbed_object = null
-		elif %InteractShapeCast3D.is_colliding():
-			var collided = %InteractShapeCast3D.get_collision_result()[0]["collider"]
+		elif interact_cast.is_colliding():
+			var collided = interact_cast.get_collision_result()[0]["collider"]
 			if collided is RigidBox:
 				if !grabbed_object:
 					try_grabbing(collided)
@@ -342,11 +344,11 @@ func _process(_delta) -> void:
 		staminaRegenTimer.start()
 
 func get_interactable_component_at_shapecast() -> InteractableComponent:
-	for i in %InteractShapeCast3D.get_collision_count():
+	for i in interact_cast.get_collision_count():
 		# Allow colliding with player
-		if i > 0 and %InteractShapeCast3D.get_collider(0) != $".":
+		if i > 0 and interact_cast.get_collider(0) != $".":
 			return null
-		var collider = %InteractShapeCast3D.get_collider(i)
+		var collider = interact_cast.get_collider(i)
 		if collider and collider.get_node_or_null("InteractableComponent") is InteractableComponent:
 			return collider.get_node_or_null("InteractableComponent")
 	return null

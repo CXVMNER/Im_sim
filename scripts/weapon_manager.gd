@@ -4,7 +4,7 @@ class_name WeaponManager
 
 signal weapon_switched(new_weapon)
 
-@onready var player := $"../../../.."
+@onready var player := owner
 
 @onready var animation_player := $"../../../../AnimationPlayer"
 

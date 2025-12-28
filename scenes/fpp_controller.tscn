@@ -228,18 +228,19 @@ unique_name_in_owner = true
 [node name="Camera3D" type="Camera3D" parent="CameraController/pivotNode3D"]
 unique_name_in_owner = true
 
-[node name="InteractShapeCast3D" type="ShapeCast3D" parent="CameraController/pivotNode3D/Camera3D"]
-unique_name_in_owner = true
+[node name="InteractionManager" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
+
+[node name="InteractShapeCast3D" type="ShapeCast3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager"]
 shape = SubResource("SphereShape3D_ghtvo")
 target_position = Vector3(0, 0, -2.25)
 max_results = 2
 collision_mask = 9
 collide_with_areas = true
 
-[node name="SpringArm3D" type="SpringArm3D" parent="CameraController/pivotNode3D/Camera3D"]
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager"]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
-[node name="GrabbedAnchor" type="Marker3D" parent="CameraController/pivotNode3D/Camera3D/SpringArm3D"]
+[node name="GrabbedAnchor" type="Marker3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager/SpringArm3D"]
 
 [node name="GunHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.2, -0.5)
