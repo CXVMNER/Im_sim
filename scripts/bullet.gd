@@ -12,8 +12,8 @@ func _ready() -> void:
 	pass
 
 func _process(delta: float) -> void:
-	# 1. Calculate the travel vector for this frame
-	var motion = velocity * delta
+	# Calculate the travel vector for this frame
+	var motion := velocity * delta
 	
 	# Set the ray's target to the end of the travel path for the sweep test
 	var forward_dir = ray_cast_3d.target_position.normalized()
@@ -23,7 +23,7 @@ func _process(delta: float) -> void:
 	if ray_cast_3d.is_colliding():
 		var collider = ray_cast_3d.get_collider()
 		
-		# 2. Collision detected: Apply damage and clean up
+		# Collision detected: Apply damage and clean up
 		if collider != shooter:
 			# If the object has a takeDamage method (Enemy, Crates, etc.), call it
 			if collider.has_method("takeDamage"):
@@ -40,7 +40,7 @@ func _process(delta: float) -> void:
 			queue_free()
 			return
 	
-	# 3. No collision, move the bullet forward
+	# No collision, move the bullet forward
 	position += motion
 	
 func _set_velocity(target) -> void:

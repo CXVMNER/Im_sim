@@ -277,9 +277,6 @@ func _fire() -> void:
 	b.global_transform = gun.global_transform # Position the bullet at the gun's location.
 	get_parent().add_child(b) # Add the bullet to the scene.
 
-func _target_in_range():
-	return global_position.distance_to(target.global_position) < attack_range
-
 func _hit_finished() -> void:
 	target.hit()
 

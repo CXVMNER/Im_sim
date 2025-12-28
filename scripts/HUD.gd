@@ -8,7 +8,7 @@ extends Control
 @onready var ammoValue := $%ammo
 @onready var staminaValue := $%stamina
 
-@onready var keys_label = $MarginContainer2/VBoxContainer/HBoxContainer/KeysLabel
+@onready var keys_label := $MarginContainer2/VBoxContainer/HBoxContainer/KeysLabel
 
 var health : int
 var ammo : int

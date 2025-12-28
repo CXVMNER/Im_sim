@@ -103,10 +103,12 @@ func try_shoot() -> void:
 	player.hud.updateHud()
 
 func _fire_bullet(data: Dictionary) -> void:
-	var new_bullet = bullet_scene.instantiate()
+	if not data.barrel.is_inside_tree():
+		return
+	var new_bullet := bullet_scene.instantiate()
 	new_bullet.damage = data.damage
-	new_bullet.global_position = data.barrel.global_position
 	player.get_parent().add_child(new_bullet)
+	new_bullet.global_position = data.barrel.global_position
 
 	var target_pos: Vector3
 	if player.aim_ray_cast_3d.is_colliding():

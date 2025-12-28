@@ -39,17 +39,17 @@ func get_active_visual_node():
 
 func _ready():
 	add_to_group("power_ups")
-	# 1. Hide all specific models initially.
+	# Hide all specific models initially.
 	health_kit_2.visible = false
 	crate_small_2.visible = false
 	keycard.visible = false
 	
-	# 2. Make ONLY the correct specific model visible based on the 'type'.
+	# Make ONLY the correct specific model visible based on the 'type'.
 	var active_node = get_active_visual_node()
 	if active_node:
 		active_node.visible = true
 	
-	# 3. Set the label text.
+	# Set the label text.
 	match type:
 		Type.health:
 			label.text = "Health"
@@ -81,22 +81,22 @@ func _on_body_entered(body):
 				
 	# --- VISUALS & CLEANUP ---
 	
-	# 1. Find the active visual node and hide it.
+	# Find the active visual node and hide it.
 	var active_node = get_active_visual_node()
 	if active_node:
 		active_node.visible = false
 		
-	# 2. Hide the label.
+	# Hide the label.
 	label.visible = false
 	
 	collectable = false
 	
-	# 3. Determine sound, respawn, and deletion logic based on type.
+	# Determine sound, respawn, and deletion logic based on type.
 	if type == Type.key:
 		key_pickup_sound.play()
-		# FIX: Reparent the sound player to the root so it can finish playing.
+		# Reparent the sound player to the root so it can finish playing.
 		key_pickup_sound.reparent(get_tree().get_root())
-		# FIX: Schedule the sound player to delete itself when it finishes.
+		# Schedule the sound player to delete itself when it finishes.
 		key_pickup_sound.finished.connect(key_pickup_sound.queue_free, CONNECT_ONE_SHOT)
 		
 		# Delete the main power-up node immediately (sound will continue playing).
