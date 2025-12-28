@@ -484,30 +484,35 @@ func _handle_ladder_physics() -> bool:
 	move_and_slide()
 	return true
 
-func gainAmmo(qty):
+func gainAmmo(qty: int) -> void:
 	ammo += qty
+	print("Player gained ammo: ", qty, " | Ammo: ", ammo)
 	hud.ammo = ammo
 	hud.addUpdate(qty, "Ammo", Color(0,0,1,1))
-	hud.screenGlow(Color(1,0.843137,0,1))
 	hud.updateHud()
 
-func gainHealth(qty):
+func gainHealth(qty: int) -> void:
 	health += qty
+	print("Player gained health: ", qty, " | Health: ", health)
 	hud.health = health
 	hud.addUpdate(qty, "Health", Color(0,1,0,1))
-	hud.screenGlow(Color(1,0.843137,0,1))
 	hud.updateHud()
 
-func takeDamage(qty):
-	health -= qty
+func takeDamage(dmg: int) -> void:
+	if is_dead or dmg <= 0:
+		return
+	
+	health -= dmg
+	print("Player took damage: ", dmg, " | Health: ", health)
+	
+	# Update HUD data
 	hud.health = health
-	if health <=0:
+	hud.addUpdate(dmg, "Damage", Color(1, 0, 0, 1))
+	hud.updateHud()
+	
+	if health <= 0:
 		health = 0
 		die()
-	else:
-		hud.addUpdate(qty, "Damage", Color(1,0,0,1))
-		hud.screenGlow(Color(1,0,0,0.7))
-		hud.updateHud()
 
 func _headbob(time) -> Vector3:
 	var pos = Vector3.ZERO
@@ -515,7 +520,7 @@ func _headbob(time) -> Vector3:
 	pos.x = cos(time * BOB_FREQ / 2) * BOB_AMP
 	return pos
 
-func _toggle_crouch():
+func _toggle_crouch() -> void:
 	if is_crouching:
 		# Only uncrouch if there's no obstacle above
 		if CROUCH_SHAPECAST.is_colliding() == false:
@@ -523,11 +528,11 @@ func _toggle_crouch():
 	else:
 		crouching(true)
 
-func uncrouch_check():
+func uncrouch_check() -> void:
 	if CROUCH_SHAPECAST.is_colliding() == false:
 		crouching(false)
 
-func crouching(state : bool):
+func crouching(state : bool) -> void:
 	match state:
 		true:
 			ANIMATIONPLAYER.play("crouch", 0, CROUCHING_SPEED)
@@ -538,12 +543,12 @@ func crouching(state : bool):
 			set_movement_speed("walking")
 			is_crouching = false  # Mark as not crouching
 
-func _on_animation_player_animation_started(anim_name):
+func _on_animation_player_animation_started(anim_name) -> void:
 	if anim_name == "crouch":
 		is_crouching = !is_crouching
 
 # Set movement speed
-func set_movement_speed(state : String):
+func set_movement_speed(state : String) -> void:
 	match state:
 		"walking":
 			speed = WALK_SPEED
@@ -556,7 +561,7 @@ func _on_stamina_regen_timeout() -> void:
 func is_surface_too_steep(normal : Vector3) -> bool:
 	return normal.angle_to(Vector3.UP) > self.floor_max_angle
 
-func camera_tilt(input_x, delta):
+func camera_tilt(input_x, delta) -> void:
 	if camera_3d:
 		camera_3d.rotation.z = lerp(camera_3d.rotation.z, -input_x * camera_rotation_amount, delta * camera_rotation_factor)
 
