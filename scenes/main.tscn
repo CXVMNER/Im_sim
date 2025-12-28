@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://coyde7p4hcmoq"]
+
+[ext_resource type="Script" uid="uid://vool28v2v173" path="res://scripts/main.gd" id="1_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://bd6bmfe3g5nfg" path="res://scenes/fpp_controller.tscn" id="2_sugp2"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_0wfyh")
+
+[node name="LevelContainer" type="Node3D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("2_sugp2")]

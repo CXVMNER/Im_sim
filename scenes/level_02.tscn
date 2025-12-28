@@ -1,7 +1,6 @@
 [gd_scene load_steps=54 format=4 uid="uid://dsepepj66iuor"]
 
-[ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_68jev"]
-[ext_resource type="PackedScene" uid="uid://bd6bmfe3g5nfg" path="res://scenes/fpp_controller.tscn" id="2_37jkp"]
+[ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_manager.gd" id="1_68jev"]
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="3_ci1t6"]
 [ext_resource type="PackedScene" uid="uid://cy6crgm800v36" path="res://scenes/tall_wall.tscn" id="4_ocwh6"]
 [ext_resource type="PackedScene" uid="uid://m45amrh7ell" path="res://scenes/short_wall.tscn" id="5_thh7q"]
@@ -21,6 +20,7 @@
 [ext_resource type="Script" uid="uid://bkp4fo0yol1r8" path="res://scripts/Door.gd" id="18_bsbwy"]
 [ext_resource type="Texture2D" uid="uid://b24j8lhe6xahh" path="res://assets/kenney_prototype-textures/PNG/Red/texture_02.png" id="19_ylee6"]
 [ext_resource type="PackedScene" uid="uid://b8yjpuo8fohxn" path="res://scenes/movable_elevator.tscn" id="20_0062h"]
+[ext_resource type="PackedScene" uid="uid://dlc3xcidvaqaj" path="res://scenes/level_transition.tscn" id="21_37jkp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qfypb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -279,9 +279,6 @@ environment = SubResource("Environment_e4ieo")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="CharacterBody3D" parent="." instance=ExtResource("2_37jkp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.25, 4)
-
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_d46x6")
 
@@ -536,15 +533,10 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.5
 type = 1
 qty = 10
 
-[node name="powerUp3" parent="." instance=ExtResource("12_rsdo6")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.5, 0.75, -8.5)
-type = 2
-pass_value = "red"
-
 [node name="powerUp4" parent="." instance=ExtResource("12_rsdo6")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.5, 0.75, -6.5)
 type = 2
-pass_value = "blu"
+pass_value = "red"
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 1.75, 11)
@@ -723,6 +715,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
 [node name="movableElevator" parent="." instance=ExtResource("20_0062h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, -22)
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="LevelTransitionArea3D" parent="." instance=ExtResource("21_37jkp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 1, 2)
+target_level_path = "uid://bb4nkm70jejd8"
 
 [connection signal="interacted" from="buttonStaticBody3D/InteractableComponent" to="buttonStaticBody3D/button/AnimationPlayer" method="play" binds= ["ButtonPress"]]
 [connection signal="interacted" from="movableDoor2/AnimatableBody3D/InteractableComponent" to="movableDoor2/AnimatableBody3D" method="toggle_open"]

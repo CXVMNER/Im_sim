@@ -1,14 +1,13 @@
 [gd_scene load_steps=54 format=4 uid="uid://bb4nkm70jejd8"]
 
-[ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_01.gd" id="1_avbq2"]
+[ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_manager.gd" id="1_avbq2"]
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="3_lwi15"]
-[ext_resource type="PackedScene" uid="uid://bd6bmfe3g5nfg" path="res://scenes/fpp_controller.tscn" id="3_q73g5"]
 [ext_resource type="Texture2D" uid="uid://ddaxsx88p1yyv" path="res://assets/kenney_prototype-textures/PNG/Green/texture_02.png" id="3_t0ybu"]
 [ext_resource type="PackedScene" uid="uid://cy6crgm800v36" path="res://scenes/tall_wall.tscn" id="4_0tv6x"]
 [ext_resource type="PackedScene" uid="uid://m45amrh7ell" path="res://scenes/short_wall.tscn" id="4_cy6r3"]
 [ext_resource type="Texture2D" uid="uid://dy4bkgmkb7wsy" path="res://assets/kenney_prototype-textures/PNG/Light/texture_02.png" id="4_e6mo4"]
 [ext_resource type="PackedScene" uid="uid://c8161in0xfnar" path="res://scenes/enemy.tscn" id="6_haycg"]
-[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://scenes/CSGStairMaker3D.tscn" id="6_llcge"]
+[ext_resource type="PackedScene" path="res://scenes/CSGStairMaker3D.tscn" id="6_llcge"]
 [ext_resource type="PackedScene" uid="uid://6fe1crai8ada" path="res://scenes/tall_wall_hole.tscn" id="6_s61md"]
 [ext_resource type="Texture2D" uid="uid://dtvac31mepgcl" path="res://assets/kenney_prototype-textures/PNG/Orange/texture_02.png" id="7_1b6n0"]
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="7_ky2cw"]
@@ -21,6 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://b8yjpuo8fohxn" path="res://scenes/movable_elevator.tscn" id="13_d46x6"]
 [ext_resource type="Texture2D" uid="uid://b24j8lhe6xahh" path="res://assets/kenney_prototype-textures/PNG/Red/texture_02.png" id="14_cr2eh"]
 [ext_resource type="PackedScene" uid="uid://cqymj0jooavvg" path="res://scenes/movable_door.tscn" id="15_cy6r3"]
+[ext_resource type="PackedScene" uid="uid://dlc3xcidvaqaj" path="res://scenes/level_transition.tscn" id="21_wqkcq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qfypb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -278,9 +278,6 @@ environment = SubResource("Environment_e4ieo")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
-
-[node name="CharacterBody3D" parent="." instance=ExtResource("3_q73g5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.25, 4)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_d46x6")
@@ -541,11 +538,6 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.5
 type = 2
 pass_value = "red"
 
-[node name="powerUp4" parent="." instance=ExtResource("7_ky2cw")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.5, 0.75, -6.5)
-type = 2
-pass_value = "blu"
-
 [node name="CSGBox3D5" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 1.75, 11)
 use_collision = true
@@ -723,6 +715,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -20)
 
 [node name="movableElevator" parent="." instance=ExtResource("13_d46x6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, -22)
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 6)
+
+[node name="LevelTransitionArea3D" parent="." instance=ExtResource("21_wqkcq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -2)
+target_level_path = "uid://dsepepj66iuor"
 
 [connection signal="interacted" from="buttonStaticBody3D/InteractableComponent" to="buttonStaticBody3D/button/AnimationPlayer" method="play" binds= ["ButtonPress"]]
 [connection signal="interacted" from="movableDoor2/AnimatableBody3D/InteractableComponent" to="movableDoor2/AnimatableBody3D" method="toggle_open"]

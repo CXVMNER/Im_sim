@@ -1,8 +1,14 @@
 extends Node3D
 
-@onready var player := $CharacterBody3D
+var player: Player
 
 func _ready() -> void:
+	if GameManager.main_node != null:
+		player = GameManager.main_node.player
+	
+	if player == null:
+		return
+	
 	var total_keys := count_all_keys()
 	print("Total keys on map: ", total_keys)
 	

@@ -11,6 +11,9 @@ var progress := [0.0]
 var loaded_scene:PackedScene
 @onready var progress_label := $ColorRect/ProgressLabel
 
+signal scene_loaded_resource(resource: PackedScene)
+var use_internal_swap: bool = true # Default behavior
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
@@ -26,8 +29,12 @@ func _process(delta: float) -> void:
 	if scene_load_status == ResourceLoader.THREAD_LOAD_LOADED:
 		await get_tree().create_timer(forced_delay).timeout
 		loaded_scene = ResourceLoader.load_threaded_get(next_scene_path)
-		get_tree().change_scene_to_packed(loaded_scene)
-		scene_loaded.emit()
+	
+		if use_internal_swap:
+			get_tree().change_scene_to_packed(loaded_scene)
+		else:
+			scene_loaded_resource.emit(loaded_scene)
+	
 		queue_free()
 	elif scene_load_status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 		progress_label.text = str(rounded_progress) + "%"
