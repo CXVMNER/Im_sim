@@ -14,7 +14,7 @@ enum WeaponState {
 	WEAPON_2  # blaster-m2
 }
 
-var current_weapon: WeaponState = WeaponState.WEAPON_1
+var current_weapon: WeaponState = WeaponState.NO_WEAPON
 var can_shoot: bool = true
 var last_shot: float = 0.0
 
