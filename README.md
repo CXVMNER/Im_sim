@@ -6,9 +6,9 @@ Project made in engine Godot 4.5.1
 
 2. Download the project:
 
-    - git clone https://github.com/CXVMNER/Im_sim.git or
+    - git clone https://github.com/CXVMNER/Im_sim.git
 
-    - "<> Code" > "Download zip", unzip
+    - or "<> Code" > "Download zip", unzip
 
 3. Import project to Godot
 
@@ -24,9 +24,9 @@ Projekt stworzony w silniku Godot 4.5.1
 
 2. Pobierz projekt:
 
-    - git clone https://github.com/CXVMNER/Im_sim.git lub
+    - git clone https://github.com/CXVMNER/Im_sim.git
 
-    - "<> Code" > "Download zip", rozpakuj
+    - lub "<> Code" > "Download zip", rozpakuj
 
 3. Zaimportuj projekt do Godot
 
