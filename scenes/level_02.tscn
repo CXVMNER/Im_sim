@@ -491,11 +491,6 @@ transform = Transform3D(4, 0, 0, 0, 2, 0, 0, 0, 4, 18, 1, 2)
 use_collision = true
 num_stairs = 8
 
-[node name="CSGStairMaker3D2" parent="NavigationRegion3D" instance=ExtResource("9_s1jqf")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 4, 18, 1, 6)
-use_collision = true
-num_stairs = 8
-
 [node name="CSGStairMaker3D3" parent="NavigationRegion3D" instance=ExtResource("9_s1jqf")]
 transform = Transform3D(3, 0, 0, 0, 2, 0, 0, 0, 4, 18, 1, 10)
 use_collision = true
@@ -675,33 +670,6 @@ metadata/_custom_type_script = "uid://d38lde0ccowa0"
 [node name="DoorLabel3D" type="Label3D" parent="movableDoor2/AnimatableBody3D"]
 transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, -1, 1.5, -0.3996646)
 
-[node name="movableDoor3" type="Node3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27, 0, 4)
-
-[node name="AnimatableBody3D" type="AnimatableBody3D" parent="movableDoor3"]
-script = ExtResource("18_bsbwy")
-required_key = "blu"
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="movableDoor3/AnimatableBody3D"]
-transform = Transform3D(2, 0, 0, 0, 3, 0, 0, 0, 0.25, -1, 1.5, -0.125)
-mesh = SubResource("BoxMesh_px6rj")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="movableDoor3/AnimatableBody3D"]
-transform = Transform3D(2, 0, 0, 0, 3, 0, 0, 0, 0.25, -1, 1.5, -0.125)
-shape = SubResource("ConvexPolygonShape3D_cr2eh")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="movableDoor3/AnimatableBody3D"]
-libraries = {
-&"": SubResource("AnimationLibrary_42ncp")
-}
-
-[node name="InteractableComponent" type="Node" parent="movableDoor3/AnimatableBody3D"]
-script = ExtResource("16_f257o")
-metadata/_custom_type_script = "uid://d38lde0ccowa0"
-
-[node name="DoorLabel3D" type="Label3D" parent="movableDoor3/AnimatableBody3D"]
-transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, -1, 1.5, -0.3996646)
-
 [node name="PatrolPoints" type="Node3D" parent="."]
 
 [node name="Point1" type="Marker3D" parent="PatrolPoints"]
@@ -721,8 +689,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
 [node name="LevelTransitionArea3D" parent="." instance=ExtResource("21_37jkp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 1, 2)
-target_level_path = "uid://bb4nkm70jejd8"
+target_level_path = "uid://dlejwq3qgdvnp"
+is_full_scene_change = true
 
 [connection signal="interacted" from="buttonStaticBody3D/InteractableComponent" to="buttonStaticBody3D/button/AnimationPlayer" method="play" binds= ["ButtonPress"]]
 [connection signal="interacted" from="movableDoor2/AnimatableBody3D/InteractableComponent" to="movableDoor2/AnimatableBody3D" method="toggle_open"]
-[connection signal="interacted" from="movableDoor3/AnimatableBody3D/InteractableComponent" to="movableDoor3/AnimatableBody3D" method="toggle_open"]

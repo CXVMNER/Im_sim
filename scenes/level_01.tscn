@@ -536,7 +536,7 @@ qty = 10
 [node name="powerUp3" parent="." instance=ExtResource("7_ky2cw")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.5, 0.75, -8.5)
 type = 2
-pass_value = "red"
+pass_value = "blu"
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 1.75, 11)
