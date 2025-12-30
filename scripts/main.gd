@@ -6,7 +6,7 @@ extends Node3D
 func _ready() -> void:
 	# GameManager now handles level loading instead of changing scenes entirely
 	GameManager.main_node = self 
-	change_level("res://scenes/level_01.tscn")
+	change_level("res://scenes/level_00.tscn")
 
 func change_level(level_path: String) -> void:
 	# Defer actual loading to GameManager

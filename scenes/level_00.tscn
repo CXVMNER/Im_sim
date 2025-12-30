@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://duyledkoyfys4"]
+
+[ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="1_bvxu8"]
+[ext_resource type="PackedScene" uid="uid://dlc3xcidvaqaj" path="res://scenes/level_transition.tscn" id="2_2nwr0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2nwr0"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_33pdg"]
+sky_material = SubResource("ProceduralSkyMaterial_2nwr0")
+
+[sub_resource type="Environment" id="Environment_6vcuh"]
+background_mode = 2
+sky = SubResource("Sky_33pdg")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kcbs5"]
+albedo_texture = ExtResource("1_bvxu8")
+uv1_triplanar = true
+
+[node name="world" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6vcuh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(20, 1, 20)
+material = SubResource("StandardMaterial3D_kcbs5")
+
+[node name="SpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+
+[node name="LevelTransitionArea3D" parent="." instance=ExtResource("2_2nwr0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -6)
+target_level_path = "uid://bb4nkm70jejd8"
+
+[node name="Label3D" type="Label3D" parent="LevelTransitionArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+text = "Enter here to move to
+the next level"

@@ -26,12 +26,12 @@
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
-[sub_resource type="Sky" id="Sky_33pdg"]
+[sub_resource type="Sky" id="Sky_wqkcq"]
 sky_material = SubResource("ProceduralSkyMaterial_qfypb")
 
 [sub_resource type="Environment" id="Environment_e4ieo"]
 background_mode = 2
-sky = SubResource("Sky_33pdg")
+sky = SubResource("Sky_wqkcq")
 tonemap_mode = 2
 glow_enabled = true
 
@@ -285,7 +285,7 @@ navigation_mesh = SubResource("NavigationMesh_d46x6")
 [node name="baseFloor" type="Node3D" parent="NavigationRegion3D"]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D/baseFloor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.013660431, -0.49999952, -0.0018234253)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 use_collision = true
 size = Vector3(80, 1, 80)
 material = SubResource("StandardMaterial3D_glotf")
