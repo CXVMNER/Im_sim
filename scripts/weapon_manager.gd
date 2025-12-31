@@ -6,8 +6,6 @@ signal weapon_switched(new_weapon)
 
 @onready var player := owner
 
-@onready var animation_player := $"../../../../AnimationPlayer"
-
 enum WeaponState {
 	NO_WEAPON,
 	WEAPON_1,  # blaster-b
@@ -37,7 +35,7 @@ func _build_weapons_data() -> void:
 			"anim_player": $"blaster-b/AnimationPlayer",
 			"audio": $"blaster-b/AudioStreamPlayer",
 			"lowered_pos": Vector3(0, -1, 0),
-			"lower_anim": "lower_blaster_b",
+			"lower_anim": "lower_blaster",
 			"fire_speed": 0.2,
 			"damage": 1
 		},
@@ -47,7 +45,7 @@ func _build_weapons_data() -> void:
 			"anim_player": $"blaster-m2/AnimationPlayer",
 			"audio": $"blaster-m2/AudioStreamPlayer",
 			"lowered_pos": Vector3(0, -1, 0),
-			"lower_anim": "lower_blaster_m",
+			"lower_anim": "lower_blaster",
 			"fire_speed": 0.5,
 			"damage": 3
 		}
@@ -59,9 +57,11 @@ func switch_weapon(new_weapon: WeaponState) -> void:
 	can_shoot = false
 
 	var current_data = weapons_data[current_weapon]
-	if current_data.has("lower_anim") and current_data.lower_anim:
-		animation_player.play(current_data.lower_anim)
-		await animation_player.animation_finished
+	
+	# Play the "lower" animation on the CURRENT weapon's local AnimationPlayer
+	if current_data.get("anim_player") and current_data.has("lower_anim"):
+		current_data.anim_player.play(current_data.lower_anim)
+		await current_data.anim_player.animation_finished
 
 	current_weapon = new_weapon
 
@@ -71,9 +71,10 @@ func switch_weapon(new_weapon: WeaponState) -> void:
 
 	_update_weapon_visibility()
 
-	if new_data.has("lower_anim") and new_data.lower_anim:
-		animation_player.play_backwards(new_data.lower_anim)
-		await animation_player.animation_finished
+	# Play the "lower" animation BACKWARDS on the NEW weapon's local AnimationPlayer
+	if new_data.get("anim_player") and new_data.has("lower_anim"):
+		new_data.anim_player.play_backwards(new_data.lower_anim)
+		await new_data.anim_player.animation_finished
 
 	can_shoot = true
 	emit_signal("weapon_switched", new_weapon)
@@ -91,6 +92,7 @@ func try_shoot() -> void:
 
 	last_shot = now
 
+	# Uses the same local anim_player reference for shooting
 	if data.anim_player and !data.anim_player.is_playing():
 		data.anim_player.play("shooting")
 	if data.audio:

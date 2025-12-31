@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene load_steps=16 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="Script" uid="uid://dex1exhhhfhgi" path="res://scripts/weapon_manager.gd" id="2_55026"]
@@ -96,10 +96,6 @@ tracks/5/keys = {
 "values": [Vector3(0, 0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_pa70x"]
-resource_name = "attack"
-length = 0.7
-
 [sub_resource type="Animation" id="Animation_8bnx4"]
 resource_name = "crouch"
 tracks/0/type = "value"
@@ -151,51 +147,10 @@ tracks/3/keys = {
 "values": [Vector3(0, 1.5, 0), Vector3(0, 0.75, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_g7p17"]
-resource_name = "idle"
-length = 3.0
-loop_mode = 1
-
-[sub_resource type="Animation" id="Animation_up7xj"]
-resource_name = "new_animation"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CameraController/pivotNode3D/Camera3D/GunHolder/blaster-b:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, -1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_bww43"]
-resource_name = "lower_blaster_m"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CameraController/pivotNode3D/Camera3D/GunHolder/blaster-m2:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, -1, 0)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_myidv"]
 _data = {
 &"RESET": SubResource("Animation_bp8e0"),
-&"attack": SubResource("Animation_pa70x"),
-&"crouch": SubResource("Animation_8bnx4"),
-&"idle": SubResource("Animation_g7p17"),
-&"lower_blaster_b": SubResource("Animation_up7xj"),
-&"lower_blaster_m": SubResource("Animation_bww43")
+&"crouch": SubResource("Animation_8bnx4")
 }
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_c503a"]
@@ -270,15 +225,13 @@ libraries = {
 autoplay = "idle"
 playback_default_blend_time = 0.1
 
-[node name="CrouchAnimationPlayer" type="AnimationPlayer" parent="."]
-
 [node name="headShapeCast3D" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 shape = SubResource("SphereShape3D_c503a")
 target_position = Vector3(0, 0.5, 0)
 
 [node name="staminaRegen" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 2.5
 
 [node name="StairsAheadRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
@@ -294,6 +247,5 @@ mouse_filter = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("5_bww43")]
 
-[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
 [connection signal="timeout" from="staminaRegen" to="." method="_on_stamina_regen_timeout"]

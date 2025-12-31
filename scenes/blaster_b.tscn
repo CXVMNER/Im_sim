@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=4 uid="uid://b7iiv5kc4qkwa"]
+[gd_scene load_steps=11 format=4 uid="uid://b7iiv5kc4qkwa"]
 
 [ext_resource type="PackedScene" uid="uid://cv2f48rkkap2q" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/blaster-b.glb" id="1_krvfs"]
 [ext_resource type="Texture2D" uid="uid://bywcdxt1k3oa7" path="res://assets/kenney_blaster-kit_2.1/Models/GLB format/Textures/colormap.png" id="2_s2p62"]
@@ -170,9 +170,26 @@ tracks/1/keys = {
 "values": [Vector3(0, 0, 0), Vector3(0.061697394, 0, 0), Vector3(0, 0, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_m0t4e"]
+resource_name = "lower_blaster"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -1, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_m0t4e"]
 _data = {
 &"RESET": SubResource("Animation_j3alf"),
+&"lower_blaster": SubResource("Animation_m0t4e"),
 &"shooting": SubResource("Animation_s2p62")
 }
 

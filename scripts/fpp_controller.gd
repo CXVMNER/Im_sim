@@ -4,7 +4,7 @@ class_name Player
 
 @onready var hud := $HUD
 @export var health := 100
-@export var ammo := 20
+@export var ammo := 0
 @export var stamina := 100
 
 @onready var aim_ray_cast_3d := $CameraController/pivotNode3D/Camera3D/AimRayCast3D
@@ -56,7 +56,6 @@ var is_crouching := false
 @export var CROUCH_SHAPECAST : Node3D
 
 @onready var ANIMATIONPLAYER := $AnimationPlayer
-@onready var crouch_animation_player := $CrouchAnimationPlayer
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gravity = 9.8
