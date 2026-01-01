@@ -7,9 +7,6 @@ class_name Player
 @export var ammo := 0
 @export var stamina := 100
 
-@onready var aim_ray_cast_3d := $CameraController/pivotNode3D/Camera3D/AimRayCast3D
-@onready var aim_ray_end := $CameraController/pivotNode3D/Camera3D/AimRayEnd
-
 @onready var pause_menu: PauseMenu = $PauseMenu
 @export var is_dead: bool = false # Flag for the player's death status
 

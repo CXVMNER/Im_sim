@@ -5,8 +5,8 @@ var damage := 1
 var velocity := Vector3.ZERO
 var shooter = null # Prevents bullet from hitting the player immediately
 
-@onready var mesh_instance_3d := $MeshInstance3D
-@onready var ray_cast_3d := $GunRayCast3D
+@onready var bullet_mesh := $BulletMesh
+@onready var ray_cast_3d := $RayCast3D
 
 func _ready() -> void:
 	pass
@@ -35,7 +35,7 @@ func _process(delta: float) -> void:
 			position += velocity.normalized() * distance_to_hit
 
 			# Cleanup
-			mesh_instance_3d.visible = false
+			bullet_mesh.visible = false
 			ray_cast_3d.enabled = false
 			queue_free()
 			return
@@ -43,10 +43,12 @@ func _process(delta: float) -> void:
 	# No collision, move the bullet forward
 	position += motion
 	
-func _set_velocity(target) -> void:
-	# Align the bullet's forward (-Z) with the direction to the target
-	look_at(target)
-	velocity = position.direction_to(target) * speed
+func set_direction(dir: Vector3) -> void:
+	velocity = dir * speed
+	
+	# Optional: rotate visual mesh/bullet model to face travel direction
+	# (only if bullet mesh looks better when rotated)
+	look_at(global_position + dir * 10.0, Vector3.UP)
 
 # Function called by the Timer node (set to 10.0s in bullet.tscn)
 # This handles the cleanup if the bullet misses everything.

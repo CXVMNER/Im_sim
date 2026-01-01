@@ -31,7 +31,7 @@ func _build_weapons_data() -> void:
 		WeaponState.NO_WEAPON: { "holder": null, "visible": false },
 		WeaponState.WEAPON_1: {
 			"holder": $"blaster-b",
-			"barrel": $"blaster-b/RayCast3D",
+			"barrel": $"blaster-b/MuzzleMarker3D",
 			"anim_player": $"blaster-b/AnimationPlayer",
 			"audio": $"blaster-b/AudioStreamPlayer",
 			"lowered_pos": Vector3(0, -1, 0),
@@ -41,7 +41,7 @@ func _build_weapons_data() -> void:
 		},
 		WeaponState.WEAPON_2: {
 			"holder": $"blaster-m2",
-			"barrel": $"blaster-m2/RayCast3D",
+			"barrel": $"blaster-m2/MuzzleMarker3D",
 			"anim_player": $"blaster-m2/AnimationPlayer",
 			"audio": $"blaster-m2/AudioStreamPlayer",
 			"lowered_pos": Vector3(0, -1, 0),
@@ -107,18 +107,19 @@ func try_shoot() -> void:
 func _fire_bullet(data: Dictionary) -> void:
 	if not data.barrel.is_inside_tree():
 		return
+		
 	var new_bullet := bullet_scene.instantiate()
 	new_bullet.damage = data.damage
+	
 	player.get_parent().add_child(new_bullet)
 	new_bullet.global_position = data.barrel.global_position
-
-	var target_pos: Vector3
-	if player.aim_ray_cast_3d.is_colliding():
-		target_pos = player.aim_ray_cast_3d.get_collision_point()
-	else:
-		target_pos = player.camera_3d.global_position - player.camera_3d.global_transform.basis.z * 101.0
-
-	new_bullet._set_velocity(target_pos)
+	
+	# Use camera forward direction
+	var shoot_direction = -player.camera_3d.global_basis.z.normalized()
+	
+	shoot_direction = (player.camera_3d.global_position + shoot_direction * 100.0 - data.barrel.global_position).normalized()
+	
+	new_bullet.set_direction(shoot_direction)
 
 func _update_weapon_visibility() -> void:
 	for ws in weapons_data:

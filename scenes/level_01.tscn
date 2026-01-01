@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://m45amrh7ell" path="res://scenes/short_wall.tscn" id="4_cy6r3"]
 [ext_resource type="Texture2D" uid="uid://dy4bkgmkb7wsy" path="res://assets/kenney_prototype-textures/PNG/Light/texture_02.png" id="4_e6mo4"]
 [ext_resource type="PackedScene" uid="uid://c8161in0xfnar" path="res://scenes/enemy.tscn" id="6_haycg"]
-[ext_resource type="PackedScene" path="res://scenes/CSGStairMaker3D.tscn" id="6_llcge"]
+[ext_resource type="PackedScene" uid="uid://bak8ltrhbmlv5" path="res://scenes/CSGStairMaker3D.tscn" id="6_llcge"]
 [ext_resource type="PackedScene" uid="uid://6fe1crai8ada" path="res://scenes/tall_wall_hole.tscn" id="6_s61md"]
 [ext_resource type="Texture2D" uid="uid://dtvac31mepgcl" path="res://assets/kenney_prototype-textures/PNG/Orange/texture_02.png" id="7_1b6n0"]
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="7_ky2cw"]
@@ -575,7 +575,7 @@ pass_value = "blu"
 [node name="powerUp4" parent="." instance=ExtResource("7_ky2cw")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 21.5, 0.75, -10.5)
 type = 2
-pass_value = "green"
+pass_value = "grn"
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 1.75, 11)

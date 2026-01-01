@@ -122,13 +122,18 @@ func _state_chase(delta: float) -> void:
 		_enter_state(State.INVESTIGATE)
 
 func _state_attack() -> void:
+	if is_attacking:
+		return
 	is_attacking = true
 	velocity = Vector3.ZERO
 	animation_player.play("attackwithhand")
 	await animation_player.animation_finished
 	deal_attack_damage()
+	if target:
+		var current_dist = global_transform.origin.distance_to(target.global_transform.origin)
+		if current_dist > attack_range:
+			_enter_state(State.CHASE)
 	is_attacking = false
-	_enter_state(State.CHASE)
 
 func deal_attack_damage() -> void:
 	if is_dead or is_attacking == false:  # extra safety
