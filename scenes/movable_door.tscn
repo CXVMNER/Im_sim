@@ -4,12 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://b24j8lhe6xahh" path="res://assets/kenney_prototype-textures/PNG/Red/texture_02.png" id="2_k5qh6"]
 [ext_resource type="Script" uid="uid://d38lde0ccowa0" path="res://scripts/InteractableComponent.gd" id="3_0gupw"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cy6r3"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nbaou"]
 albedo_texture = ExtResource("2_k5qh6")
 uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_px6rj"]
-material = SubResource("StandardMaterial3D_cy6r3")
+material = SubResource("StandardMaterial3D_nbaou")
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cr2eh"]
 points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)

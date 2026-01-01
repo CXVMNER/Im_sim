@@ -41,10 +41,9 @@ material = SubResource("StandardMaterial3D_kcbs5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
 
 [node name="LevelTransitionArea3D" parent="." instance=ExtResource("2_2nwr0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -4)
 target_level_path = "uid://bb4nkm70jejd8"
 
 [node name="Label3D" type="Label3D" parent="LevelTransitionArea3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 text = "Enter here to move to
 the next level"

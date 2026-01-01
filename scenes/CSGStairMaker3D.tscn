@@ -1,4 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://bak8ltrhbmlv5"]
+[gd_scene load_steps=5 format=3 uid="uid://colr7dipihno2"]
+
+[ext_resource type="Texture2D" uid="uid://dy4bkgmkb7wsy" path="res://assets/kenney_prototype-textures/PNG/Light/texture_02.png" id="1_nfce6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsuhh"]
+albedo_texture = ExtResource("1_nfce6")
+uv1_triplanar = true
+uv1_world_triplanar = true
 
 [sub_resource type="GDScript" id="GDScript_0eugj"]
 script/source = "@tool
@@ -54,7 +61,13 @@ func _process(_delta):
 		make_stairs()
 "
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s6xss"]
+albedo_texture = ExtResource("1_nfce6")
+uv1_triplanar = true
+uv1_world_triplanar = true
+
 [node name="CSGStairMaker3D" type="CSGBox3D"]
+material = SubResource("StandardMaterial3D_hsuhh")
 script = SubResource("GDScript_0eugj")
 num_stairs = 4
 
@@ -62,3 +75,4 @@ num_stairs = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -0.5, 0.5)
 operation = 2
 polygon = PackedVector2Array(0, 0.25, 0.25, 0.25, 0.25, 0.5, 0.5, 0.5, 0.5, 0.75, 0.75, 0.75, 0.75, 1, 0, 1)
+material = SubResource("StandardMaterial3D_s6xss")

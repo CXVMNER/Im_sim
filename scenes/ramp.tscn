@@ -5,6 +5,7 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0b1uk"]
 albedo_texture = ExtResource("1_iffpq")
 uv1_triplanar = true
+uv1_world_triplanar = true
 
 [node name="Ramp" type="Node3D"]
 

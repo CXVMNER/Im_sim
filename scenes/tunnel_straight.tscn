@@ -1,10 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://dgo1j5s5ncwb2"]
 
-[ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="1_pasj3"]
+[ext_resource type="Texture2D" uid="uid://dy4bkgmkb7wsy" path="res://assets/kenney_prototype-textures/PNG/Light/texture_02.png" id="1_pasj3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lw3ro"]
 albedo_texture = ExtResource("1_pasj3")
 uv1_triplanar = true
+uv1_world_triplanar = true
 
 [node name="TunnelStraight" type="Node3D"]
 

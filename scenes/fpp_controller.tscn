@@ -205,6 +205,7 @@ script = ExtResource("2_55026")
 visible = false
 
 [node name="blaster-b" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("2_uwixu")]
+visible = false
 
 [node name="blaster-m2" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("3_up7xj")]
 visible = false
