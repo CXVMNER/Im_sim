@@ -1,7 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://ceedqrih15ryy"]
+[gd_scene load_steps=4 format=3 uid="uid://ceedqrih15ryy"]
 
 [ext_resource type="Script" uid="uid://fpwihrsjktwr" path="res://scripts/HUD.gd" id="1_on1tq"]
 [ext_resource type="Script" uid="uid://3p1pndhb11o2" path="res://scripts/FPSCounter.gd" id="2_722oe"]
+
+[sub_resource type="GDScript" id="GDScript_fls4u"]
+script/source = "extends Control
+
+@export var dot_color: Color = Color.WHITE
+@export var outline_color: Color = Color.BLACK  # Change this in Inspector later (e.g., green/red)
+@export var dot_radius: float = 2.0  # Inner dot size (~3px diameter)
+@export var outline_width: float = 1.0  # Outline thickness
+
+func _draw() -> void:
+	var center: Vector2 = size / 2
+	# Outline stroke (full circle arc)
+	draw_arc(center, dot_radius + outline_width / 2, 0, TAU, 32, outline_color, outline_width)
+	# Filled dot
+	draw_circle(center, dot_radius, dot_color)
+
+func _ready() -> void:
+	queue_redraw()  # Ensures draw on load/resize
+"
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -117,38 +136,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="ColorRect" type="ColorRect" parent="Crosshair"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -1.0
-offset_top = -8.0
-offset_right = 1.0
-offset_bottom = 8.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
-
-[node name="ColorRect2" type="ColorRect" parent="Crosshair"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -8.0
-offset_top = -1.0
-offset_right = 8.0
-offset_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 1)
+script = SubResource("GDScript_fls4u")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
