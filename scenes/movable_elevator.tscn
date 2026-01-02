@@ -8,6 +8,8 @@ script/source = "extends AnimatableBody3D
 
 @onready var label_3d := $button/Label3D
 
+@export_enum(\"lift\", \"platform\") var animation_name: String = \"lift\"
+
 @export var open := false :
 	set(value):
 		if value != open:
@@ -15,16 +17,20 @@ script/source = "extends AnimatableBody3D
 			update_door()
 	
 func update_door() -> void:
+	if !$AnimationPlayer.has_animation(animation_name):
+		print(\"Warning: Animation '\" + animation_name + \"' not found!\")
+		return
+
 	if open:
-		$AnimationPlayer.play(\"lift\")
+		$AnimationPlayer.play(animation_name)
 	else:
-		$AnimationPlayer.play_backwards(\"lift\")
+		$AnimationPlayer.play_backwards(animation_name)
 	$AnimationPlayer.set_active(true)
 	
 func toggle_open() -> void:
 	open = !open
 
-func _process(delta) -> void:
+func _process(_delta) -> void:
 	label_3d.visible = !!$InteractableComponent.get_character_hovered_by_cur_camera()
 "
 
@@ -89,7 +95,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_e6mo4"]
 resource_name = "platform"
-length = 6.0
+length = 8.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -98,10 +104,10 @@ tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 3),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 1, 4, 5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 0, -8)]
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, -8), Vector3(0, 0, -8)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2ucnx"]
