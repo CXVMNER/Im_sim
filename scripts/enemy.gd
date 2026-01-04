@@ -5,6 +5,7 @@ extends CharacterBody3D
 @export var color : Color
 @export var fireSpeed := 0.2
 @export var attackPower := 20
+@export var VIEW_ANGLE: float = 180.0
 
 var is_dead := false
 
@@ -20,7 +21,6 @@ var bullet := preload("res://scenes/bullet.tscn")
 var lastShot := 0.0
 var engaged := false
 
-const VIEW_ANGLE: float = 180.0
 const SMOOTHING_FACTOR := 0.2
 @onready var animation_player := $CollisionShape3D/robot2/AnimationPlayer
 @onready var anim_player := $AnimPlayer

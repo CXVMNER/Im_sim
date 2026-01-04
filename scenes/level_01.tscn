@@ -275,7 +275,7 @@ script = ExtResource("1_avbq2")
 environment = SubResource("Environment_e4ieo")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+transform = Transform3D(-0.86602527, -0.43301293, 0.2500001, 0, 0.49999997, 0.86602545, -0.50000024, 0.74999994, -0.4330126, 0, 0, 0)
 shadow_enabled = true
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
