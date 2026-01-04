@@ -149,9 +149,9 @@ size = Vector3(6, 6, 12)
 material = SubResource("StandardMaterial3D_tmoxt")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -22)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -17.5)
 operation = 2
-size = Vector3(2, 3, 12)
+size = Vector3(2, 3, 3)
 material = SubResource("StandardMaterial3D_r2fl4")
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D"]

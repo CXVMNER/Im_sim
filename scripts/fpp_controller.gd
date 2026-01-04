@@ -569,12 +569,11 @@ func get_eye_position() -> Vector3:
 
 # Function to add a key password to the player's inventory
 func collect_key(key_value: String) -> void:
-	if not keys_collected.has(key_value):
-		keys_collected.append(key_value)
-		print("Collected key: ", key_value)
-		# Update the HUD list and counter
-		if hud.has_method("update_keys"):
-			hud.update_keys(keys_collected, total_keys_in_map)
+	keys_collected.append(key_value)
+	print("Collected key: ", key_value)
+	# Update the HUD list and counter
+	if hud.has_method("update_keys"):
+		hud.update_keys(keys_collected, total_keys_in_map)
 
 # Function to check if the player has a specific password
 func has_key(key_value: String) -> bool:
