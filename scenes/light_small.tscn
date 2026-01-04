@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bleahkimdxvw8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hrl20"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nubi8"]
+material = SubResource("StandardMaterial3D_hrl20")
+size = Vector3(0.5, 0.2, 0.1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+mesh = SubResource("BoxMesh_nubi8")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="MeshInstance3D"]
