@@ -841,6 +841,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, -38.5)
 text = "Collect one of the keys
 to move to the next level"
 
+[node name="Label3D2" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 8.5, 2, 23.75)
+text = "Find a key to move
+to the next level"
+
 [node name="powerUp7" parent="." instance=ExtResource("7_ky2cw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37, 0.2749995, -32)
 type = 1

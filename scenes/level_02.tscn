@@ -280,4 +280,9 @@ qty = 20
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.2750005, 8)
 qty = 20
 
+[node name="Label3D2" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 18.75)
+text = "Find a key to move
+to the next level"
+
 [connection signal="interacted" from="NavigationRegion3D/movableDoor/AnimatableBody3D/InteractableComponent" to="NavigationRegion3D/movableDoor/AnimatableBody3D" method="toggle_open"]
