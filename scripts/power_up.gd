@@ -1,5 +1,7 @@
 extends Area3D
 
+class_name PowerUp
+
 enum Type {
 	health,
 	ammo,

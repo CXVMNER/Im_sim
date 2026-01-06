@@ -1,4 +1,6 @@
 extends CharacterBody3D
+
+class_name Enemy
  
 @onready var agent := $NavigationAgent3D
  
