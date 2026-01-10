@@ -6,6 +6,7 @@ class_name Player
 @export var health := 100
 @export var ammo := 0
 @export var stamina := 100
+@export var SENSITIVITY := 0.01
 
 @onready var pause_menu: PauseMenu = $PauseMenu
 @export var is_dead: bool = false # Flag for the player's death status
@@ -18,7 +19,6 @@ const WALK_SPEED := 3.5
 const SPRINT_SPEED := 6.0
 const CROUCH_SPEED := 2.0
 const JUMP_VELOCITY := 4.0
-const SENSITIVITY := 0.01
 const BACKWARD_SPEED := 0.8  # 80% of normal speed when moving backwards
 const push_force := 10
 
@@ -58,6 +58,7 @@ var is_crouching := false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gravity = 9.8
 
 @onready var weapon_manager := $CameraController/pivotNode3D/Camera3D/GunHolder
+@onready var hit_audio_stream_player_3d = $HitAudioStreamPlayer3D
 
 @onready var staminaRegenTimer := $staminaRegen
 
@@ -500,6 +501,7 @@ func takeDamage(dmg: int) -> void:
 	
 	health -= dmg
 	print("Player took damage: ", dmg, " | Health: ", health)
+	hit_audio_stream_player_3d.play()
 	
 	# Update HUD data
 	hud.health = health

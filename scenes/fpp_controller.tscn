@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene load_steps=17 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="Script" uid="uid://dex1exhhhfhgi" path="res://scripts/weapon_manager.gd" id="2_55026"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cx4bix7yofd4f" path="res://scenes/blaster_m.tscn" id="3_up7xj"]
 [ext_resource type="PackedScene" uid="uid://tp7yiojap1dl" path="res://scenes/sword.tscn" id="4_rqmhu"]
 [ext_resource type="PackedScene" uid="uid://mklwkwxtik8j" path="res://scenes/pause_menu.tscn" id="5_bww43"]
+[ext_resource type="AudioStream" uid="uid://00c1cewm5rgn" path="res://sounds/damage_taken.wav" id="8_1v83r"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ghtvo"]
 radius = 0.25
@@ -163,6 +164,7 @@ collision_mask = 9
 wall_min_slide_angle = 0.5235988
 floor_constant_speed = true
 script = ExtResource("1_888b0")
+SENSITIVITY = 0.005
 CROUCH_SHAPECAST = NodePath("headShapeCast3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -238,6 +240,9 @@ unique_name_in_owner = true
 mouse_filter = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("5_bww43")]
+
+[node name="HitAudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("8_1v83r")
 
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
 [connection signal="timeout" from="staminaRegen" to="." method="_on_stamina_regen_timeout"]

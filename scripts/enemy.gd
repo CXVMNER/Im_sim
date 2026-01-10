@@ -19,6 +19,7 @@ var bullet := preload("res://scenes/bullet.tscn")
 @onready var engaged_timer := $EngagedTimer
 
 @onready var death_audio_stream_player_3d := $DeathAudioStreamPlayer3D
+@onready var hit_audio_stream_player_3d = $HitAudioStreamPlayer3D
 
 var lastShot := 0.0
 var engaged := false
@@ -248,6 +249,7 @@ func hear_noise(pos: Vector3) -> void:
 func takeDamage(dmg: int) -> void:
 	health -= dmg
 	print("Enemy hit! Damage: %d | Health Left: %d" % [dmg, health])
+	hit_audio_stream_player_3d.play()
 	engaged = true
 	engaged_timer.start()
 	if health < 1 and not is_dead:
