@@ -32,8 +32,9 @@ var direction := Vector3.ZERO  # Stores the velocity i.e. at the moment of jumpi
 
 var grabbed_object:RigidBody3D = null
 
-# Variable to hold all collected key strings (The 'Pass Value' from your power-up)
+# Variable to hold all collected key strings (The 'Pass Value' from power-up)
 var keys_collected: Array[String] = []
+var keys_collected_current: Array[String] = []
 var total_keys_in_map := 0
 
 # head bob variables
@@ -569,13 +570,20 @@ func get_eye_position() -> Vector3:
 	var camera_controller := camera_3d 
 	return camera_controller.global_transform.origin
 
+func reset_keys_for_level() -> void:
+	keys_collected_current.clear()
+	total_keys_in_map = 0
+	if hud.has_method("update_keys"):
+		hud.update_keys(keys_collected_current, keys_collected, total_keys_in_map)
+
 # Function to add a key password to the player's inventory
 func collect_key(key_value: String) -> void:
 	keys_collected.append(key_value)
+	keys_collected_current.append(key_value)
 	print("Collected key: ", key_value)
 	# Update the HUD list and counter
 	if hud.has_method("update_keys"):
-		hud.update_keys(keys_collected, total_keys_in_map)
+		hud.update_keys(keys_collected_current, keys_collected, total_keys_in_map)
 
 # Function to check if the player has a specific password
 func has_key(key_value: String) -> bool:
@@ -585,4 +593,4 @@ func set_total_keys(total: int) -> void:
 	total_keys_in_map = total
 	# Immediately update the HUD with the initial count
 	if hud.has_method("update_keys"):
-		hud.update_keys(keys_collected, total_keys_in_map)
+		hud.update_keys(keys_collected_current, keys_collected, total_keys_in_map)

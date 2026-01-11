@@ -9,10 +9,11 @@ func _ready() -> void:
 	if player == null:
 		return
 	
-	var total_keys := count_all_keys()
-	print("Total keys on map: ", total_keys)
+	# Reset the "Current Level" trackers before counting
+	if player.has_method("reset_keys_for_level"):
+		player.reset_keys_for_level()
 	
-	# Pass this info to the player/HUD immediately:
+	var total_keys := count_all_keys() 
 	if player.has_method("set_total_keys"):
 		player.set_total_keys(total_keys)
 

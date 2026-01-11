@@ -36,9 +36,9 @@ func screenGlow(color) -> void:
 	var tween := get_tree().create_tween()
 	tween.tween_property(overlay, "color", color, 0.1)
 	tween.tween_property(overlay, "color", Color(1,0,0,0), 0.7)
-	
-func update_keys(collected_keys: Array[String], total_keys: int) -> void:
-	var text := "Keys collected %d/%d:\n" % [collected_keys.size(), total_keys]
+
+func update_keys(current_keys: Array[String], collected_keys: Array[String], total_in_level: int) -> void:
+	var text := "Keys to collect %d/%d\nCollected keys:\n" % [current_keys.size(), total_in_level]
 	for key_name in collected_keys:
 		text += " - %s\n" % key_name
 	keys_label.text = text
