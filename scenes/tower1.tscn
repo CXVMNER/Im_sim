@@ -1,0 +1,171 @@
+[gd_scene load_steps=3 format=3 uid="uid://dkr3sk24fpufs"]
+
+[ext_resource type="Texture2D" uid="uid://dy4bkgmkb7wsy" path="res://assets/kenney_prototype-textures/PNG/Light/texture_02.png" id="1_qusov"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mkwtg"]
+albedo_texture = ExtResource("1_qusov")
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[node name="Tower1" type="Node3D"]
+
+[node name="tower1" type="CSGCombiner3D" parent="."]
+
+[node name="CSGBox3D72" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 4.9992485, 8.5, 4.330002)
+use_collision = true
+size = Vector3(9, 17, 10)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D50" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 11.499237, 15, 8.330002)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D51" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 11.499252, 15, 0.33000183)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D52" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 11.499237, 15, 6.330002)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D53" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 11.499237, 15, 2.3299942)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D49" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 4.9992485, 17.5, 4.330002)
+use_collision = true
+size = Vector3(15, 1, 16)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D66" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 4.9992485, 31, 4.330002)
+use_collision = true
+size = Vector3(15, 24, 16)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D70" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 5.4992485, 32, 9.330002)
+operation = 2
+use_collision = true
+size = Vector3(5, 22, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D67" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.0331604e-07, 0.15414135, 0.9880489, -3.598353e-09, 0.98804885, -0.1541413, -0.99999994, 2.5364184e-08, 1.474971e-07, -2.6807137, 33.55987, 4.329994)
+operation = 2
+use_collision = true
+size = Vector3(15, 29, 4.8703613)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D68" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(-4.3711385e-08, -0.15414135, -0.98804885, 7.1967072e-09, 0.98804885, -0.15414132, 0.99999994, -3.0124414e-09, -4.3188987e-08, 13.087631, 33.55987, 4.830002)
+operation = 2
+use_collision = true
+size = Vector3(16, 29, 4.8703613)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D69" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(-0.99999976, 1.0463023e-08, 5.8090148e-08, 3.5983527e-09, 0.9880488, -0.1541413, -7.3513704e-08, -0.15414137, -0.98804885, 4.587635, 33.55987, 11.98325)
+operation = 2
+use_collision = true
+size = Vector3(16, 29, 4.8703613)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D71" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(0.9999999, -3.0124427e-09, -4.3188987e-08, -8.881784e-16, 0.9880488, -0.1541413, 1.03316026e-07, 0.15414137, 0.98804885, 5.0876427, 33.55987, -3.2539978)
+operation = 2
+use_collision = true
+size = Vector3(15, 29, 4.8703613)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D65" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 4.9992485, 18.5, 4.330002)
+use_collision = true
+size = Vector3(13, 1, 14)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D54" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0.5633674, 0.82620656, -7.1967117e-09, 0.8262065, -0.5633674, -1.0000001, 6.932906e-08, 1.2552161e-07, 13.101608, 13.955214, 4.430336)
+operation = 2
+use_collision = true
+size = Vector3(9.200684, 4.80542, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D60" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1, 0, -1.6292068e-07, 0, 1, 0, 1.6292068e-07, 0, 1, 0.4725914, 15, 10.009525)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D61" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1, 0, -1.6292068e-07, 0, 1, 0, 1.6292068e-07, 0, 1, 9.472595, 15, 10.009525)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D62" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1, 0, -1.6292068e-07, 0, 1, 0, 1.6292068e-07, 0, 1, 3.4725914, 15, 10.009525)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D63" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1, 0, -1.6292068e-07, 0, 1, 0, 1.6292068e-07, 0, 1, 6.472584, 15, 10.009525)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D64" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(0.9999999, -5.960734e-08, -1.7211357e-07, -1.4393411e-08, 0.8262064, -0.56336737, 1.6292067e-07, 0.5633675, 0.8262065, 5.1664925, 13.955214, 11.611881)
+operation = 2
+use_collision = true
+size = Vector3(10.387817, 4.80542, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D55" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(-4.3711392e-08, 0, -1.0000001, 0, 1, 0, 1.0000001, 0, -4.3711392e-08, -1.5015068, 15, 0.3299942)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D56" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(-4.3711392e-08, 0, -1.0000001, 0, 1, 0, 1.0000001, 0, -4.3711392e-08, -1.5015068, 15, 8.329994)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D57" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(-4.3711392e-08, 0, -1.0000001, 0, 1, 0, 1.0000001, 0, -4.3711392e-08, -1.5015068, 15, 2.3299942)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D58" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(-4.3711392e-08, 0, -1.0000001, 0, 1, 0, 1.0000001, 0, -4.3711392e-08, -1.5015106, 15, 6.329994)
+use_collision = true
+size = Vector3(1, 4, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D59" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(-7.3513704e-08, -0.56336755, -0.8262066, 1.4393419e-08, 0.8262064, -0.56336737, 0.99999976, -9.724417e-09, -2.1213475e-08, -3.1038628, 13.955214, 4.329994)
+operation = 2
+use_collision = true
+size = Vector3(9, 4.80542, 3)
+material = SubResource("StandardMaterial3D_mkwtg")
+
+[node name="CSGBox3D48" type="CSGBox3D" parent="tower1"]
+transform = Transform3D(1.3311836e-07, 0, 1, 0, 1, 0, -1, 0, 1.3311836e-07, 4.9992485, 6, 8.830002)
+operation = 2
+use_collision = true
+size = Vector3(2, 12, 6)
+material = SubResource("StandardMaterial3D_mkwtg")

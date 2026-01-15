@@ -1,0 +1,79 @@
+[gd_scene load_steps=3 format=3 uid="uid://cq3ovjgis8ck0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5sl2w"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cdqic"]
+
+[node name="Deco1" type="Node3D"]
+
+[node name="deco1" type="CSGCombiner3D" parent="."]
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="deco1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07257843, 6.937662, 4.0535393)
+radius = 1.672
+sides = 14
+material = SubResource("StandardMaterial3D_5sl2w")
+
+[node name="CSGCylinder3D7" type="CSGCylinder3D" parent="deco1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07257843, 10.238926, 4.0535393)
+radius = 0.855
+height = 4.0
+sides = 14
+material = SubResource("StandardMaterial3D_5sl2w")
+
+[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="deco1"]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, -0.07257843, 4.9043636, 4.0535393)
+radius = 1.672
+sides = 14
+cone = true
+material = SubResource("StandardMaterial3D_5sl2w")
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="deco1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.072654724, 7.962023, 4.0535774)
+radius = 2.186
+height = 0.5957031
+sides = 14
+material = SubResource("StandardMaterial3D_5sl2w")
+
+[node name="CSGCylinder3D5" type="CSGCylinder3D" parent="deco1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.072654724, 6.0664425, 4.0535774)
+radius = 2.186
+height = 0.5957031
+sides = 14
+material = SubResource("StandardMaterial3D_5sl2w")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="deco1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0072784, 4.5253906, 3.3690376)
+size = Vector3(5, 9, 5)
+material = SubResource("StandardMaterial3D_cdqic")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="deco1"]
+transform = Transform3D(0.86946046, 0.49400258, 0, -0.49400258, 0.86946046, 0, 0, 0, 1, 3.2798576, 9.885046, 4.0422554)
+size = Vector3(6.6314697, 1, 1)
+material = SubResource("StandardMaterial3D_cdqic")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="deco1"]
+transform = Transform3D(-0.86946034, -0.4940025, -5.9604645e-08, -0.49400252, 0.8694604, 1.4901163e-08, 2.9802322e-08, 1.4901161e-08, -1, -3.312233, 9.885046, 4.0422554)
+size = Vector3(6.6314697, 1, 1)
+material = SubResource("StandardMaterial3D_cdqic")
+
+[node name="CSGCylinder3D6" type="CSGCylinder3D" parent="deco1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.01606, 2.0478606, 5.440159)
+operation = 2
+radius = 2.2514648
+height = 5.4279785
+sides = 14
+material = SubResource("StandardMaterial3D_5sl2w")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="deco1"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7.5118523, 4.5253906, 3.408989)
+size = Vector3(5, 9, 5)
+material = SubResource("StandardMaterial3D_cdqic")
+
+[node name="CSGCylinder3D8" type="CSGCylinder3D" parent="deco1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.248023, 2.0478606, 5.440159)
+operation = 2
+radius = 2.2514648
+height = 5.4279785
+sides = 14
+material = SubResource("StandardMaterial3D_5sl2w")
