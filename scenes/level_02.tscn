@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dsepepj66iuor"]
+[gd_scene load_steps=32 format=3 uid="uid://dsepepj66iuor"]
 
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_manager.gd" id="1_68jev"]
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="3_ci1t6"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dpyye7lrrglam" path="res://scenes/enemy_2.tscn" id="12_37jkp"]
 [ext_resource type="PackedScene" uid="uid://bjoc7m7517768" path="res://scenes/power_up.tscn" id="12_rsdo6"]
 [ext_resource type="PackedScene" uid="uid://b1ovqgjwms7u4" path="res://scenes/ladder.tscn" id="14_fpkvo"]
+[ext_resource type="AudioStream" uid="uid://cp2vw1sudoufi" path="res://sounds/music/track06.ogg" id="14_vqvml"]
 [ext_resource type="Script" uid="uid://d38lde0ccowa0" path="res://scripts/InteractableComponent.gd" id="16_f257o"]
 [ext_resource type="Script" uid="uid://bkp4fo0yol1r8" path="res://scripts/Door.gd" id="18_bsbwy"]
 [ext_resource type="Texture2D" uid="uid://b24j8lhe6xahh" path="res://assets/kenney_prototype-textures/PNG/Red/texture_02.png" id="19_ylee6"]
@@ -372,5 +373,10 @@ qty = 20
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 18.75)
 text = "Find a key to move
 to the next level"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_vqvml")
+volume_db = -10.0
+autoplay = true
 
 [connection signal="interacted" from="NavigationRegion3D/movableDoor/AnimatableBody3D/InteractableComponent" to="NavigationRegion3D/movableDoor/AnimatableBody3D" method="toggle_open"]

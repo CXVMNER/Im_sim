@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://bb4nkm70jejd8"]
+[gd_scene load_steps=46 format=3 uid="uid://bb4nkm70jejd8"]
 
 [ext_resource type="Script" uid="uid://603i2562qmnn" path="res://scripts/level_manager.gd" id="1_avbq2"]
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="3_lwi15"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://cxn7t0xllrrj0" path="res://scenes/rigid_box.tscn" id="12_cr2eh"]
 [ext_resource type="Script" uid="uid://bkp4fo0yol1r8" path="res://scripts/Door.gd" id="13_2ucnx"]
 [ext_resource type="Texture2D" uid="uid://b24j8lhe6xahh" path="res://assets/kenney_prototype-textures/PNG/Red/texture_02.png" id="14_cr2eh"]
+[ext_resource type="AudioStream" uid="uid://cp2vw1sudoufi" path="res://sounds/music/track06.ogg" id="20_n3syt"]
 [ext_resource type="PackedScene" uid="uid://dlc3xcidvaqaj" path="res://scenes/level_transition.tscn" id="21_wqkcq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_qfypb"]
@@ -871,6 +872,11 @@ patrol_points = [NodePath("../PatrolPoints/Point12"), NodePath("../PatrolPoints/
 [node name="Enemy7" parent="." node_paths=PackedStringArray("patrol_points") instance=ExtResource("6_haycg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 5, -33)
 patrol_points = [NodePath("../PatrolPoints/Point13"), NodePath("../PatrolPoints/Point12")]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("20_n3syt")
+volume_db = -5.0
+autoplay = true
 
 [connection signal="interacted" from="movableDoor2/AnimatableBody3D/InteractableComponent" to="movableDoor2/AnimatableBody3D" method="toggle_open"]
 [connection signal="interacted" from="movableDoor/AnimatableBody3D/InteractableComponent" to="movableDoor/AnimatableBody3D" method="toggle_open"]

@@ -100,6 +100,7 @@ wait_time = 3.0
 libraries = {
 &"": SubResource("AnimationLibrary_5uy6h")
 }
+speed_scale = 1.5
 
 [node name="DeathAudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("3_4ra3w")
