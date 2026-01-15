@@ -108,7 +108,6 @@ func _on_body_entered(body):
 		# Health and Ammo respawn.
 		respawnTimer.start()
 
-
 # This function is only called for Type.health and Type.ammo items now.
 func _on_respawn_timeout() -> void:
 	collectable = true

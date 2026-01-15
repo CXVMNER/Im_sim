@@ -37,7 +37,8 @@ func _build_weapons_data() -> void:
 			"lowered_pos": Vector3(0, -1, 0),
 			"lower_anim": "lower_blaster",
 			"fire_speed": 0.2,
-			"damage": 1
+			"damage": 1,
+			"ammo_cost": 1
 		},
 		WeaponState.WEAPON_2: {
 			"holder": $"blaster-m2",
@@ -47,7 +48,8 @@ func _build_weapons_data() -> void:
 			"lowered_pos": Vector3(0, -1, 0),
 			"lower_anim": "lower_blaster",
 			"fire_speed": 0.5,
-			"damage": 3
+			"damage": 3,
+			"ammo_cost": 2
 		}
 	}
 
@@ -82,8 +84,12 @@ func switch_weapon(new_weapon: WeaponState) -> void:
 func try_shoot() -> void:
 	if !can_shoot || current_weapon == WeaponState.NO_WEAPON:
 		return
+	
 	var data = weapons_data[current_weapon]
-	if player.ammo <= 0:
+	# Get the specific cost for this weapon (defaults to 1 if missing)
+	var cost = data.get("ammo_cost", 1)
+
+	if player.ammo < cost:
 		return
 
 	var now := Time.get_ticks_msec() / 1000.0
@@ -100,9 +106,10 @@ func try_shoot() -> void:
 
 	_fire_bullet(data)
 
-	player.ammo -= 1
-	player.hud.ammo = player.ammo
-	player.hud.updateHud()
+	player.ammo -= cost
+	if player.hud:
+		player.hud.ammo = player.ammo
+		player.hud.updateHud()
 
 func _fire_bullet(data: Dictionary) -> void:
 	if not data.barrel.is_inside_tree():
