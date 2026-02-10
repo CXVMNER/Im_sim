@@ -5,7 +5,12 @@ class_name Player
 @onready var hud := $HUD
 @export var health := 100
 @export var ammo := 0
-@export var stamina := 100
+# Changed to float to allow precise delta subtraction
+@export var stamina : float = 100.0 
+# New variable to control exact duration
+@export var STAMINA_TIME : float = 5.0
+@export var regen_rate : float = stamina / STAMINA_TIME
+@export var depletion_rate : float = stamina / STAMINA_TIME
 @export var SENSITIVITY := 0.01
 
 @onready var pause_menu: PauseMenu = $PauseMenu
@@ -222,18 +227,34 @@ func _physics_process(delta):
 		direction = Vector3(velocity.x, 0, velocity.z).normalized()
 
 	# Sprint & Stamina
+	# Use local 'stamina' variable for checks, not 'hud.stamina'
 	if Input.is_action_pressed("sprint") and !is_crouching and hud.stamina > 0:
 		regenStamina = false
 		speed = SPRINT_SPEED
-		hud.stamina -= 1
+		# Max Stamina (100) / Seconds (5) = 20 stamina per second
+		# var depletion_rate = 100.0 / 5.0
+		stamina -= depletion_rate * delta
+		
+		# Clamp to 0 so we don't go negative
+		if stamina < 0: stamina = 0
+		
+		hud.stamina = stamina
 		hud.updateHud()
 	else:
 		if !is_crouching:
 			speed = WALK_SPEED
 
-	# Stamina regeneration logic (triggered by the timer)
+	# Stamina regeneration logic
+	# Using local 'stamina' variable as the master value
 	if regenStamina and hud.stamina < 100:
-		hud.stamina += 1
+		# Example: Regenerate fully in 5 seconds (change 5.0 to whatever speed you want)
+		# regen_rate = 100.0 / 5.0
+		stamina += regen_rate * delta
+		
+		# Clamp to 100
+		if stamina > 100: stamina = 100
+		
+		hud.stamina = stamina
 		hud.updateHud()
 
 	# Adjust speed for crouching.
