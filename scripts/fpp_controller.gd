@@ -11,12 +11,11 @@ class_name Player
 @export var STAMINA_TIME : float = 5.0
 @export var regen_rate : float = stamina / STAMINA_TIME
 @export var depletion_rate : float = stamina / STAMINA_TIME
+@export var regen_delay_accumulator : float = 10.0  # Start high so regen is ready immediately
 @export var SENSITIVITY := 0.01
 
 @onready var pause_menu: PauseMenu = $PauseMenu
 @export var is_dead: bool = false # Flag for the player's death status
-
-var regenStamina := false
 
 # Movement constants
 var speed : float
@@ -65,8 +64,6 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gr
 
 @onready var weapon_manager := $CameraController/pivotNode3D/Camera3D/GunHolder
 @onready var hit_audio_stream_player_3d = $HitAudioStreamPlayer3D
-
-@onready var staminaRegenTimer := $staminaRegen
 
 @onready var CameraController := $CameraController
 @onready var pivot_node_3d := $CameraController/pivotNode3D
@@ -227,40 +224,28 @@ func _physics_process(delta):
 		direction = Vector3(velocity.x, 0, velocity.z).normalized()
 
 	# Sprint & Stamina
-	# Use local 'stamina' variable for checks, not 'hud.stamina'
-	if Input.is_action_pressed("sprint") and !is_crouching and hud.stamina > 0:
-		regenStamina = false
+	var sprint_pressed := Input.is_action_pressed("sprint")
+	var can_sprint := !is_crouching && stamina > 0  # Use local stamina for consistency
+	var is_sprinting := sprint_pressed && can_sprint
+	
+	if is_sprinting:
+		regen_delay_accumulator = 0.0
 		speed = SPRINT_SPEED
-		# Max Stamina (100) / Seconds (5) = 20 stamina per second
-		# var depletion_rate = 100.0 / 5.0
 		stamina -= depletion_rate * delta
-		
-		# Clamp to 0 so we don't go negative
-		if stamina < 0: stamina = 0
-		
+		if stamina < 0:
+			stamina = 0
 		hud.stamina = stamina
 		hud.updateHud()
 	else:
-		if !is_crouching:
-			speed = WALK_SPEED
-
-	# Stamina regeneration logic
-	# Using local 'stamina' variable as the master value
-	if regenStamina and hud.stamina < 100:
-		# Example: Regenerate fully in 5 seconds (change 5.0 to whatever speed you want)
-		# regen_rate = 100.0 / 5.0
-		stamina += regen_rate * delta
-		
-		# Clamp to 100
-		if stamina > 100: stamina = 100
-		
-		hud.stamina = stamina
-		hud.updateHud()
-
-	# Adjust speed for crouching.
-	if is_crouching:
-		speed = CROUCH_SPEED
-
+		regen_delay_accumulator += delta
+		speed = CROUCH_SPEED if is_crouching else WALK_SPEED
+		if regen_delay_accumulator >= 2.5 && stamina < 100:
+			stamina += regen_rate * delta
+			if stamina > 100:
+				stamina = 100
+			hud.stamina = stamina
+			hud.updateHud()
+	
 	# Get the input direction and handle the movement/deceleration.
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	direction = (CameraController.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -356,11 +341,6 @@ func _process(_delta) -> void:
 			
 		if Input.is_action_just_pressed("interact"):
 			interactable.interact_with(self)
-	
-	# Releasing sprint initiates stamina regeneration
-	if Input.is_action_just_released("sprint"):
-		speed = WALK_SPEED
-		staminaRegenTimer.start()
 
 func get_interactable_component_at_shapecast() -> InteractableComponent:
 	for i in interact_cast.get_collision_count():
@@ -437,6 +417,12 @@ var _cur_ladder_climbing : Area3D = null
 func _handle_ladder_physics() -> bool:
 	# Keep track of whether already on ladder. If not already, check if overlapping a ladder area3d.
 	var was_climbing_ladder := _cur_ladder_climbing and _cur_ladder_climbing.overlaps_body(self)
+	# Detect & handle top/bottom/side volume exit (prevents upward launch)
+	if _cur_ladder_climbing != null and not _cur_ladder_climbing.overlaps_body(self):
+		velocity.y = min(velocity.y, 0.0)  # Kill upward momentum; keep downward fall
+		_cur_ladder_climbing = null
+		return false
+	
 	if not was_climbing_ladder:
 		_cur_ladder_climbing = null
 		for ladder in get_tree().get_nodes_in_group("ladder_area3d"):
@@ -489,7 +475,10 @@ func _handle_ladder_physics() -> bool:
 	
 	# Allow jump off ladder mid climb
 	if was_climbing_ladder and Input.is_action_just_pressed("jump"):
-		self.velocity = _cur_ladder_climbing.global_transform.basis.z * JUMP_VELOCITY * 1.5
+		var ladder_dir = _cur_ladder_climbing.global_transform.basis.z  # Outward normal
+		var horiz_boost = CLIMB_SPEED * 0.3 # How far player jumps away from the ladder
+		var jump_vel = (ladder_dir * horiz_boost) + (Vector3.UP * JUMP_VELOCITY)
+		self.velocity = jump_vel
 		_cur_ladder_climbing = null
 		return false
 	
@@ -574,9 +563,6 @@ func set_movement_speed(state : String) -> void:
 			speed = WALK_SPEED
 		"crouching":
 			speed = CROUCH_SPEED
-
-func _on_stamina_regen_timeout() -> void:
-	regenStamina = true
 
 func is_surface_too_steep(normal : Vector3) -> bool:
 	return normal.angle_to(Vector3.UP) > self.floor_max_angle

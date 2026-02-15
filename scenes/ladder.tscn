@@ -8,7 +8,7 @@ metallic = 1.0
 size = Vector3(0.1, 15, 1.4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_youqv"]
-size = Vector3(1.4, 15, 0.8)
+size = Vector3(1.4, 15, 0.5)
 
 [node name="Ladder" type="Node3D"]
 
@@ -108,7 +108,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0500002, 0, 0)
 shape = SubResource("BoxShape3D_umrbm")
 
 [node name="LadderArea3D" type="Area3D" parent="." groups=["ladder_area3d"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.4)
 collision_layer = 8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LadderArea3D"]

@@ -165,8 +165,16 @@ wall_min_slide_angle = 0.5235988
 floor_constant_speed = true
 script = ExtResource("1_888b0")
 health = 50
+ammo = null
+stamina = null
+STAMINA_TIME = null
 SENSITIVITY = 0.005
+is_dead = null
+CLIMB_SPEED = null
+CROUCHING_SPEED = null
+TOGGLE_CROUCH = null
 CROUCH_SHAPECAST = NodePath("headShapeCast3D")
+camera_rotation_amount = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -225,9 +233,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 shape = SubResource("SphereShape3D_c503a")
 target_position = Vector3(0, 0.5, 0)
 
-[node name="staminaRegen" type="Timer" parent="."]
-wait_time = 2.5
-
 [node name="StairsAheadRayCast3D" type="RayCast3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.5)
@@ -246,4 +251,3 @@ mouse_filter = 1
 stream = ExtResource("8_1v83r")
 
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]
-[connection signal="timeout" from="staminaRegen" to="." method="_on_stamina_regen_timeout"]
