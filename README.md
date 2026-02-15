@@ -1,6 +1,6 @@
 Project made in engine Godot 4.5.1
 
-### Running the project:
+### Running the latest version of the project:
 
 1. Download the Godot engine from https://godotengine.org/download/
 
@@ -18,7 +18,7 @@ Project made in engine Godot 4.5.1
 
 Projekt stworzony w silniku Godot 4.5.1
 
-### Uruchamianie:
+### Uruchamianie najnowszej wersji projektu:
 
 1. Pobierz silnik Godot z strony https://godotengine.org/download/
 

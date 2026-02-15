@@ -514,7 +514,7 @@ and [W], [A], [S], [D] to move"
 
 [node name="Label3D3" type="Label3D" parent="TutorialTextHolder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5, 4.5, -11)
-text = "Press [Ctrl] to crouch"
+text = "Press [C] or [Ctrl] to crouch"
 
 [node name="Label3D4" type="Label3D" parent="TutorialTextHolder"]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -14.5, 1.5, -6)
