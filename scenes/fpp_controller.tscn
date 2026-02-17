@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene load_steps=18 format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="Script" uid="uid://dex1exhhhfhgi" path="res://scripts/weapon_manager.gd" id="2_55026"]
+[ext_resource type="Script" uid="uid://bvvahgd0rubus" path="res://scenes/camera_3d.gd" id="2_kbhv3"]
 [ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
 [ext_resource type="PackedScene" uid="uid://b7iiv5kc4qkwa" path="res://scenes/blaster_b.tscn" id="2_uwixu"]
 [ext_resource type="PackedScene" uid="uid://cx4bix7yofd4f" path="res://scenes/blaster_m.tscn" id="3_up7xj"]
@@ -193,6 +194,7 @@ unique_name_in_owner = true
 
 [node name="Camera3D" type="Camera3D" parent="CameraController/pivotNode3D"]
 unique_name_in_owner = true
+script = ExtResource("2_kbhv3")
 
 [node name="InteractionManager" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
 

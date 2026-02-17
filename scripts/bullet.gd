@@ -1,7 +1,7 @@
 extends Node3D
 
 var speed := 40.0
-var damage := 1
+var damage := 1.0
 var velocity := Vector3.ZERO
 var shooter = null # Prevents bullet from hitting the player immediately
 

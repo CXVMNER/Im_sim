@@ -101,7 +101,9 @@ func pause_game(state: bool = true, game_over: bool = false):
 	if is_dead and state == false and game_over == false:
 		print("Cannot unpause: Game Over.")
 		return
-
+	
+	is_paused = state # Variable has to be updated here to keep it synced
+	
 	if state:
 		# Pause
 		pause_menu.show()
@@ -151,7 +153,6 @@ func _input(event):
 	elif Input.is_action_just_pressed("interact_2"):
 		if grabbed_object:
 			throw_object()
-
 
 func try_grabbing(collided:RigidBody3D):
 	grabbed_object = collided

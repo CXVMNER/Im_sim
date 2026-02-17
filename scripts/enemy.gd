@@ -207,7 +207,7 @@ func _move_towards(next_pos: Vector3, speed: float) -> void:
 	velocity.x = dir.x * speed
 	velocity.z = dir.z * speed
 
-func _update_path(delta) -> void:
+func _update_path(delta: float) -> void:
 	update_timer -= delta
 	if update_timer <= 0.0:
 		_update_agent_target()
