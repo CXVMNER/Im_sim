@@ -63,11 +63,13 @@ var is_crouching := false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gravity = 9.8
 
 @onready var weapon_manager := $CameraController/pivotNode3D/Camera3D/GunHolder
+var previous_weapon_state: WeaponManager.WeaponState = WeaponManager.WeaponState.NO_WEAPON
+
 @onready var hit_audio_stream_player_3d = $HitAudioStreamPlayer3D
 
 @onready var CameraController := $CameraController
 @onready var pivot_node_3d := $CameraController/pivotNode3D
-@onready var camera_3d := $CameraController/pivotNode3D/Camera3D # The same as %Camera3D
+@onready var camera_3d : Camera3D = $CameraController/pivotNode3D/Camera3D # The same as %Camera3D
 @export var camera_rotation_amount : float = 0.025
 var camera_rotation_factor := 8
 
@@ -124,12 +126,13 @@ func _input(event):
 		return
 	
 	# Weapon switching
-	if Input.is_action_just_pressed("weapon_one"):
-		weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_1)
-	if Input.is_action_just_pressed("weapon_two"):
-		weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_2)
-	if Input.is_action_just_pressed("weapon_holster"):  # Optional: holster to no weapon
-		weapon_manager.switch_weapon(WeaponManager.WeaponState.NO_WEAPON)
+	if not grabbed_object:
+		if Input.is_action_just_pressed("weapon_one"):
+			weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_1)
+		if Input.is_action_just_pressed("weapon_two"):
+			weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_2)
+		if Input.is_action_just_pressed("weapon_holster"):  # Optional: holster to no weapon
+			weapon_manager.switch_weapon(WeaponManager.WeaponState.NO_WEAPON)
 	
 	# Crouch logic
 	if event.is_action_pressed("crouch") and is_on_floor() and TOGGLE_CROUCH == true:
@@ -145,6 +148,7 @@ func _input(event):
 	if Input.is_action_just_pressed("interact"):
 		if grabbed_object:
 			grabbed_object = null
+			weapon_manager.switch_weapon(previous_weapon_state)
 		elif interact_cast.is_colliding():
 			var collided = interact_cast.get_collision_result()[0]["collider"]
 			if collided is RigidBox:
@@ -155,6 +159,8 @@ func _input(event):
 			throw_object()
 
 func try_grabbing(collided:RigidBody3D):
+	previous_weapon_state = weapon_manager.current_weapon
+	weapon_manager.switch_weapon(WeaponManager.WeaponState.NO_WEAPON)
 	grabbed_object = collided
 
 func throw_object():
@@ -169,6 +175,7 @@ func throw_object():
 	grabbed_object.apply_impulse(impulse)
 	# Release the object
 	grabbed_object = null
+	weapon_manager.switch_weapon(previous_weapon_state)
 
 func _ready() -> void:
 	pause_menu.hide()

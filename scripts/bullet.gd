@@ -1,7 +1,6 @@
 extends Node3D
 
 var speed := 40.0
-var damage := 1.0
 var velocity := Vector3.ZERO
 var shooter = null # Prevents bullet from hitting the player immediately
 
@@ -26,8 +25,8 @@ func _process(delta: float) -> void:
 		# Collision detected: Apply damage and clean up
 		if collider != shooter:
 			# If the object has a takeDamage method (Enemy, Crates, etc.), call it
-			if collider.has_method("takeDamage"):
-				collider.takeDamage(damage)
+# 			if collider.has_method("takeDamage"):
+# 				collider.takeDamage(damage)
 			
 			# Move bullet to the exact collision point for visual accuracy
 			var collision_point: Vector3 = ray_cast_3d.get_collision_point()

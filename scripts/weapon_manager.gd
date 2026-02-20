@@ -1,4 +1,4 @@
-extends Node
+extends Node3D
 
 class_name WeaponManager
 
@@ -17,7 +17,6 @@ var can_shoot: bool = true
 var last_shot: float = 0.0
 
 var weapons_data: Dictionary = {}
-var bullet_scene := preload("res://scenes/bullet.tscn")
 
 # Optional: melee weapon (sword already in scene)
 @onready var sword_holder := $Sword
@@ -38,7 +37,8 @@ func _build_weapons_data() -> void:
 			"lower_anim": "lower_blaster",
 			"fire_speed": 0.2,
 			"damage": 1,
-			"ammo_cost": 1
+			"ammo_cost": 1,
+			"range": 50.0
 		},
 		WeaponState.WEAPON_2: {
 			"holder": $"blaster-m2",
@@ -49,7 +49,8 @@ func _build_weapons_data() -> void:
 			"lower_anim": "lower_blaster",
 			"fire_speed": 0.5,
 			"damage": 3,
-			"ammo_cost": 2
+			"ammo_cost": 2,
+			"range": 10.0
 		}
 	}
 
@@ -104,29 +105,37 @@ func try_shoot() -> void:
 	if data.audio:
 		data.audio.play()
 
-	_fire_bullet(data)
+	_perform_hitscan(data)
 
 	player.ammo -= cost
 	if player.hud:
 		player.hud.ammo = player.ammo
 		player.hud.updateHud()
 
-func _fire_bullet(data: Dictionary) -> void:
-	if not data.barrel.is_inside_tree():
+func _perform_hitscan(data: Dictionary) -> void:
+	var camera: Camera3D = player.camera_3d
+	if not camera:
 		return
-		
-	var new_bullet := bullet_scene.instantiate()
-	new_bullet.damage = data.damage
 	
-	player.get_parent().add_child(new_bullet)
-	new_bullet.global_position = data.barrel.global_position
+	var from_pos := camera.global_position
+	var forward_dir := -camera.global_basis.z.normalized()
+	var max_distance : int = data.get("range", 1000.0)
 	
-	# Use camera forward direction
-	var shoot_direction = -player.camera_3d.global_basis.z.normalized()
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(
+		from_pos,
+		from_pos + forward_dir * max_distance
+	)
+	query.exclude = [player]
+	query.collision_mask = 9 # adjust to your needs
 	
-	shoot_direction = (player.camera_3d.global_position + shoot_direction * 100.0 - data.barrel.global_position).normalized()
+	var result: Dictionary = space_state.intersect_ray(query)
 	
-	new_bullet.set_direction(shoot_direction)
+	if result:
+		var collider = result.collider
+		if collider.has_method("takeDamage"):
+			collider.takeDamage(data.damage)
+		# Optional: add impact particle / decal here later
 
 func _update_weapon_visibility() -> void:
 	for ws in weapons_data:

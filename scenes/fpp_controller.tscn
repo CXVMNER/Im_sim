@@ -166,16 +166,8 @@ wall_min_slide_angle = 0.5235988
 floor_constant_speed = true
 script = ExtResource("1_888b0")
 health = 50
-ammo = null
-stamina = null
-STAMINA_TIME = null
 SENSITIVITY = 0.005
-is_dead = null
-CLIMB_SPEED = null
-CROUCHING_SPEED = null
-TOGGLE_CROUCH = null
 CROUCH_SHAPECAST = NodePath("headShapeCast3D")
-camera_rotation_amount = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
