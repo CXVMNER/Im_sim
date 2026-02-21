@@ -1,4 +1,4 @@
-Project made in engine Godot 4.5.1
+Project made in engine Godot 4.6.1
 
 ### Running the latest version of the project:
 
@@ -16,7 +16,7 @@ Project made in engine Godot 4.5.1
 
 ---
 
-Projekt stworzony w silniku Godot 4.5.1
+Projekt stworzony w silniku Godot 4.6.1
 
 ### Uruchamianie najnowszej wersji projektu:
 

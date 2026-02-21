@@ -86,6 +86,10 @@ func _state_idle() -> void:
 		_enter_state(State.CHASE)
 
 func _state_patrol(delta: float) -> void:
+	if patrol_points.is_empty():
+		_enter_state(State.IDLE)
+		return
+	
 	if agent.is_navigation_finished():
 		if patrol_timer <= 0.0:
 			patrol_timer = patrol_wait_time
@@ -110,6 +114,7 @@ func _state_investigate(delta: float) -> void:
 				_enter_state(State.RETURN)
 	else:
 		_walk_to(agent.get_next_path_position(), speed_walk)
+	
 	if _can_see_player():
 		_enter_state(State.CHASE)
 
@@ -190,6 +195,8 @@ func _stop_and_idle() -> void:
 	animation_player.play("iddle")
 
 func _go_to_next_patrol_point() -> void:
+	if patrol_points.is_empty():
+		return
 	patrol_index = (patrol_index + 1) % patrol_points.size()
 	agent.set_target_position(patrol_points[patrol_index].global_transform.origin)
 
