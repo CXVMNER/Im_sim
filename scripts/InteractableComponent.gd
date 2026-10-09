@@ -1,6 +1,8 @@
 class_name InteractableComponent
 extends Node
 
+@export_multiline var interaction_prompt := "Press [E] to interact"
+
 var characters_hovering = {}
 
 signal interacted()
@@ -12,6 +14,9 @@ func interact_with(character : CharacterBody3D) -> void:
 
 func hover_cursor(character : CharacterBody3D) -> void:
 	characters_hovering[character] = Engine.get_process_frames()
+
+func get_interaction_prompt(_player = null) -> String:
+	return interaction_prompt
 
 func get_character_hovered_by_cur_camera() -> CharacterBody3D:
 	for character in characters_hovering.keys():

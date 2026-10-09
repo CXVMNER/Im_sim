@@ -360,24 +360,80 @@ func _object_grabbing(grabbed_object:RigidBody3D, delta) -> void:
 
 func _process(delta) -> void:
 	_update_recoil(delta)
-	
-	# Get the interactable component from the shapecast
-	var interactable = get_interactable_component_at_shapecast()
-	
-	# Handle Door Label Visibility and Text
-	# We search for all doors to hide their labels initially (or you can optimize this with a 'last_hovered' variable)
-	get_tree().call_group("doors", "set_label_visibility", false, self)
+	_update_interaction_prompt()
 
-	if interactable:
-		interactable.hover_cursor(self)
-		
-		# If the interactable is part of a door, show its label and update text
-		var parent = interactable.get_parent()
-		if parent.has_method("set_label_visibility"):
-			parent.set_label_visibility(true, self)
-			
-		if Input.is_action_just_pressed("interact"):
-			interactable.interact_with(self)
+func action_hint(action: String, fallback: String) -> String:
+	if not InputMap.has_action(action):
+		return fallback
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey:
+			var code: Key = event.physical_keycode if event.physical_keycode != KEY_NONE else event.keycode
+			if code != KEY_NONE:
+				return OS.get_keycode_string(code)
+		elif event is InputEventMouseButton:
+			match event.button_index:
+				MOUSE_BUTTON_LEFT:
+					return "LMB"
+				MOUSE_BUTTON_RIGHT:
+					return "RMB"
+				MOUSE_BUTTON_MIDDLE:
+					return "MMB"
+	return fallback
+
+func _update_interaction_prompt() -> void:
+	if hud == null or not hud.has_method("set_interaction_prompt"):
+		return
+	if get_tree().paused or is_dead:
+		hud.set_interaction_prompt("")
+		return
+
+	var prompt := ""
+	if grabbed_object:
+		prompt = "Press [%s] to drop    [%s] to throw" % [
+			action_hint("interact", "E"),
+			action_hint("interact_2", "F"),
+		]
+	else:
+		var look := _read_look_target()
+		var interactable: InteractableComponent = look.interactable
+		prompt = look.prompt
+		if interactable:
+			interactable.hover_cursor(self)
+			if Input.is_action_just_pressed("interact"):
+				interactable.interact_with(self)
+
+	hud.set_interaction_prompt(prompt)
+
+func _read_look_target() -> Dictionary:
+	var result := {"interactable": null, "prompt": ""}
+	for i in interact_cast.get_collision_count():
+		if i > 0 and interact_cast.get_collider(0) != self:
+			break
+		var collider: Object = interact_cast.get_collider(i)
+		if collider == null or collider == self:
+			continue
+		var comp: Node = collider.get_node_or_null("InteractableComponent") if collider is Node else null
+		if comp is InteractableComponent:
+			result.interactable = comp
+			result.prompt = _prompt_for_interactable(comp)
+			break
+		if collider.has_method("get_interaction_prompt"):
+			result.prompt = str(collider.get_interaction_prompt(self))
+			break
+		if collider is RigidBox:
+			result.prompt = "Press [%s] to pick up" % action_hint("interact", "E")
+			break
+		if collider is CollisionObject3D and not (collider is Area3D):
+			break
+	return result
+
+func _prompt_for_interactable(comp: InteractableComponent) -> String:
+	var parent := comp.get_parent()
+	if parent and parent.has_method("get_interaction_prompt"):
+		return str(parent.get_interaction_prompt(self))
+	if comp.has_method("get_interaction_prompt"):
+		return str(comp.get_interaction_prompt(self))
+	return "Press [%s] to interact" % action_hint("interact", "E")
 
 func get_interactable_component_at_shapecast() -> InteractableComponent:
 	for i in interact_cast.get_collision_count():

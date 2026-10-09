@@ -41,24 +41,19 @@ func _ready() -> void:
 	if label_3d:
 		label_3d.visible = false
 
-func set_label_visibility(is_visible: bool, player: Player) -> void:
-	if not label_3d:
-		return
-		
-	label_3d.visible = is_visible
-	
-	if is_visible:
-		update_label_text(player)
+func set_label_visibility(_is_visible: bool, _player: Player = null) -> void:
+	if label_3d:
+		label_3d.visible = false
 
-func update_label_text(player: Player) -> void:
-	# If the door is already open, we don't need the locked message
+func get_interaction_prompt(player: Player) -> String:
+	var key := "E"
+	if player and player.has_method("action_hint"):
+		key = player.action_hint("interact", "E")
+
 	if open:
-		label_3d.text = "Press [E] to Close"
-		return
+		return "Press [%s] to close" % key
 
-	# If no key is required, or the player has the required key
-	if required_key == "" or player.has_key(required_key):
-		label_3d.text = "Press [E] to Open"
-	else:
-		# Dynamic message for missing key
-		label_3d.text = "Door locked,\nrequired key: " + required_key
+	if required_key == "" or (player and player.has_method("has_key") and player.has_key(required_key)):
+		return "Press [%s] to open" % key
+
+	return "Locked — requires %s" % required_key

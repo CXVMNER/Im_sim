@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=4 uid="uid://tp7yiojap1dl"]
+[gd_scene format=4 uid="uid://tp7yiojap1dl"]
 
 [ext_resource type="PackedScene" uid="uid://c2l77nbbqrrdk" path="res://assets/models/sword/Sword.glb" id="1_ycbs3"]
 [ext_resource type="Texture2D" uid="uid://883bmmrpit57" path="res://assets/models/sword/Sword_tSword_Difusse.png" id="2_n355p"]
@@ -26,7 +26,7 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_s4ec8"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_n355p"]
 resource_local_to_scene = true
 resource_name = "Sword_oSword_oSword_Vertex"
 _surfaces = [{
@@ -46,8 +46,8 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_gy7d1")
 
-[node name="Sword" instance=ExtResource("1_ycbs3")]
+[node name="Sword" unique_id=502187437 instance=ExtResource("1_ycbs3")]
 
 [node name="oSword_oSword_Vertex" parent="." index="0"]
 transform = Transform3D(-4.371139e-09, 0.1, -4.371139e-09, 0, -4.371139e-09, -0.1, -0.1, -4.371139e-09, 1.9106854e-16, 0, 0, 0)
-mesh = SubResource("ArrayMesh_s4ec8")
+mesh = SubResource("ArrayMesh_n355p")

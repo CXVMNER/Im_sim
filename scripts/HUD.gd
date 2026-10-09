@@ -23,7 +23,36 @@ func _ready() -> void:
 	healthValue.text = str(health)
 	ammoValue.text = str(ammo)
 	staminaValue.text = str(stamina)
+	_configure_interaction_label()
 	_build_hitmarker()
+
+func _configure_interaction_label() -> void:
+	if interaction_label == null:
+		return
+	interaction_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	interaction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	interaction_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	interaction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	interaction_label.add_theme_font_size_override("font_size", 18)
+	interaction_label.add_theme_color_override("font_color", Color(0.94, 0.96, 0.94, 0.95))
+	interaction_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.92))
+	interaction_label.add_theme_constant_override("outline_size", 6)
+	interaction_label.set_anchors_preset(Control.PRESET_CENTER)
+	interaction_label.offset_left = -240.0
+	interaction_label.offset_top = 26.0
+	interaction_label.offset_right = 240.0
+	interaction_label.offset_bottom = 90.0
+	interaction_label.text = ""
+	interaction_label.visible = false
+
+func set_interaction_prompt(text: String) -> void:
+	if interaction_label == null:
+		return
+	var next := text.strip_edges()
+	if interaction_label.text == next and interaction_label.visible == (next != ""):
+		return
+	interaction_label.text = next
+	interaction_label.visible = next != ""
 
 # Crosshair hit confirmation, built in code so no scene changes are needed
 func _build_hitmarker() -> void:

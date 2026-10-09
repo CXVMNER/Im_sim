@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://duyledkoyfys4"]
+[gd_scene format=4 uid="uid://duyledkoyfys4"]
 
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="1_bvxu8"]
 [ext_resource type="PackedScene" uid="uid://dlc3xcidvaqaj" path="res://scenes/level_transition.tscn" id="2_2nwr0"]
@@ -47,7 +47,11 @@ script/source = "extends AnimatableBody3D
 		if value != open:
 			open = value
 			update_door()
-	
+
+func _ready() -> void:
+	if label_3d:
+		label_3d.visible = false
+
 func update_door() -> void:
 	if !$AnimationPlayer.has_animation(animation_name):
 		print(\"Warning: Animation '\" + animation_name + \"' not found!\")
@@ -58,12 +62,19 @@ func update_door() -> void:
 	else:
 		$AnimationPlayer.play_backwards(animation_name)
 	$AnimationPlayer.set_active(true)
-	
+
 func toggle_open() -> void:
 	open = !open
 
-func _process(_delta) -> void:
-	label_3d.visible = !!$InteractableComponent.get_character_hovered_by_cur_camera()
+func get_interaction_prompt(player) -> String:
+	var key := \"E\"
+	if player and player.has_method(\"action_hint\"):
+		key = player.action_hint(\"interact\", \"E\")
+	if open:
+		return \"Press [%s] to return\" % key
+	if animation_name == \"lift\":
+		return \"Press [%s] to call lift\" % key
+	return \"Press [%s] to activate\" % key
 "
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_lwi15"]
@@ -236,337 +247,335 @@ _data = {
 &"ButtonPress": SubResource("Animation_w8emx")
 }
 
-[node name="world" type="Node3D"]
+[node name="world" type="Node3D" unique_id=154330026]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=885176017]
 environment = SubResource("Environment_6vcuh")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1994865745]
 transform = Transform3D(-0.86602527, -0.43301293, 0.2500001, 0, 0.49999997, 0.86602545, -0.50000024, 0.74999994, -0.4330126, 0, 0, 0)
 shadow_enabled = true
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=247764082]
 use_collision = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1916572415]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2.5, 0)
 use_collision = true
 size = Vector3(20, 7, 10)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D" unique_id=257113568]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -23, 2.5, 0)
 use_collision = true
 size = Vector3(10, 7, 16)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D26" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D26" type="CSGBox3D" parent="CSGCombiner3D" unique_id=980692971]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7, 4, -22)
 use_collision = true
 size = Vector3(14, 4, 8)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D13" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D13" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1905233169]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -25.5, 2.5, -10)
 use_collision = true
 size = Vector3(10, 7, 11)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D18" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D18" type="CSGBox3D" parent="CSGCombiner3D" unique_id=17049223]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 2.5, -10)
 use_collision = true
 size = Vector3(10, 7, 40)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D" unique_id=925708667]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 operation = 2
 use_collision = true
 size = Vector3(8, 6, 8)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D8" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D8" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1607410829]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.5, 3, 0)
 operation = 2
 use_collision = true
 size = Vector3(11, 6, 8)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D17" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D17" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1876862246]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.5, 4.5, -9.5)
 operation = 2
 use_collision = true
 size = Vector3(3, 3, 9)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D23" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D23" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2047315148]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 4.5, -9.5)
 operation = 2
 use_collision = true
 size = Vector3(3, 3, 9)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D29" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D29" type="CSGBox3D" parent="CSGCombiner3D" unique_id=960729542]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 4.5, -13)
 operation = 2
 use_collision = true
 size = Vector3(6, 1, 4)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D28" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D28" type="CSGBox3D" parent="CSGCombiner3D" unique_id=884569522]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 4.5, -21)
 operation = 2
 use_collision = true
 size = Vector3(6, 3, 14)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D19" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D19" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1786345462]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 3, -9.5)
 operation = 2
 use_collision = true
 size = Vector3(7, 6, 9)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D12" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D12" type="CSGBox3D" parent="CSGCombiner3D" unique_id=126127541]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5, 4.5, -5.5)
 operation = 2
 use_collision = true
 size = Vector3(3, 3, 17)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1919979235]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 3, 0)
 operation = 2
 use_collision = true
 size = Vector3(8, 6, 8)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D24" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D24" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1487823791]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0061035, 3, -9.5)
 operation = 2
 use_collision = true
 size = Vector3(10, 6, 7)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D25" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D25" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1275863698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4938965, 4.5, -9)
 operation = 2
 use_collision = true
 size = Vector3(15, 3, 6)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D14" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D14" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2003879449]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 3.563, -9)
 operation = 2
 use_collision = true
 size = Vector3(4, 1.125, 1.125)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D16" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D16" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1872571021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.5, 3.563, -11.883757)
 operation = 2
 use_collision = true
 size = Vector3(3, 1.125, 1.125)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D15" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D15" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1112094677]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -23, 3.563, -10.441303)
 operation = 2
 use_collision = true
 size = Vector3(4.007598, 1.125, 1.125)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1221306355]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 0)
 operation = 2
 use_collision = true
 size = Vector3(2, 3, 2)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1872230672]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 4.5, 0)
 operation = 2
 use_collision = true
 size = Vector3(3, 3, 2)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D10" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D10" type="CSGBox3D" parent="CSGCombiner3D" unique_id=245783822]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, 4.5, 0)
 operation = 2
 use_collision = true
 size = Vector3(3, 3, 2)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D" unique_id=978748381]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 1.5, 0)
 use_collision = true
 size = Vector3(2, 3, 2)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D9" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D9" type="CSGBox3D" parent="CSGCombiner3D" unique_id=442376301]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 2.75, 0)
 use_collision = true
 size = Vector3(3, 0.5, 3)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGBox3D11" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D11" type="CSGBox3D" parent="CSGCombiner3D" unique_id=833278460]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.5, 2.75, 0)
 use_collision = true
 size = Vector3(3, 0.5, 3)
 material = SubResource("StandardMaterial3D_kcbs5")
 
-[node name="CSGStairMaker3D3" parent="CSGCombiner3D" instance=ExtResource("4_kcbs5")]
+[node name="CSGStairMaker3D3" parent="CSGCombiner3D" unique_id=2048777147 instance=ExtResource("4_kcbs5")]
 transform = Transform3D(-4.5, 0, -3.019916e-07, 0, 3, 0, 6.794811e-07, 0, -2, -9.75, 1.5, 0)
 use_collision = true
 num_stairs = 12
 
-[node name="ShortWall" parent="CSGCombiner3D" instance=ExtResource("3_rtran")]
+[node name="ShortWall" parent="CSGCombiner3D" unique_id=609860207 instance=ExtResource("3_rtran")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.75, -18, 3, 0)
 
-[node name="ShortWall3" parent="CSGCombiner3D" instance=ExtResource("3_rtran")]
+[node name="ShortWall3" parent="CSGCombiner3D" unique_id=1535999081 instance=ExtResource("3_rtran")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.75, -23.5, 3, 0)
 
-[node name="ShortWall2" parent="CSGCombiner3D" instance=ExtResource("3_rtran")]
+[node name="ShortWall2" parent="CSGCombiner3D" unique_id=196362280 instance=ExtResource("3_rtran")]
 transform = Transform3D(-4.371139e-08, 0, 0.625, 0, 1, 0, -1, 0, -2.7319619e-08, -16.25, 3, -1)
 
-[node name="ShortWall4" parent="CSGCombiner3D" instance=ExtResource("3_rtran")]
+[node name="ShortWall4" parent="CSGCombiner3D" unique_id=677026463 instance=ExtResource("3_rtran")]
 transform = Transform3D(-4.371139e-08, 0, 0.625, 0, 1, 0, -1, 0, -2.7319619e-08, -24.75, 3, 1.5)
 
-[node name="CSGBox3D20" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D20" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2064336823]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -10.669805, 0.625, -10.75)
 use_collision = true
 size = Vector3(1.25, 1.25, 1.25)
 material = SubResource("StandardMaterial3D_ra8ls")
 
-[node name="CSGBox3D21" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D21" type="CSGBox3D" parent="CSGCombiner3D" unique_id=293862442]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -11, 0.625, -12)
 use_collision = true
 size = Vector3(1.25, 1.25, 1.25)
 material = SubResource("StandardMaterial3D_ra8ls")
 
-[node name="CSGBox3D22" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D22" type="CSGBox3D" parent="CSGCombiner3D" unique_id=51541178]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -11, 1.874999, -12)
 use_collision = true
 size = Vector3(1.25, 1.25, 1.25)
 material = SubResource("StandardMaterial3D_ra8ls")
 
-[node name="Ladder" parent="CSGCombiner3D" instance=ExtResource("4_sr55n")]
+[node name="Ladder" parent="CSGCombiner3D" unique_id=1496729689 instance=ExtResource("4_sr55n")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.25, -4.5, 1.5)
 
-[node name="Ladder3" parent="CSGCombiner3D" instance=ExtResource("4_sr55n")]
+[node name="Ladder3" parent="CSGCombiner3D" unique_id=1220188465 instance=ExtResource("4_sr55n")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -17, -4.5, -13)
 
-[node name="Ladder4" parent="CSGCombiner3D" instance=ExtResource("4_sr55n")]
+[node name="Ladder4" parent="CSGCombiner3D" unique_id=1781856312 instance=ExtResource("4_sr55n")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -7, -4.5, -12)
 
-[node name="Ladder2" parent="CSGCombiner3D" instance=ExtResource("4_sr55n")]
+[node name="Ladder2" parent="CSGCombiner3D" unique_id=1446011805 instance=ExtResource("4_sr55n")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -24.75, -4.5, -1.5)
 
-[node name="ShortWall5" parent="CSGCombiner3D" instance=ExtResource("3_rtran")]
+[node name="ShortWall5" parent="CSGCombiner3D" unique_id=1327172972 instance=ExtResource("3_rtran")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.75, -17.5, 3, -8.5)
 
-[node name="RigidBox" parent="CSGCombiner3D" instance=ExtResource("5_dxhgd")]
+[node name="RigidBox" parent="CSGCombiner3D" unique_id=62126027 instance=ExtResource("5_dxhgd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.008216, 0.24999976, -8.979493)
 
-[node name="RigidBox4" parent="CSGCombiner3D" instance=ExtResource("5_dxhgd")]
+[node name="RigidBox4" parent="CSGCombiner3D" unique_id=375007887 instance=ExtResource("5_dxhgd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.008217, 3.25, -5.979493)
 
-[node name="RigidBox3" parent="CSGCombiner3D" instance=ExtResource("5_dxhgd")]
+[node name="RigidBox3" parent="CSGCombiner3D" unique_id=1795420208 instance=ExtResource("5_dxhgd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.353519, 0.25, -5.960928)
 
-[node name="RigidBox2" parent="CSGCombiner3D" instance=ExtResource("5_dxhgd")]
+[node name="RigidBox2" parent="CSGCombiner3D" unique_id=1501809993 instance=ExtResource("5_dxhgd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.859383, 1.499999, -11.113675)
 
-[node name="SpawnPoint" type="Marker3D" parent="."]
+[node name="SpawnPoint" type="Marker3D" parent="." unique_id=1222255285]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 
-[node name="movableDoor" parent="." instance=ExtResource("2_6vcuh")]
+[node name="movableDoor" parent="." unique_id=263791747 instance=ExtResource("2_6vcuh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.5, 0, 1)
 
-[node name="movableDoor2" parent="." instance=ExtResource("2_6vcuh")]
+[node name="movableDoor2" parent="." unique_id=495567806 instance=ExtResource("2_6vcuh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -13.5, 3, 1)
 
-[node name="movableDoor3" parent="." instance=ExtResource("2_6vcuh")]
+[node name="movableDoor3" parent="." unique_id=764573744 instance=ExtResource("2_6vcuh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -26.5, 3, 1)
 
-[node name="Enemy" parent="." instance=ExtResource("8_m1iyv")]
+[node name="Enemy" parent="." unique_id=1295563079 instance=ExtResource("8_m1iyv")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 7, 3, -25)
 
-[node name="LevelTransitionArea3D" parent="." instance=ExtResource("2_2nwr0")]
+[node name="LevelTransitionArea3D" parent="." unique_id=1969013137 instance=ExtResource("2_2nwr0")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 16, 4, -9)
 target_level_path = "uid://bb4nkm70jejd8"
 
-[node name="Label3D" type="Label3D" parent="LevelTransitionArea3D"]
+[node name="Label3D" type="Label3D" parent="LevelTransitionArea3D" unique_id=463971258]
 text = "Enter here to move to
 the next level"
 
-[node name="TutorialTextHolder" type="Node3D" parent="."]
+[node name="TutorialTextHolder" type="Node3D" parent="." unique_id=62224124]
 
-[node name="Label3D2" type="Label3D" parent="TutorialTextHolder"]
+[node name="Label3D2" type="Label3D" parent="TutorialTextHolder" unique_id=294857832]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
 text = "Use [Mouse] to look around
 and [W], [A], [S], [D] to move"
 
-[node name="Label3D3" type="Label3D" parent="TutorialTextHolder"]
+[node name="Label3D3" type="Label3D" parent="TutorialTextHolder" unique_id=1753108770]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.5, 4.5, -11)
 text = "Press [C] or [Ctrl] to crouch"
 
-[node name="Label3D4" type="Label3D" parent="TutorialTextHolder"]
+[node name="Label3D4" type="Label3D" parent="TutorialTextHolder" unique_id=1884543263]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -14.5, 1.5, -6)
 text = "Use [E] and [F] to interact
 with purple boxes"
 
-[node name="Label3D6" type="Label3D" parent="TutorialTextHolder"]
+[node name="Label3D6" type="Label3D" parent="TutorialTextHolder" unique_id=1561159967]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -10.5, 1.5, -7)
 text = "Use [Space] to jump"
 
-[node name="Label3D7" type="Label3D" parent="TutorialTextHolder"]
+[node name="Label3D7" type="Label3D" parent="TutorialTextHolder" unique_id=1342752269]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -8.5, 4.5, -6)
 text = "Activate the platform"
 
-[node name="Label3D5" type="Label3D" parent="TutorialTextHolder"]
+[node name="Label3D5" type="Label3D" parent="TutorialTextHolder" unique_id=1023171259]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 7, 4.5, -6.5)
 text = "Press [1] or [2] to
 draw your weapon"
 
-[node name="movableElevator" type="Node3D" parent="."]
+[node name="movableElevator" type="Node3D" parent="." unique_id=1990030195]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -6, 3, -8)
 
-[node name="AnimatableBody3D" type="AnimatableBody3D" parent="movableElevator"]
+[node name="AnimatableBody3D" type="AnimatableBody3D" parent="movableElevator" unique_id=1651926257]
 script = SubResource("GDScript_cr2eh")
 animation_name = "platform"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D" unique_id=1785025124]
 material_override = SubResource("StandardMaterial3D_llcge")
 mesh = SubResource("BoxMesh_t0ybu")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="movableElevator/AnimatableBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="movableElevator/AnimatableBody3D" unique_id=1646388988]
 shape = SubResource("ConvexPolygonShape3D_cy6r3")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D" unique_id=1264037309]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4341519, -0.75)
 mesh = SubResource("BoxMesh_42ncp")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="movableElevator/AnimatableBody3D"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="movableElevator/AnimatableBody3D" unique_id=1346437625]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4341519, -0.75)
 shape = SubResource("ConvexPolygonShape3D_0tv6x")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="movableElevator/AnimatableBody3D"]
-libraries = {
-&"": SubResource("AnimationLibrary_2ucnx")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="movableElevator/AnimatableBody3D" unique_id=1153742789]
+libraries/ = SubResource("AnimationLibrary_2ucnx")
 
-[node name="button" type="Node3D" parent="movableElevator/AnimatableBody3D"]
+[node name="button" type="Node3D" parent="movableElevator/AnimatableBody3D" unique_id=1586361658]
 transform = Transform3D(0.25, 0, 0, 0, -1.0927847e-08, -0.25, 0, 0.25, -1.0927847e-08, 0, 0.65, -0.5)
 
-[node name="Cylinder" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D/button"]
+[node name="Cylinder" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D/button" unique_id=283361932]
 transform = Transform3D(1, 0, 0, 0, 0.44818795, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_can5g")
 skeleton = NodePath("")
 
-[node name="Armature" type="Node3D" parent="movableElevator/AnimatableBody3D/button"]
+[node name="Armature" type="Node3D" parent="movableElevator/AnimatableBody3D/button" unique_id=974484691]
 
-[node name="Skeleton3D" type="Skeleton3D" parent="movableElevator/AnimatableBody3D/button/Armature"]
+[node name="Skeleton3D" type="Skeleton3D" parent="movableElevator/AnimatableBody3D/button/Armature" unique_id=600432390]
 bones/0/name = "Bone"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -575,34 +584,32 @@ bones/0/position = Vector3(0, 0, 0)
 bones/0/rotation = Quaternion(0, 0, 0, 1)
 bones/0/scale = Vector3(1, 1, 1)
 
-[node name="Cylinder_001" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D/button/Armature/Skeleton3D"]
+[node name="Cylinder_001" type="MeshInstance3D" parent="movableElevator/AnimatableBody3D/button/Armature/Skeleton3D" unique_id=1946021794]
 mesh = SubResource("ArrayMesh_0xon5")
 skin = SubResource("Skin_2cpqc")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="movableElevator/AnimatableBody3D/button"]
-libraries = {
-&"": SubResource("AnimationLibrary_70jf2")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="movableElevator/AnimatableBody3D/button" unique_id=1580660613]
+libraries/ = SubResource("AnimationLibrary_70jf2")
 
-[node name="Label3D" type="Label3D" parent="movableElevator/AnimatableBody3D/button"]
+[node name="Label3D" type="Label3D" parent="movableElevator/AnimatableBody3D/button" unique_id=1694774346]
 transform = Transform3D(-4.371139e-08, 1, 4.371139e-08, 0, -4.371139e-08, 1, 1, 4.371139e-08, 3.5527137e-15, 0, 1, 0)
 billboard = 1
 text = "Press [E]"
 
-[node name="InteractableComponent" type="Node" parent="movableElevator/AnimatableBody3D"]
+[node name="InteractableComponent" type="Node" parent="movableElevator/AnimatableBody3D" unique_id=1480904399]
 script = ExtResource("10_soggb")
 metadata/_custom_type_script = "uid://d38lde0ccowa0"
 
-[node name="powerUp" parent="." instance=ExtResource("11_soggb")]
+[node name="powerUp" parent="." unique_id=1837401124 instance=ExtResource("11_soggb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3.275, -7)
 qty = 10
 
-[node name="powerUp2" parent="." instance=ExtResource("11_soggb")]
+[node name="powerUp2" parent="." unique_id=1198347138 instance=ExtResource("11_soggb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.275, -7)
 type = 1
 qty = 10
 
-[node name="LightSmall" parent="." instance=ExtResource("12_l1761")]
+[node name="LightSmall" parent="." unique_id=35724351 instance=ExtResource("12_l1761")]
 transform = Transform3D(-4.3711385e-08, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -4.3711385e-08, -22.44, 3.5, -9)
 
 [connection signal="interacted" from="movableElevator/AnimatableBody3D/InteractableComponent" to="movableElevator/AnimatableBody3D" method="toggle_open"]
