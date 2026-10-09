@@ -51,7 +51,7 @@ const MAX_STEP_HEIGHT := 0.25
 var _snapped_to_stairs_last_frame := false
 var _last_frame_was_on_floor := -INF
 
-@export var CLIMB_SPEED := 5.0
+@export var CLIMB_SPEED := 3.5
 
 var is_crouching := false
 @export_range(5, 10, 0.1) var CROUCHING_SPEED : float = 7.0 # Animation speed
@@ -149,9 +149,9 @@ func _input(event):
 				weapon_manager.cycle_weapon(1)
 	
 	# Crouch logic
-	if event.is_action_pressed("crouch") and is_on_floor() and TOGGLE_CROUCH == true:
+	if event.is_action_pressed("crouch") and is_on_floor() and _ladder == null and TOGGLE_CROUCH == true:
 		_toggle_crouch()
-	if event.is_action_pressed("crouch") and is_crouching == false and is_on_floor() and TOGGLE_CROUCH == false: # Hold to crouch
+	if event.is_action_pressed("crouch") and is_crouching == false and is_on_floor() and _ladder == null and TOGGLE_CROUCH == false: # Hold to crouch
 		crouching(true)
 	if event.is_action_pressed("crouch") and TOGGLE_CROUCH == false: # Release to uncrouch
 		if CROUCH_SHAPECAST.is_colliding() == false:
@@ -249,18 +249,18 @@ func _physics_process(delta):
 		_last_frame_was_on_floor = Engine.get_physics_frames()
 	
 	# Handle gravity.
-	if not is_on_floor():
+	if not is_on_floor() and _ladder == null:
 		velocity.y -= gravity * delta
 
 	# Handle jump.
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and is_on_floor() and _ladder == null:
 		velocity.y = JUMP_VELOCITY
 		# Store the horizontal velocity when the jump starts
 		direction = Vector3(velocity.x, 0, velocity.z).normalized()
 
 	# Sprint & Stamina
 	var sprint_pressed := Input.is_action_pressed("sprint")
-	var can_sprint := !is_crouching && stamina > 0  # Use local stamina for consistency
+	var can_sprint := !is_crouching && stamina > 0 && _ladder == null  # Use local stamina for consistency
 	var is_sprinting := sprint_pressed && can_sprint
 	
 	if is_sprinting:
@@ -285,7 +285,7 @@ func _physics_process(delta):
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	direction = (CameraController.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
-	if not _handle_ladder_physics():
+	if not _handle_ladder(delta):
 		# Modify movement based on whether the player is on the floor or in the air
 		if is_on_floor() or _snapped_to_stairs_last_frame:
 			# Normal movement control on the ground
@@ -299,6 +299,8 @@ func _physics_process(delta):
 			else:
 				velocity.x = lerp(velocity.x, 0.0, delta * INERTIA_FACTOR)
 				velocity.z = lerp(velocity.z, 0.0, delta * INERTIA_FACTOR)
+		elif _ladder_air_lock > 0.0:
+			pass # keep the push from letting go of a ladder; air control would cancel it
 		else:
 			# Air control: Allow limited movement but clamp the maximum velocity
 			if direction:
@@ -339,7 +341,7 @@ func _physics_process(delta):
 	if grabbed_object:
 		_object_grabbing(grabbed_object, delta)
 	
-	camera_tilt(input_dir.x, delta)
+	camera_tilt(0.0 if (_ladder != null) else input_dir.x, delta)
 	
 	# Shooting
 	if Input.is_action_pressed("attack"):
@@ -506,84 +508,259 @@ func _snap_up_stairs_check(delta) -> bool:
 			return true
 	return false
 
-var _cur_ladder_climbing : Area3D = null
-func _handle_ladder_physics() -> bool:
-	# Keep track of whether already on ladder. If not already, check if overlapping a ladder area3d.
-	var was_climbing_ladder := _cur_ladder_climbing and _cur_ladder_climbing.overlaps_body(self)
-	# Detect & handle top/bottom/side volume exit (prevents upward launch)
-	if _cur_ladder_climbing != null and not _cur_ladder_climbing.overlaps_body(self):
-		velocity.y = min(velocity.y, 0.0)  # Kill upward momentum; keep downward fall
-		_cur_ladder_climbing = null
-		return false
-	
-	if not was_climbing_ladder:
-		_cur_ladder_climbing = null
-		for ladder in get_tree().get_nodes_in_group("ladder_area3d"):
-			if ladder.overlaps_body(self):
-				_cur_ladder_climbing = ladder
-				break
-	if _cur_ladder_climbing == null:
-		return false
-	
-	# Set up variables. Most of this is going to be dependent on the player's relative position/velocity/input to the ladder.
-	var ladder_gtransform : Transform3D = _cur_ladder_climbing.global_transform
-	var pos_rel_to_ladder := ladder_gtransform.affine_inverse() * self.global_position
-	
-	var forward_move := Input.get_action_strength("move_forward") - Input.get_action_strength("move_backward")
-	var side_move := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	var ladder_forward_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(0, 0, -forward_move)
-	var ladder_side_move = ladder_gtransform.affine_inverse().basis * %Camera3D.global_transform.basis * Vector3(side_move, 0, 0)
-	
-	# Strafe velocity is simple. Just take x component rel to ladder of both
-	var ladder_strafe_vel : float = CLIMB_SPEED * (ladder_side_move.x + ladder_forward_move.x)
-	# For climb velocity, there are a few things to take into account:
-	# If strafing directly into the ladder, go up, if strafing away, go down
-	var ladder_climb_vel : float = CLIMB_SPEED * -ladder_side_move.z
-	# When pressing forward & facing the ladder, the player likely wants to move up. Vice versa with down.
-	# So we will bias the direction (up/down) towards where we are looking by 45 degrees to give a greater margin for up/down detect.
-	var up_wish := Vector3.UP.rotated(Vector3(1,0,0), deg_to_rad(-45)).dot(ladder_forward_move)
-	ladder_climb_vel += CLIMB_SPEED * up_wish
-	
-	# Only begin climbing ladders when moving towards them & prevent sticking to top of ladder when dismounting
-	# Trying to best match the player's intention when climbing on ladder
-	var should_dismount = false
-	if not was_climbing_ladder:
-		var mounting_from_top = pos_rel_to_ladder.y > _cur_ladder_climbing.get_node("TopOfLadder").position.y
-		if mounting_from_top:
-			# They could be trying to get on from the top of the ladder, or trying to leave the ladder.
-			if ladder_climb_vel > 0: should_dismount = true
+# ======================================================================
+# LADDERS
+# ======================================================================
+# States: NONE -> MOUNTING (short glide onto the rungs) -> CLIMBING
+#         CLIMBING -> DISMOUNTING (pull yourself over the top) -> NONE
+enum LadderControl {
+	LOOK_DIRECTION, # Half-Life style: forward climbs when looking up/level, descends when looking down
+	FORWARD_IS_UP,  # forward always climbs, back always descends (look around freely)
+}
+
+@export var ladder_control: LadderControl = LadderControl.LOOK_DIRECTION
+## Sideways speed on the ladder, as a fraction of CLIMB_SPEED
+@export var ladder_strafe_factor := 0.5
+## LOOK_DIRECTION: looking above this pitch = forward climbs, below (neutral - band) = forward descends
+@export var ladder_look_neutral_deg := -15.0
+@export var ladder_look_band_deg := 10.0
+## Jumping off: push away from the ladder and a small hop
+@export var ladder_let_go_push := 2.5
+@export var ladder_let_go_hop := 2.5
+
+const LADDER_TOP_STEP_HEIGHT := 0.5 # feet this close to the top = climb over onto the ledge
+const LADDER_RAIL_MARGIN := 0.2 # keep the capsule between the rails
+const LADDER_GRAB_REACH := 0.05 # how far past the hanging spot you can be and still get grabbed
+const LADDER_DISMOUNT_REACH := 1.6 # horizontal reach to an exit marker
+const LADDER_DISMOUNT_USE_REACH := 2.5 # reach when using the interact key
+
+var _ladder: Ladder = null # the ladder we're on (null = not on one)
+var _ladder_gliding := false # mid mount/dismount animation
+var _ladder_cooldown := 0.0 # can't grab a ladder again until this runs out
+var _ladder_air_lock := 0.0 # after letting go, air control can't cancel the push
+var _ladder_up_locked := false # after stepping on from the ledge, "up" is ignored until released
+
+# Returns true when the ladder code has fully handled this frame's movement
+# (including move_and_slide), so normal walking must be skipped.
+func _handle_ladder(delta: float) -> bool:
+	_ladder_cooldown = maxf(_ladder_cooldown - delta, 0.0)
+	_ladder_air_lock = maxf(_ladder_air_lock - delta, 0.0)
+
+	if _ladder == null:
+		_try_grab_ladder()
+		if _ladder == null:
+			return false
+
+	# Ease the head-bob offset out while on a ladder
+	camera_3d.transform.origin = camera_3d.transform.origin.lerp(Vector3.ZERO, minf(delta * 10.0, 1.0))
+
+	if _ladder_gliding:
+		velocity = Vector3.ZERO
+		return true
+	return _ladder_climb()
+
+# x = strafe (-1 left .. 1 right), y = climb (-1 down .. 1 up)
+func _ladder_input() -> Vector2:
+	var fwd := Input.get_action_strength("move_forward") - Input.get_action_strength("move_backward")
+	var side := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	var climb := fwd
+	if ladder_control == LadderControl.LOOK_DIRECTION:
+		var pitch_deg := rad_to_deg(camera_pitch)
+		climb *= clampf((pitch_deg - ladder_look_neutral_deg) / ladder_look_band_deg, -1.0, 1.0)
+	return Vector2(side, climb)
+
+func _try_grab_ladder() -> void:
+	if _ladder_cooldown > 0.0 or is_dead or is_crouching:
+		return
+	var wish := Vector3(direction.x, 0.0, direction.z)
+	if wish.length_squared() < 0.01:
+		return # grabbing needs intent: you have to be pushing somewhere
+	wish = wish.normalized()
+	var look: Vector3 = -CameraController.global_basis.z
+	look.y = 0.0
+	look = look.normalized()
+	var input := _ladder_input()
+
+	for node in get_tree().get_nodes_in_group("ladders"):
+		var ladder := node as Ladder
+		if ladder == null:
+			continue
+		var n := ladder.outward()
+		var rail := ladder.half_width() - LADDER_RAIL_MARGIN
+		var l := ladder.to_local_pos(global_position) # feet, in ladder space
+		if absf(l.x) > rail + 0.1: # must actually be at the ladder, not beside it
+			continue
+		var x := clampf(l.x, -rail, rail)
+
+		# --- Grab from the front: walking into it (or falling past it) while facing it
+		if l.z > 0.0 and l.z < ladder.climb_offset + LADDER_GRAB_REACH:
+			if l.y > -ladder.half_height - 0.1 and l.y < ladder.half_height - 0.6:
+				if wish.dot(-n) > 0.7 and look.dot(-n) > 0.6:
+					# Standing on the floor you only grab it if you'd actually go UP
+					# (otherwise looking down + forward would instantly re-grab at the bottom)
+					if is_on_floor() and input.y <= 0.2:
+						continue
+					var to := ladder.to_world_pos(Vector3(x, l.y, ladder.climb_offset))
+					# Duration scales with the pull distance, so a long reach is not a violent yank
+					_grab_ladder(ladder, [to], clampf(global_position.distance_to(to) * 0.7, 0.1, 0.4))
+					return
+
+		# --- Step onto it from the ledge above, to climb down: over the lip, then lower down
+		if ladder.allow_top_entry and is_on_floor() and l.z < 0.0 and l.z > -0.7:
+			if absf(l.y - ladder.half_height) < 0.3:
+				if wish.dot(n) > 0.5 and look.dot(n) > 0.5:
+					var lip := ladder.to_world_pos(Vector3(x, ladder.half_height, ladder.climb_offset))
+					var down := ladder.to_world_pos(Vector3(x, ladder.half_height - 0.9, ladder.climb_offset))
+					_grab_ladder(ladder, [lip, down], 0.65, true)
+					return
+
+func _grab_ladder(ladder: Ladder, path: Array, time: float, lock_up := false) -> void:
+	_ladder = ladder
+	_ladder_up_locked = lock_up
+	# Hanging on a ladder is not falling: no landing thud / damage when you step off
+	fall_damage.reset()
+	fall_damage.enabled = false
+	# Can't climb while carrying a crate
+	if grabbed_object:
+		grabbed_object = null
+		weapon_manager.switch_weapon(previous_weapon_state)
+	_ladder_glide(path, time, Callable())
+
+# Move the player along a short path (no collisions) over `time`, then call on_done.
+# The first leg eases in and the last eases out, so multi-leg paths don't stop in the middle.
+func _ladder_glide(path: Array, time: float, on_done: Callable) -> void:
+	_ladder_gliding = true
+	velocity = Vector3.ZERO
+	var tween := create_tween()
+	tween.set_pause_mode(Tween.TWEEN_PAUSE_STOP)
+	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+	for i in path.size():
+		var leg := tween.tween_property(self, "global_position", path[i], time / path.size())
+		leg.set_trans(Tween.TRANS_SINE)
+		if path.size() == 1:
+			leg.set_ease(Tween.EASE_IN_OUT)
 		else:
-			# If not mounting from top, they are either falling or on floor.
-			# In which case, only stick to ladder if intentionally moving towards
-			if (ladder_gtransform.affine_inverse().basis * direction).z >= 0: should_dismount = true
-		# Only stick to ladder if very close. Helps make it easier to get off top & prevents camera jitter
-		if abs(pos_rel_to_ladder.z) > 0.1: should_dismount = true
-	
-	# Let player step off onto floor
-	if is_on_floor() and ladder_climb_vel <= 0: should_dismount = true
-	
-	if should_dismount:
-		_cur_ladder_climbing = null
-		return false
-	
-	# Allow jump off ladder mid climb
-	if was_climbing_ladder and Input.is_action_just_pressed("jump"):
-		var ladder_dir = _cur_ladder_climbing.global_transform.basis.z  # Outward normal
-		var horiz_boost = CLIMB_SPEED * 0.3 # How far player jumps away from the ladder
-		var jump_vel = (ladder_dir * horiz_boost) + (Vector3.UP * JUMP_VELOCITY)
-		self.velocity = jump_vel
-		_cur_ladder_climbing = null
-		return false
-	
-	self.velocity = ladder_gtransform.basis * Vector3(ladder_strafe_vel, ladder_climb_vel, 0)
-	self.velocity = self.velocity.limit_length(CLIMB_SPEED) # Comment this line to turn on ladder boosting
-	
-	# Snap player onto ladder
-	pos_rel_to_ladder.z = 0
-	self.global_position = ladder_gtransform * pos_rel_to_ladder
-	
+			leg.set_ease(Tween.EASE_IN if i == 0 else Tween.EASE_OUT)
+	tween.tween_callback(_ladder_glide_done.bind(on_done))
+
+func _ladder_glide_done(on_done: Callable) -> void:
+	_ladder_gliding = false
+	if on_done.is_valid():
+		on_done.call()
+
+func _ladder_climb() -> bool:
+	var ladder := _ladder
+	var input := _ladder_input()
+	var l := ladder.to_local_pos(global_position)
+	var rail := ladder.half_width() - LADDER_RAIL_MARGIN
+
+	# --- Let go -------------------------------------------------------
+	if Input.is_action_just_pressed("jump"):
+		return _let_go(ladder.outward() * ladder_let_go_push + Vector3.UP * ladder_let_go_hop)
+	if Input.is_action_just_pressed("crouch"):
+		return _let_go(ladder.outward() * 0.5) # just drop
+
+	# --- Climb / strafe velocity in ladder space ---------------------------
+	var climb := input.y * CLIMB_SPEED
+	var strafe := input.x * _ladder_strafe_sign(ladder) * CLIMB_SPEED * ladder_strafe_factor
+	if (l.x >= rail and strafe > 0.0) or (l.x <= -rail and strafe < 0.0):
+		strafe = 0.0
+
+	# Right after stepping on from the ledge, ignore "up" until the player lets go of it;
+	# otherwise forward while looking level would pull you straight back over the top.
+	if _ladder_up_locked:
+		if input.y > 0.0:
+			climb = minf(climb, 0.0)
+		else:
+			_ladder_up_locked = false
+
+	# --- Leaving the ladder at an end or side ----------------------------------
+	# Authored LadderDismount markers win; without any, probe for a ledge above.
+	var near_top := l.y >= ladder.half_height - LADDER_TOP_STEP_HEIGHT
+	var exit_feet: Variant = null
+	if ladder.has_dismounts():
+		exit_feet = _pick_dismount(ladder, climb, Input.is_action_just_pressed("interact"))
+	elif ladder.allow_top_exit and climb > 0.0 and near_top:
+		exit_feet = _find_ledge(ladder, l)
+	if exit_feet != null:
+		# One smooth diagonal pull-up (rising first and then stepping over means a fast forward shove)
+		_ladder_glide([exit_feet], 0.5, _release_ladder.bind(Vector3.ZERO))
+		return true
+	if climb > 0.0 and near_top:
+		climb = 0.0 # nowhere to go: stop at the top
+
+	# --- Bottom of the ladder (nothing to stand on) -------------------------
+	if climb < 0.0 and l.y <= -ladder.half_height + 0.02:
+		return _let_go(Vector3.ZERO)
+
+	# Ease towards the correct hanging distance instead of snapping (no jitter)
+	var hold := clampf((ladder.climb_offset - l.z) * 15.0, -3.0, 3.0)
+	velocity = ladder.global_basis * Vector3(strafe, climb, hold)
+	move_and_slide()
+
+	# Climbed down onto the floor: just walk off
+	if climb < 0.0 and is_on_floor():
+		_release_ladder(Vector3.ZERO)
+	return true
+
+# Which authored exit (if any) does the player want right now? Returns the feet position or null.
+#  - exit above you: climbing up and within reach of it
+#  - exit below you: climbing down and within reach of it
+#  - any exit: look at it and press interact (Valve's "use key" dismount)
+func _pick_dismount(ladder: Ladder, climb: float, use_pressed: bool) -> Variant:
+	var feet: Vector3 = global_position
+	var view: Vector3 = -camera_3d.global_basis.z
+	var best: Variant = null
+	var best_dist := INF
+	for d: LadderDismount in ladder.dismounts:
+		var p: Vector3 = d.global_position
+		var dy: float = p.y - feet.y
+		var dist: float = feet.distance_to(p)
+		var wanted := false
+		if use_pressed:
+			var aim: Vector3 = (p + Vector3.UP - camera_3d.global_position).normalized()
+			wanted = dist <= LADDER_DISMOUNT_USE_REACH and view.dot(aim) > 0.5
+		elif not d.use_key_only and Vector2(p.x - feet.x, p.z - feet.z).length() <= LADDER_DISMOUNT_REACH:
+			if dy > 0.05:
+				wanted = climb > 0.0 and dy <= LADDER_TOP_STEP_HEIGHT
+			elif dy < -0.05:
+				wanted = climb < 0.0 and -dy <= 0.3
+		if wanted and dist < best_dist:
+			best = p + Vector3.UP * 0.02
+			best_dist = dist
+	return best
+
+func _let_go(release_velocity: Vector3) -> bool:
+	_release_ladder(release_velocity)
 	move_and_slide()
 	return true
+
+func _release_ladder(release_velocity: Vector3) -> void:
+	_ladder = null
+	_ladder_cooldown = 0.35
+	if release_velocity != Vector3.ZERO:
+		_ladder_air_lock = 0.4
+	velocity = release_velocity
+	fall_damage.enabled = true # falling is counted again from this moment
+
+# A strafe key moves you towards that side of YOUR view, even if you've turned around
+func _ladder_strafe_sign(ladder: Ladder) -> float:
+	return -1.0 if CameraController.global_basis.x.dot(ladder.global_basis.x) < -0.2 else 1.0
+
+# Is there a ledge to stand on just past the top of the ladder?
+# Returns the feet position to end up at, or null.
+func _find_ledge(ladder: Ladder, l: Vector3) -> Variant:
+	var rail := ladder.half_width() - LADDER_RAIL_MARGIN
+	var spot := ladder.to_world_pos(Vector3(clampf(l.x, -rail, rail), ladder.half_height, -0.35))
+	var query := PhysicsRayQueryParameters3D.create(
+			spot + Vector3.UP * 0.6, spot + Vector3.DOWN * 0.4, 1, [get_rid()])
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty() or is_surface_too_steep(hit.normal):
+		return null
+	var feet := Vector3(spot.x, hit.position.y + 0.02, spot.z)
+	if test_move(Transform3D(global_basis, feet), Vector3.ZERO):
+		return null # no headroom / something in the way
+	return feet
 
 func add_recoil(pitch: float, yaw: float) -> void:
 	recoil.x = clampf(recoil.x + pitch, -0.2, 0.35)

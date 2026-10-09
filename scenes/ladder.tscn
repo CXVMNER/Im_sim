@@ -1,4 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1ovqgjwms7u4"]
+[gd_scene format=3 uid="uid://b1ovqgjwms7u4"]
+
+[ext_resource type="Script" path="res://scripts/ladder.gd" id="1_ladder"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_35iws"]
 albedo_color = Color(0.447059, 0.447059, 0.447059, 1)
@@ -7,10 +9,8 @@ metallic = 1.0
 [sub_resource type="BoxShape3D" id="BoxShape3D_umrbm"]
 size = Vector3(0.1, 15, 1.4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_youqv"]
-size = Vector3(1.4, 15, 0.5)
-
 [node name="Ladder" type="Node3D"]
+script = ExtResource("1_ladder")
 
 [node name="LadderVisual" type="Node3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
@@ -106,14 +106,3 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0500002, 0, 0)
 shape = SubResource("BoxShape3D_umrbm")
-
-[node name="LadderArea3D" type="Area3D" parent="." groups=["ladder_area3d"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.4)
-collision_layer = 8
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LadderArea3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
-shape = SubResource("BoxShape3D_youqv")
-
-[node name="TopOfLadder" type="Node3D" parent="LadderArea3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.599998, 7.3, 0)
