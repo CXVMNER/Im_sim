@@ -30,3 +30,8 @@ func finalize_level_load(loaded_scene: PackedScene) -> void:
 	if spawn:
 		player.global_position = spawn.global_position
 		player.global_rotation = spawn.global_rotation
+		# The player may have been falling through the empty scene while loading;
+		# don't carry that speed into the new level (it would count as fall damage)
+		player.velocity = Vector3.ZERO
+		if player.fall_damage:
+			player.fall_damage.disarm()

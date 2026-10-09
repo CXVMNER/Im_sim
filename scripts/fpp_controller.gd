@@ -4,6 +4,7 @@ class_name Player
 
 @onready var hud := $HUD
 @export var health := 100
+@export var max_health := 0 # 0 = use the starting health; used by fall damage scaling
 @export var ammo := 0
 # Changed to float to allow precise delta subtraction
 @export var stamina : float = 100.0 
@@ -65,6 +66,11 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") # var gr
 @onready var weapon_manager := $CameraController/pivotNode3D/Camera3D/GunHolder
 var previous_weapon_state: WeaponManager.WeaponState = WeaponManager.WeaponState.NO_WEAPON
 
+# Camera kick from shooting/landing. x = pitch, y = yaw (radians); recovers on its own
+var recoil := Vector2.ZERO
+@export var recoil_recovery := 9.0
+var fall_damage: FallDamage
+
 @onready var hit_audio_stream_player_3d = $HitAudioStreamPlayer3D
 
 @onready var CameraController := $CameraController
@@ -125,14 +131,22 @@ func _input(event):
 	if is_paused:
 		return
 	
-	# Weapon switching
+	# Weapon switching (event based: Input.is_action_just_pressed() inside _input fires
+	# for every event in the same frame, which could start several switches at once)
 	if not grabbed_object:
-		if Input.is_action_just_pressed("weapon_one"):
+		if event.is_action_pressed("weapon_one"):
 			weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_1)
-		if Input.is_action_just_pressed("weapon_two"):
+		elif event.is_action_pressed("weapon_two"):
 			weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_2)
-		if Input.is_action_just_pressed("weapon_holster"):  # Optional: holster to no weapon
+		elif event.is_action_pressed("weapon_holster"):
 			weapon_manager.switch_weapon(WeaponManager.WeaponState.NO_WEAPON)
+		elif InputMap.has_action("weapon_last") and event.is_action_pressed("weapon_last"):
+			weapon_manager.switch_to_last()
+		elif event is InputEventMouseButton and event.pressed:
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				weapon_manager.cycle_weapon(-1)
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				weapon_manager.cycle_weapon(1)
 	
 	# Crouch logic
 	if event.is_action_pressed("crouch") and is_on_floor() and TOGGLE_CROUCH == true:
@@ -145,7 +159,7 @@ func _input(event):
 		elif CROUCH_SHAPECAST.is_colliding() == true:
 			uncrouch_check()
 
-	if Input.is_action_just_pressed("interact"):
+	if event.is_action_pressed("interact"):
 		if grabbed_object:
 			grabbed_object = null
 			weapon_manager.switch_weapon(previous_weapon_state)
@@ -154,12 +168,12 @@ func _input(event):
 			if collided is RigidBox:
 				if !grabbed_object:
 					try_grabbing(collided)
-	elif Input.is_action_just_pressed("interact_2"):
+	elif event.is_action_pressed("interact_2"):
 		if grabbed_object:
 			throw_object()
 
 func try_grabbing(collided:RigidBody3D):
-	previous_weapon_state = weapon_manager.current_weapon
+	previous_weapon_state = weapon_manager.target_weapon
 	weapon_manager.switch_weapon(WeaponManager.WeaponState.NO_WEAPON)
 	grabbed_object = collided
 
@@ -195,6 +209,19 @@ func _ready() -> void:
 	hud.ammo = ammo
 	hud.stamina = stamina
 	hud.updateHud()
+	
+	if max_health <= 0:
+		max_health = health
+	
+	# Start from the scene's real camera angles so recoil never snaps the view
+	camera_yaw = CameraController.rotation.y
+	camera_pitch = pivot_node_3d.rotation.x
+	
+	# Every creature takes fall damage
+	fall_damage = FallDamage.new()
+	fall_damage.name = "FallDamage"
+	add_child(fall_damage)
+	fall_damage.landed.connect(_on_landed)
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion and mouse_captured:
@@ -316,7 +343,7 @@ func _physics_process(delta):
 	
 	# Shooting
 	if Input.is_action_pressed("attack"):
-		weapon_manager.try_shoot()
+		weapon_manager.try_shoot(Input.is_action_just_pressed("attack"))
 
 func _object_grabbing(grabbed_object:RigidBody3D, delta) -> void:
 	var target_pos:Vector3 = grabbed_anchor.global_position
@@ -331,7 +358,9 @@ func _object_grabbing(grabbed_object:RigidBody3D, delta) -> void:
 	
 	grabbed_object.angular_velocity *= 0.5 # decreases the unwanted velocity
 
-func _process(_delta) -> void:
+func _process(delta) -> void:
+	_update_recoil(delta)
+	
 	# Get the interactable component from the shapecast
 	var interactable = get_interactable_component_at_shapecast()
 	
@@ -500,6 +529,23 @@ func _handle_ladder_physics() -> bool:
 	move_and_slide()
 	return true
 
+func add_recoil(pitch: float, yaw: float) -> void:
+	recoil.x = clampf(recoil.x + pitch, -0.2, 0.35)
+	recoil.y += yaw
+
+func _update_recoil(delta: float) -> void:
+	if recoil == Vector2.ZERO:
+		return
+	recoil = recoil.lerp(Vector2.ZERO, 1.0 - exp(-recoil_recovery * delta))
+	if recoil.length() < 0.0001:
+		recoil = Vector2.ZERO
+	CameraController.rotation.y = camera_yaw + recoil.y
+	pivot_node_3d.rotation.x = clampf(camera_pitch + recoil.x, deg_to_rad(-89), deg_to_rad(89))
+
+# Landing thud: the camera dips proportionally to the drop
+func _on_landed(fall_height: float, _damage: int) -> void:
+	add_recoil(-clampf(fall_height * 0.012, 0.0, 0.12), 0.0)
+
 func gainAmmo(qty: int) -> void:
 	ammo += qty
 	print("Player gained ammo: ", qty, " | Ammo: ", ammo)
@@ -514,7 +560,7 @@ func gainHealth(qty: int) -> void:
 	hud.addUpdate(qty, "Health", Color(0,1,0,1))
 	hud.updateHud()
 
-func takeDamage(dmg: int) -> void:
+func takeDamage(dmg: int, _source: Node = null, _hit_pos: Vector3 = Vector3.ZERO) -> void:
 	if is_dead or dmg <= 0:
 		return
 	
@@ -526,6 +572,8 @@ func takeDamage(dmg: int) -> void:
 	hud.health = health
 	hud.addUpdate(dmg, "Damage", Color(1, 0, 0, 1))
 	hud.updateHud()
+	if hud.has_method("screenGlow"):
+		hud.screenGlow(Color(1, 0, 0, 0.35))
 	
 	if health <= 0:
 		health = 0

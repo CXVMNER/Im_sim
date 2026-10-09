@@ -1,8 +1,8 @@
-[gd_scene load_steps=18 format=3 uid="uid://bd6bmfe3g5nfg"]
+[gd_scene format=3 uid="uid://bd6bmfe3g5nfg"]
 
 [ext_resource type="Script" uid="uid://fj47yo5vj05i" path="res://scripts/fpp_controller.gd" id="1_888b0"]
 [ext_resource type="Script" uid="uid://dex1exhhhfhgi" path="res://scripts/weapon_manager.gd" id="2_55026"]
-[ext_resource type="Script" uid="uid://bvvahgd0rubus" path="res://scenes/camera_3d.gd" id="2_kbhv3"]
+[ext_resource type="Script" uid="uid://bvvahgd0rubus" path="res://scripts/camera_3d.gd" id="2_kbhv3"]
 [ext_resource type="PackedScene" uid="uid://ceedqrih15ryy" path="res://scenes/HUD.tscn" id="2_lq6am"]
 [ext_resource type="PackedScene" uid="uid://b7iiv5kc4qkwa" path="res://scenes/blaster_b.tscn" id="2_uwixu"]
 [ext_resource type="PackedScene" uid="uid://cx4bix7yofd4f" path="res://scenes/blaster_m.tscn" id="3_up7xj"]
@@ -158,7 +158,7 @@ _data = {
 [sub_resource type="SphereShape3D" id="SphereShape3D_c503a"]
 radius = 0.25
 
-[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("CROUCH_SHAPECAST")]
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=2134803438 node_paths=PackedStringArray("CROUCH_SHAPECAST")]
 process_mode = 3
 collision_layer = 3
 collision_mask = 9
@@ -169,79 +169,77 @@ health = 50
 SENSITIVITY = 0.005
 CROUCH_SHAPECAST = NodePath("headShapeCast3D")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=611617341]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_ghtvo")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D" unique_id=1511826420]
 mesh = SubResource("CapsuleMesh_t614e")
 skeleton = NodePath("../..")
 
-[node name="CameraController" type="Node3D" parent="."]
+[node name="CameraController" type="Node3D" parent="." unique_id=557489755]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="pivotNode3D" type="Node3D" parent="CameraController"]
+[node name="pivotNode3D" type="Node3D" parent="CameraController" unique_id=1673759479]
 unique_name_in_owner = true
 
-[node name="Camera3D" type="Camera3D" parent="CameraController/pivotNode3D"]
+[node name="Camera3D" type="Camera3D" parent="CameraController/pivotNode3D" unique_id=398747578]
 unique_name_in_owner = true
 script = ExtResource("2_kbhv3")
 
-[node name="InteractionManager" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
+[node name="InteractionManager" type="Node3D" parent="CameraController/pivotNode3D/Camera3D" unique_id=549880012]
 
-[node name="InteractShapeCast3D" type="ShapeCast3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager"]
+[node name="InteractShapeCast3D" type="ShapeCast3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager" unique_id=263637315]
 shape = SubResource("SphereShape3D_ghtvo")
 target_position = Vector3(0, 0, -2.25)
 max_results = 2
 collision_mask = 9
 collide_with_areas = true
 
-[node name="SpringArm3D" type="SpringArm3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager"]
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager" unique_id=1814332701]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
-[node name="GrabbedAnchor" type="Marker3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager/SpringArm3D"]
+[node name="GrabbedAnchor" type="Marker3D" parent="CameraController/pivotNode3D/Camera3D/InteractionManager/SpringArm3D" unique_id=1999938112]
 
-[node name="GunHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D"]
+[node name="GunHolder" type="Node3D" parent="CameraController/pivotNode3D/Camera3D" unique_id=406389179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.2, -0.5)
 script = ExtResource("2_55026")
 
-[node name="Sword" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("4_rqmhu")]
+[node name="Sword" parent="CameraController/pivotNode3D/Camera3D/GunHolder" unique_id=1937396323 instance=ExtResource("4_rqmhu")]
 visible = false
 
-[node name="blaster-b" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("2_uwixu")]
+[node name="blaster-b" parent="CameraController/pivotNode3D/Camera3D/GunHolder" unique_id=1079823227 instance=ExtResource("2_uwixu")]
 visible = false
 
-[node name="blaster-m2" parent="CameraController/pivotNode3D/Camera3D/GunHolder" instance=ExtResource("3_up7xj")]
+[node name="blaster-m2" parent="CameraController/pivotNode3D/Camera3D/GunHolder" unique_id=1444960523 instance=ExtResource("3_up7xj")]
 visible = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_myidv")
-}
-autoplay = "idle"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=281364317]
+libraries/ = SubResource("AnimationLibrary_myidv")
+autoplay = &"idle"
 playback_default_blend_time = 0.1
 
-[node name="headShapeCast3D" type="ShapeCast3D" parent="."]
+[node name="headShapeCast3D" type="ShapeCast3D" parent="." unique_id=297266393]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 shape = SubResource("SphereShape3D_c503a")
 target_position = Vector3(0, 0.5, 0)
 
-[node name="StairsAheadRayCast3D" type="RayCast3D" parent="."]
+[node name="StairsAheadRayCast3D" type="RayCast3D" parent="." unique_id=185827273]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.5)
 target_position = Vector3(0, -0.3, 0)
 
-[node name="StairsBelowRayCast3D" type="RayCast3D" parent="."]
+[node name="StairsBelowRayCast3D" type="RayCast3D" parent="." unique_id=506077415]
 unique_name_in_owner = true
 
-[node name="HUD" parent="." instance=ExtResource("2_lq6am")]
+[node name="HUD" parent="." unique_id=1840922617 instance=ExtResource("2_lq6am")]
 unique_name_in_owner = true
 mouse_filter = 1
 
-[node name="PauseMenu" parent="." instance=ExtResource("5_bww43")]
+[node name="PauseMenu" parent="." unique_id=2108393511 instance=ExtResource("5_bww43")]
 
-[node name="HitAudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+[node name="HitAudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1488806616]
 stream = ExtResource("8_1v83r")
 
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]

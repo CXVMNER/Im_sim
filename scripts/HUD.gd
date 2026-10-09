@@ -16,11 +16,43 @@ var stamina : int
 
 var item := preload("res://scenes/hud_item.tscn")
 
+var hitmarker: Label
+var _hit_tween: Tween
+
 func _ready() -> void:
 	healthValue.text = str(health)
 	ammoValue.text = str(ammo)
 	staminaValue.text = str(stamina)
-	
+	_build_hitmarker()
+
+# Crosshair hit confirmation, built in code so no scene changes are needed
+func _build_hitmarker() -> void:
+	hitmarker = Label.new()
+	hitmarker.text = "×"
+	hitmarker.add_theme_font_size_override("font_size", 40)
+	hitmarker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hitmarker.modulate.a = 0.0
+	add_child(hitmarker)
+	hitmarker.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	hitmarker.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	hitmarker.grow_vertical = Control.GROW_DIRECTION_BOTH
+	hitmarker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hitmarker.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+func show_hitmarker(killed := false, headshot := false) -> void:
+	if hitmarker == null:
+		return
+	if killed:
+		hitmarker.modulate = Color(1, 0.15, 0.1, 1)
+	elif headshot:
+		hitmarker.modulate = Color(1, 0.85, 0.2, 1)
+	else:
+		hitmarker.modulate = Color(1, 1, 1, 1)
+	if _hit_tween:
+		_hit_tween.kill()
+	_hit_tween = create_tween()
+	_hit_tween.tween_property(hitmarker, "modulate:a", 0.0, 0.25)
+
 func updateHud() -> void:
 	healthValue.text = str(health)
 	ammoValue.text = str(ammo)
