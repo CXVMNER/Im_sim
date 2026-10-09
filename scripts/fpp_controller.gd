@@ -624,11 +624,13 @@ func _grab_ladder(ladder: Ladder, path: Array, time: float, lock_up := false) ->
 	if grabbed_object:
 		grabbed_object = null
 		weapon_manager.switch_weapon(previous_weapon_state)
-	_ladder_glide(path, time, Callable())
+	_ladder_glide(path, time, Callable(), true)
 
 # Move the player along a short path (no collisions) over `time`, then call on_done.
 # The first leg eases in and the last eases out, so multi-leg paths don't stop in the middle.
-func _ladder_glide(path: Array, time: float, on_done: Callable) -> void:
+# keep_moving: the last leg doesn't slow down, because climbing carries on straight after it
+# (an eased stop followed by an instant restart feels like a pause).
+func _ladder_glide(path: Array, time: float, on_done: Callable, keep_moving := false) -> void:
 	_ladder_gliding = true
 	velocity = Vector3.ZERO
 	var tween := create_tween()
@@ -636,6 +638,9 @@ func _ladder_glide(path: Array, time: float, on_done: Callable) -> void:
 	tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	for i in path.size():
 		var leg := tween.tween_property(self, "global_position", path[i], time / path.size())
+		if keep_moving and i == path.size() - 1:
+			leg.set_trans(Tween.TRANS_LINEAR)
+			continue
 		leg.set_trans(Tween.TRANS_SINE)
 		if path.size() == 1:
 			leg.set_ease(Tween.EASE_IN_OUT)
