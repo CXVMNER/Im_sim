@@ -5,6 +5,10 @@ class_name Player
 @onready var hud := $HUD
 @export var health := 100
 @export var max_health := 0 # 0 = use the starting health; used by fall damage scaling
+@export var armor := 0.0
+@export var max_armor := 100.0
+## Share of each hit that armor takes while it has charge. The rest goes to health.
+const ARMOR_ABSORB_RATIO := 0.6
 @export var ammo := 0
 # Changed to float to allow precise delta subtraction
 @export var stamina : float = 100.0 
@@ -214,6 +218,8 @@ func _ready() -> void:
 	if max_health <= 0:
 		max_health = health
 	hud.max_health = max_health
+	hud.max_armor = max_armor
+	hud.armor = armor
 	
 	# Start from the scene's real camera angles so recoil never snaps the view
 	camera_yaw = CameraController.rotation.y
@@ -793,24 +799,55 @@ func gainAmmo(qty: int) -> void:
 	hud.addUpdate(qty, "Ammo", Color(0,0,1,1))
 	hud.updateHud()
 
+## Health cannot go above max_health. Only the amount actually gained is shown.
 func gainHealth(qty: int) -> void:
-	health += qty
-	print("Player gained health: ", qty, " | Health: ", health)
+	var before := health
+	health = mini(health + qty, max_health)
+	var gained := health - before
+	print("Player gained health: ", gained, " | Health: ", health)
 	hud.health = health
-	hud.addUpdate(qty, "Health", Color(0,1,0,1))
+	if gained > 0:
+		hud.addUpdate(gained, "Health", Color(0, 1, 0, 1))
+	else:
+		hud.notify("Health already full")
+	hud.updateHud()
+
+## Armor (suit battery) cannot go above max_armor.
+func gainArmor(qty: int) -> void:
+	var before := armor
+	armor = minf(armor + qty, max_armor)
+	var gained := roundi(armor - before)
+	print("Player gained armor: ", gained, " | Armor: ", armor)
+	hud.armor = armor
+	if gained > 0:
+		hud.addUpdate(gained, "Armor", Color.WHITE)
+	else:
+		hud.notify("Armor already full")
 	hud.updateHud()
 
 func takeDamage(dmg: int, _source: Node = null, _hit_pos: Vector3 = Vector3.ZERO) -> void:
 	if is_dead or dmg <= 0:
 		return
 	
-	health -= dmg
-	print("Player took damage: ", dmg, " | Health: ", health)
+	# Armor takes a share of the hit until it runs out; health takes the rest.
+	var remaining := float(dmg)
+	var absorbed := 0.0
+	if armor > 0.0:
+		absorbed = minf(armor, remaining * ARMOR_ABSORB_RATIO)
+		armor -= absorbed
+		remaining -= absorbed
+	var taken := roundi(remaining)
+	health -= taken
+	print("Player took damage: ", taken, " | Armor absorbed: ", roundi(absorbed), " | Health: ", health)
 	hit_audio_stream_player_3d.play()
 	
 	# Update HUD data
 	hud.health = health
-	hud.addUpdate(dmg, "Damage", Color(1, 0, 0, 1))
+	hud.armor = armor
+	if taken > 0:
+		hud.addUpdate(taken, "Damage", Color(1, 0, 0, 1))
+	else:
+		hud.notify("Armor absorbed the hit")
 	hud.updateHud()
 	if hud.has_method("screenGlow"):
 		hud.screenGlow(Color(1, 0, 0, 0.35))
@@ -910,8 +947,10 @@ func prepare_restart() -> void:
 	is_dead = false
 	health = max_health
 	stamina = 100.0
+	armor = 0.0
 	velocity = Vector3.ZERO
 	hud.health = health
+	hud.armor = armor
 	hud.stamina = stamina
 	hud.updateHud()
 	pause_menu.set_game_over(false)

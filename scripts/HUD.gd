@@ -56,6 +56,8 @@ const DAMAGE_LABEL := "Damage" # addUpdate() lines with this text are shown in r
 @onready var _health_bar: ProgressBar = %HealthBar
 @onready var _health_trail: ProgressBar = %HealthTrail
 @onready var _stamina_bar: ProgressBar = %StaminaBar
+@onready var _armor_bar: ProgressBar = %ArmorBar
+@onready var _armor_value: Label = %ArmorValue
 @onready var _weapon_panel: Control = %WeaponPanel
 @onready var _weapon_name: Label = %WeaponName
 @onready var _fire_mode: Label = %FireMode
@@ -80,6 +82,16 @@ var stamina := 100.0:
 	set(value):
 		stamina = value
 		_refresh_stamina()
+
+var armor := 0.0:
+	set(value):
+		armor = value
+		_refresh_armor()
+
+var max_armor := 100.0:
+	set(value):
+		max_armor = maxf(value, 1.0)
+		_refresh_armor()
 
 var ammo := 0:
 	set(value):
@@ -130,6 +142,7 @@ func setup(new_player: Node) -> void:
 ## Full refresh. Kept for the existing player code, which calls it after changing values.
 func updateHud() -> void:
 	_refresh_vitals()
+	_refresh_armor()
 	_refresh_stamina()
 	_refresh_ammo()
 
@@ -165,6 +178,13 @@ func _update_trail(target: float) -> void:
 	_trail_tween = create_tween()
 	_trail_tween.tween_interval(0.35)
 	_trail_tween.tween_property(_health_trail, "value", target, 0.45)
+
+
+func _refresh_armor() -> void:
+	if not is_node_ready():
+		return
+	_armor_value.text = str(ceili(maxf(armor, 0.0)))
+	_armor_bar.value = clampf(armor / max_armor, 0.0, 1.0) * 100.0
 
 
 func _refresh_stamina() -> void:

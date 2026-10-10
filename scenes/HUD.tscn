@@ -310,7 +310,7 @@ layout_mode = 1
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 32.0
-offset_top = -158.0
+offset_top = -190.0
 offset_right = 352.0
 offset_bottom = -32.0
 grow_vertical = 0
@@ -372,6 +372,35 @@ mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxEmpty_bar")
 max_value = 100.0
 value = 100.0
+show_percentage = false
+
+[node name="ArmorRow" type="HBoxContainer" parent="VitalsPanel/VitalsBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ArmorLabel" type="Label" parent="VitalsPanel/VitalsBox/ArmorRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.56, 0.6, 0.66, 1)
+theme_override_font_sizes/font_size = 11
+text = "ARMOR"
+
+[node name="ArmorValue" type="Label" parent="VitalsPanel/VitalsBox/ArmorRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 2
+text = "0"
+
+[node name="ArmorBar" type="ProgressBar" parent="VitalsPanel/VitalsBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 0.0
 show_percentage = false
 
 [node name="StaminaLabel" type="Label" parent="VitalsPanel/VitalsBox"]

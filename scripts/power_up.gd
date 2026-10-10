@@ -5,7 +5,8 @@ class_name PowerUp
 enum Type {
 	health,
 	ammo,
-	key
+	key,
+	armor
 }
 
 @export var type := Type.health
@@ -22,6 +23,7 @@ enum Type {
 @onready var health_kit_2 := $Mesh/HealthKit2
 @onready var crate_small_2 := $"Mesh/crate-small2"
 @onready var keycard := $Mesh/keycard
+@onready var armor_suit := $Mesh/ArmorSuit
 
 @onready var pickup_sound := $PickupSound
 @onready var key_pickup_sound := $KeyPickupSound # New Key pickup sound node
@@ -37,6 +39,8 @@ func get_active_visual_node():
 			return crate_small_2
 		Type.key:
 			return keycard
+		Type.armor:
+			return armor_suit
 	return null
 
 func _ready():
@@ -45,6 +49,7 @@ func _ready():
 	health_kit_2.visible = false
 	crate_small_2.visible = false
 	keycard.visible = false
+	armor_suit.visible = false
 	
 	# Make ONLY the correct specific model visible based on the 'type'.
 	var active_node = get_active_visual_node()
@@ -57,6 +62,8 @@ func _ready():
 			label.text = "Health"
 		Type.ammo:
 			label.text = "Ammo"
+		Type.armor:
+			label.text = "Armor"
 		Type.key:
 			label.text = "Key: " + pass_value # Display the pass value on the key label
 
@@ -75,6 +82,8 @@ func _on_body_entered(body):
 			
 		Type.ammo:
 			body.gainAmmo(qty)
+		Type.armor:
+			body.gainArmor(qty)
 			
 		Type.key:
 			# Pass the key's unique value to the player

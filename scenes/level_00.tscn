@@ -605,8 +605,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3.275, -7)
 qty = 10
 
 [node name="powerUp2" parent="." unique_id=1198347138 instance=ExtResource("11_soggb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.275, -7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 3.275, -7)
 type = 1
+qty = 10
+
+[node name="powerUp3" parent="." unique_id=31655776 instance=ExtResource("11_soggb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.275, -7)
+type = 3
 qty = 10
 
 [node name="LightSmall" parent="." unique_id=35724351 instance=ExtResource("12_l1761")]
