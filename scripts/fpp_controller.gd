@@ -73,7 +73,7 @@ var previous_weapon_state: WeaponManager.WeaponState = WeaponManager.WeaponState
 # Camera kick from shooting/landing. x = pitch, y = yaw (radians); recovers on its own
 var recoil := Vector2.ZERO
 @export var recoil_recovery := 9.0
-var fall_damage: FallDamage
+@onready var fall_damage: FallDamage = $FallDamage
 
 @onready var hit_audio_stream_player_3d = $HitAudioStreamPlayer3D
 
@@ -225,10 +225,7 @@ func _ready() -> void:
 	camera_yaw = CameraController.rotation.y
 	camera_pitch = pivot_node_3d.rotation.x
 	
-	# Every creature takes fall damage
-	fall_damage = FallDamage.new()
-	fall_damage.name = "FallDamage"
-	add_child(fall_damage)
+	# FallDamage is a node in the scene (a child of this body); just listen to its signal
 	fall_damage.landed.connect(_on_landed)
 
 func _unhandled_input(event):
@@ -895,6 +892,14 @@ func _on_animation_player_animation_started(anim_name) -> void:
 		is_crouching = !is_crouching
 
 # Set movement speed
+
+## True when nothing solid sits between the player and the enemy (walls, closed doors, crates).
+func _can_hear(enemy: CollisionObject3D) -> bool:
+	var query := PhysicsRayQueryParameters3D.create(
+			global_position + Vector3.UP, enemy.global_position + Vector3.UP, 1, [get_rid(), enemy.get_rid()])
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+
 func set_movement_speed(state : String) -> void:
 	match state:
 		"walking":

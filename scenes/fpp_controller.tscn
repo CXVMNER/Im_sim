@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://tp7yiojap1dl" path="res://scenes/sword.tscn" id="4_rqmhu"]
 [ext_resource type="PackedScene" uid="uid://mklwkwxtik8j" path="res://scenes/pause_menu.tscn" id="5_bww43"]
 [ext_resource type="AudioStream" uid="uid://00c1cewm5rgn" path="res://sounds/damage_taken.wav" id="8_1v83r"]
+[ext_resource type="Script" uid="uid://bag5hdhlwx3p7" path="res://scripts/fall_damage.gd" id="9_fallds"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ghtvo"]
 radius = 0.25
@@ -241,5 +242,8 @@ mouse_filter = 1
 
 [node name="HitAudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1488806616]
 stream = ExtResource("8_1v83r")
+
+[node name="FallDamage" type="Node" parent="." unique_id=1632883142]
+script = ExtResource("9_fallds")
 
 [connection signal="animation_started" from="AnimationPlayer" to="." method="_on_animation_player_animation_started"]

@@ -88,7 +88,7 @@ var _sight_timer := 0.0
 var _lost_sight_time := 0.0
 var _pain_timer := 0.0
 var _last_shot_time := -100.0
-var fall_damage: FallDamage
+@onready var fall_damage: FallDamage = $FallDamage
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -97,10 +97,7 @@ func _ready() -> void:
 	home_position = global_position
 	return_position = home_position
 	target = PlayerManager.player
-	# Every creature takes fall damage
-	fall_damage = FallDamage.new()
-	fall_damage.name = "FallDamage"
-	add_child(fall_damage)
+	# FallDamage is a child node in the scene; it applies landing damage to this body
 	_enter_state(State.IDLE if patrol_points.is_empty() else State.PATROL)
 
 func _physics_process(delta: float) -> void:
