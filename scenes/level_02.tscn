@@ -331,13 +331,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.556511e-07, 25)
 
 [node name="LevelTransitionArea3D2" parent="." instance=ExtResource("21_37jkp")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2, -25)
-target_level_path = "uid://dlejwq3qgdvnp"
-is_full_scene_change = true
+target_level_path = "res://scenes/level_03.tscn"
 
 [node name="Label3D" type="Label3D" parent="LevelTransitionArea3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
-text = "Enter here to
-finish the level"
+text = "Enter here to\ncontinue"
 
 [node name="LightSmall" parent="." instance=ExtResource("23_ocwh6")]
 transform = Transform3D(-0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, -0.70710677, -11.61, 5, 11.610001)
