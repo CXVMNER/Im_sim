@@ -1,6 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://dlejwq3qgdvnp"]
+[gd_scene load_steps=6 format=3 uid="uid://dlejwq3qgdvnp"]
 
 [ext_resource type="Script" uid="uid://egss3ioefuw3" path="res://scripts/main_menu.gd" id="1_l6cm7"]
+[ext_resource type="Theme" path="res://ui_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://scenes/options_menu.tscn" id="3_opts"]
+
+[sub_resource type="Gradient" id="Gradient_vig"]
+offsets = PackedFloat32Array(0.45, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vig"]
+gradient = SubResource("Gradient_vig")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -9,50 +23,94 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("2_theme")
 script = ExtResource("1_l6cm7")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.6784314, 0.84705883, 0.9019608, 1)
+mouse_filter = 2
+color = Color(0.03, 0.04, 0.055, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Vignette" type="TextureRect" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -210.0
-offset_top = -117.5
-offset_right = 210.0
-offset_bottom = 117.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 12
+mouse_filter = 2
+modulate = Color(0, 0, 0, 0.75)
+texture = SubResource("GradientTexture2D_vig")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="StartButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Start game"
+[node name="TitleBlock" type="VBoxContainer" parent="."]
+layout_mode = 1
+offset_left = 96.0
+offset_top = 72.0
+offset_right = 700.0
+offset_bottom = 250.0
+mouse_filter = 2
+theme_override_constants/separation = 6
 
-[node name="OptionsButton" type="Button" parent="VBoxContainer"]
+[node name="Title" type="Label" parent="TitleBlock"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
+mouse_filter = 2
+theme_override_font_sizes/font_size = 64
+text = "PROJECT TITLE"
+
+[node name="Subtitle" type="Label" parent="TitleBlock"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.7, 0.24, 1)
+theme_override_font_sizes/font_size = 16
+text = "PROTOTYPE BUILD"
+
+[node name="Accent" type="ColorRect" parent="TitleBlock"]
+custom_minimum_size = Vector2(380, 3)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.95, 0.7, 0.24, 1)
+
+[node name="MenuBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 96.0
+offset_top = -60.0
+offset_right = 396.0
+offset_bottom = 170.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="StartButton" type="Button" parent="MenuBox"]
+custom_minimum_size = Vector2(300, 52)
+layout_mode = 2
+text = "New game"
+alignment = 0
+
+[node name="OptionsButton" type="Button" parent="MenuBox"]
+custom_minimum_size = Vector2(300, 52)
+layout_mode = 2
 text = "Options"
+alignment = 0
 
-[node name="ExitButton" type="Button" parent="VBoxContainer"]
+[node name="ExitButton" type="Button" parent="MenuBox"]
+custom_minimum_size = Vector2(300, 52)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Exit"
+text = "Quit"
+alignment = 0
 
-[connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
+[node name="OptionsMenu" parent="." instance=ExtResource("3_opts")]
+visible = false
+
+[connection signal="pressed" from="MenuBox/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MenuBox/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="MenuBox/ExitButton" to="." method="_on_exit_button_pressed"]

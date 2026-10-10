@@ -1,26 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://ceedqrih15ryy"]
+[gd_scene load_steps=9 format=3 uid="uid://ceedqrih15ryy"]
 
-[ext_resource type="Script" uid="uid://fpwihrsjktwr" path="res://scripts/HUD.gd" id="1_on1tq"]
-[ext_resource type="Script" uid="uid://3p1pndhb11o2" path="res://scripts/FPSCounter.gd" id="2_722oe"]
+[ext_resource type="Script" uid="uid://fpwihrsjktwr" path="res://scripts/HUD.gd" id="1_hud"]
+[ext_resource type="Script" uid="uid://3p1pndhb11o2" path="res://scripts/FPSCounter.gd" id="2_fps"]
+[ext_resource type="PackedScene" uid="uid://cwjo7m8r0jffb" path="res://scenes/hud_item.tscn" id="3_item"]
+[ext_resource type="Theme" path="res://ui_theme.tres" id="4_theme"]
 
-[sub_resource type="GDScript" id="GDScript_fls4u"]
-script/source = "extends Control
+[sub_resource type="Gradient" id="Gradient_edge"]
+offsets = PackedFloat32Array(0.45, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
 
-@export var dot_color: Color = Color.WHITE
-@export var outline_color: Color = Color.BLACK  # Change this in Inspector later (e.g., green/red)
-@export var dot_radius: float = 2.0  # Inner dot size (~3px diameter)
-@export var outline_width: float = 1.0  # Outline thickness
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_edge"]
+gradient = SubResource("Gradient_edge")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
-func _draw() -> void:
-	var center: Vector2 = size / 2
-	# Outline stroke (full circle arc)
-	draw_arc(center, dot_radius + outline_width / 2, 0, TAU, 32, outline_color, outline_width)
-	# Filled dot
-	draw_circle(center, dot_radius, dot_color)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bar"]
 
-func _ready() -> void:
-	queue_redraw()  # Ensures draw on load/resize
-"
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_prompt"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -30,131 +29,452 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_on1tq")
+theme = ExtResource("4_theme")
+script = ExtResource("1_hud")
+notification_scene = ExtResource("3_item")
 
-[node name="Overlay" type="ColorRect" parent="."]
+[node name="DamageFlash" type="TextureRect" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(1, 1, 1, 0)
-
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -40.0
-offset_right = 40.0
-grow_vertical = 0
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_bottom = 20
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(1, 0.15, 0.1, 0)
+texture = SubResource("GradientTexture2D_edge")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Health"
-
-[node name="health" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="LowHealthVignette" type="TextureRect" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Ammo"
-
-[node name="ammo" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-text = "Stamina"
-
-[node name="stamina" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer3"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="MarginContainer2" type="MarginContainer" parent="."]
 layout_mode = 1
-offset_right = 99.0
-offset_bottom = 97.0
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 20
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(0.8, 0.05, 0.05, 0)
+texture = SubResource("GradientTexture2D_edge")
+expand_mode = 1
+stretch_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer2/VBoxContainer"]
-layout_mode = 2
-
-[node name="KeysLabel" type="Label" parent="MarginContainer2/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="HUDUpdate" type="Control" parent="."]
+[node name="DamageDirection" type="Control" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+modulate = Color(1, 1, 1, 0)
+
+[node name="Wedge" type="Polygon2D" parent="DamageDirection"]
+polygon = PackedVector2Array(-90, -150, 90, -150, 50, -235, -50, -235)
+color = Color(1, 0.22, 0.18, 0.9)
 
 [node name="Crosshair" type="Control" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = SubResource("GDScript_fls4u")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CrosshairTop" type="ColorRect" parent="Crosshair"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = -1.0
+offset_top = -14.0
+offset_right = 1.0
+offset_bottom = -6.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.92)
 
-[node name="FPSCounter" type="Label" parent="CanvasLayer"]
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("2_722oe")
+[node name="CrosshairBottom" type="ColorRect" parent="Crosshair"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = -1.0
+offset_top = 6.0
+offset_right = 1.0
+offset_bottom = 14.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.92)
 
-[node name="InteractionLabel" type="Label" parent="." groups=["player"]]
+[node name="CrosshairLeft" type="ColorRect" parent="Crosshair"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = -14.0
+offset_top = -1.0
+offset_right = -6.0
+offset_bottom = 1.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.92)
+
+[node name="CrosshairRight" type="ColorRect" parent="Crosshair"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_left = 6.0
+offset_top = -1.0
+offset_right = 14.0
+offset_bottom = 1.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.92)
+
+[node name="CrosshairDot" type="ColorRect" parent="Crosshair"]
+layout_mode = 0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.95)
+
+[node name="HitMarker" type="Control" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -0.5
-offset_top = 21.5
-offset_right = 0.5
-offset_bottom = 44.5
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0)
+
+[node name="TopLeft" type="Line2D" parent="HitMarker"]
+points = PackedVector2Array(-12, -12, -5, -5)
+width = 2.5
+default_color = Color(1, 1, 1, 1)
+
+[node name="TopRight" type="Line2D" parent="HitMarker"]
+points = PackedVector2Array(12, -12, 5, -5)
+width = 2.5
+default_color = Color(1, 1, 1, 1)
+
+[node name="BottomLeft" type="Line2D" parent="HitMarker"]
+points = PackedVector2Array(-12, 12, -5, 5)
+width = 2.5
+default_color = Color(1, 1, 1, 1)
+
+[node name="BottomRight" type="Line2D" parent="HitMarker"]
+points = PackedVector2Array(12, 12, 5, 5)
+width = 2.5
+default_color = Color(1, 1, 1, 1)
+
+[node name="AlertPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -140.0
+offset_top = 32.0
+offset_right = 140.0
+offset_bottom = 80.0
+grow_horizontal = 2
+mouse_filter = 2
+visible = false
+
+[node name="AlertBox" type="VBoxContainer" parent="AlertPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="AlertStatus" type="Label" parent="AlertPanel/AlertBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+text = "ALERT"
+
+[node name="DetectMeter" type="ProgressBar" parent="AlertPanel/AlertBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+show_percentage = false
+
+[node name="ObjectivePanel" type="PanelContainer" parent="."]
+layout_mode = 1
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 340.0
+offset_bottom = 32.0
+mouse_filter = 2
+custom_minimum_size = Vector2(308, 0)
+
+[node name="ObjectiveBox" type="VBoxContainer" parent="ObjectivePanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="ObjectiveHeader" type="Label" parent="ObjectivePanel/ObjectiveBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.7, 0.24, 1)
+theme_override_font_sizes/font_size = 12
+text = "OBJECTIVE"
+
+[node name="ObjectiveText" type="Label" parent="ObjectivePanel/ObjectiveBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 3
+text = "Collect the keys to reach the next area"
+
+[node name="KeyList" type="HBoxContainer" parent="ObjectivePanel/ObjectiveBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="KeySlotTemplate" type="PanelContainer" parent="ObjectivePanel/ObjectiveBox/KeyList"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 28)
+layout_mode = 2
+mouse_filter = 2
+visible = false
+
+[node name="KeyLabel" type="Label" parent="ObjectivePanel/ObjectiveBox/KeyList/KeySlotTemplate"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "?"
+
+[node name="NotificationStack" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -150.0
+offset_right = -32.0
+offset_bottom = 150.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="InteractionPrompt" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = 44.0
+offset_right = 260.0
+offset_bottom = 84.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_prompt")
+
+[node name="PromptText" type="RichTextLabel" parent="InteractionPrompt"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="VitalsPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -158.0
+offset_right = 352.0
+offset_bottom = -32.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="VitalsBox" type="VBoxContainer" parent="VitalsPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="HealthRow" type="HBoxContainer" parent="VitalsPanel/VitalsBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HealthLabel" type="Label" parent="VitalsPanel/VitalsBox/HealthRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.56, 0.6, 0.66, 1)
+theme_override_font_sizes/font_size = 13
+text = "HEALTH"
+
+[node name="HealthValue" type="Label" parent="VitalsPanel/VitalsBox/HealthRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 2
+text = "100"
+
+[node name="HealthBarHolder" type="Control" parent="VitalsPanel/VitalsBox"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HealthTrail" type="ProgressBar" parent="VitalsPanel/VitalsBox/HealthBarHolder"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(1, 0.35, 0.3, 1)
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HealthBar" type="ProgressBar" parent="VitalsPanel/VitalsBox/HealthBarHolder"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxEmpty_bar")
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="StaminaLabel" type="Label" parent="VitalsPanel/VitalsBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.56, 0.6, 0.66, 1)
+theme_override_font_sizes/font_size = 11
+text = "STAMINA"
+
+[node name="StaminaBar" type="ProgressBar" parent="VitalsPanel/VitalsBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="WeaponPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -158.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="WeaponBox" type="VBoxContainer" parent="WeaponPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="WeaponHeader" type="HBoxContainer" parent="WeaponPanel/WeaponBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="WeaponName" type="Label" parent="WeaponPanel/WeaponBox/WeaponHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/font_size = 15
+text = "UNARMED"
+
+[node name="FireMode" type="Label" parent="WeaponPanel/WeaponBox/WeaponHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.56, 0.6, 0.66, 1)
+theme_override_font_sizes/font_size = 12
+visible = false
+text = "AUTO"
+
+[node name="AmmoRow" type="HBoxContainer" parent="WeaponPanel/WeaponBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="AmmoValue" type="Label" parent="WeaponPanel/WeaponBox/AmmoRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 44
+text = "0"
+
+[node name="AmmoCaption" type="Label" parent="WeaponPanel/WeaponBox/AmmoRow"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.56, 0.6, 0.66, 1)
+theme_override_font_sizes/font_size = 13
+vertical_alignment = 2
+text = "AMMO"
+
+[node name="NoAmmoLabel" type="Label" parent="WeaponPanel/WeaponBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.25, 1)
+theme_override_font_sizes/font_size = 14
+visible = false
+horizontal_alignment = 2
+text = "NO AMMO"
+
+[node name="FPSCounter" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 10.0
+offset_right = -32.0
+offset_bottom = 32.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 2
+visible = false
+text = "0 FPS"
+script = ExtResource("2_fps")

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://mklwkwxtik8j"]
+[gd_scene load_steps=4 format=3 uid="uid://mklwkwxtik8j"]
 
 [ext_resource type="Script" uid="uid://c7adhww3dsm5w" path="res://scripts/pause_menu.gd" id="1_n87rw"]
+[ext_resource type="Theme" path="res://ui_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://scenes/options_menu.tscn" id="3_opts"]
 
 [node name="PauseMenu" type="Control"]
 layout_mode = 3
@@ -9,82 +11,111 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("2_theme")
 script = ExtResource("1_n87rw")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Dim" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.39215687)
+mouse_filter = 2
+color = Color(0, 0, 0, 0.62)
 
-[node name="GameOverLabel" type="Label" parent="."]
-visible = false
+[node name="Panel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -183.5
-offset_top = -62.25
-offset_right = 183.5
-offset_bottom = 25.75
+offset_left = -210.0
+offset_top = -190.0
+offset_right = 210.0
+offset_bottom = 190.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 64
-text = "GAME OVER"
+mouse_filter = 0
 
-[node name="ResumeVBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -131.0
-offset_top = -62.25
-offset_right = 131.0
-offset_bottom = 9.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 12
-
-[node name="ResumeButton" type="Button" parent="ResumeVBoxContainer"]
+[node name="Content" type="VBoxContainer" parent="Panel"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Heading" type="Label" parent="Panel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 36
+horizontal_alignment = 1
+text = "PAUSED"
+
+[node name="Divider" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PauseButtons" type="VBoxContainer" parent="Panel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="ResumeButton" type="Button" parent="Panel/Content/PauseButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
 text = "Resume"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -131.0
-offset_top = 21.0
-offset_right = 131.0
-offset_bottom = 175.5003
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 12
-
-[node name="MenuButton" type="Button" parent="VBoxContainer"]
+[node name="OptionsButton" type="Button" parent="Panel/Content/PauseButtons"]
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Menu"
+text = "Options"
 
-[node name="ExitButton" type="Button" parent="VBoxContainer"]
+[node name="PauseMenuButton" type="Button" parent="Panel/Content/PauseButtons"]
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 30
-text = "Exit"
+text = "Main menu"
 
-[connection signal="pressed" from="ResumeVBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
+[node name="ExitButton" type="Button" parent="Panel/Content/PauseButtons"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+text = "Quit"
+
+[node name="DeathButtons" type="VBoxContainer" parent="Panel/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="RestartButton" type="Button" parent="Panel/Content/DeathButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+text = "Restart level"
+
+[node name="DeathMenuButton" type="Button" parent="Panel/Content/DeathButtons"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+text = "Main menu"
+
+[node name="DeathExitButton" type="Button" parent="Panel/Content/DeathButtons"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+text = "Quit"
+
+[node name="OptionsMenu" parent="." instance=ExtResource("3_opts")]
+unique_name_in_owner = true
+visible = false
+
+[connection signal="pressed" from="Panel/Content/PauseButtons/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Panel/Content/PauseButtons/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="Panel/Content/PauseButtons/PauseMenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="pressed" from="Panel/Content/PauseButtons/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="Panel/Content/DeathButtons/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="Panel/Content/DeathButtons/DeathMenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="pressed" from="Panel/Content/DeathButtons/DeathExitButton" to="." method="_on_exit_button_pressed"]

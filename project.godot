@@ -30,6 +30,8 @@ gdscript/warnings/untyped_declaration=1
 
 [display]
 
+window/stretch/aspect="expand"
+window/stretch/mode="canvas_items"
 window/vsync/vsync_mode=0
 
 [input]

@@ -205,6 +205,7 @@ func _ready() -> void:
 	# add crouch check shapecast collision exception for CharacterBody3D node
 	CROUCH_SHAPECAST.add_exception(self)
 
+	hud.setup(self)
 	hud.health = health
 	hud.ammo = ammo
 	hud.stamina = stamina
@@ -212,6 +213,7 @@ func _ready() -> void:
 	
 	if max_health <= 0:
 		max_health = health
+	hud.max_health = max_health
 	
 	# Start from the scene's real camera angles so recoil never snaps the view
 	camera_yaw = CameraController.rotation.y
@@ -812,6 +814,11 @@ func takeDamage(dmg: int, _source: Node = null, _hit_pos: Vector3 = Vector3.ZERO
 	hud.updateHud()
 	if hud.has_method("screenGlow"):
 		hud.screenGlow(Color(1, 0, 0, 0.35))
+	if hud.has_method("show_damage_from"):
+		if _source is Node3D:
+			hud.show_damage_from(_source.global_position)
+		elif _hit_pos != Vector3.ZERO:
+			hud.show_damage_from(_hit_pos)
 	
 	if health <= 0:
 		health = 0
@@ -882,6 +889,8 @@ func collect_key(key_value: String) -> void:
 	keys_collected.append(key_value)
 	keys_collected_current.append(key_value)
 	print("Collected key: ", key_value)
+	if hud.has_method("notify"):
+		hud.notify("%s key acquired" % key_value.capitalize(), Color(0.95, 0.85, 0.4))
 	# Update the HUD list and counter
 	if hud.has_method("update_keys"):
 		hud.update_keys(keys_collected_current, keys_collected, total_keys_in_map)
@@ -895,3 +904,15 @@ func set_total_keys(total: int) -> void:
 	# Immediately update the HUD with the initial count
 	if hud.has_method("update_keys"):
 		hud.update_keys(keys_collected_current, keys_collected, total_keys_in_map)
+
+# Used by the death screen: bring the player back before the level is reloaded.
+func prepare_restart() -> void:
+	is_dead = false
+	health = max_health
+	stamina = 100.0
+	velocity = Vector3.ZERO
+	hud.health = health
+	hud.stamina = stamina
+	hud.updateHud()
+	pause_menu.set_game_over(false)
+	pause_game(false, true)

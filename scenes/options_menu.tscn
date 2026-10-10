@@ -1,0 +1,146 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/options_menu.gd" id="1_opts"]
+[ext_resource type="Theme" path="res://ui_theme.tres" id="2_theme"]
+
+[node name="OptionsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme = ExtResource("2_theme")
+script = ExtResource("1_opts")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0.72)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -200.0
+offset_right = 270.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Box" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 18
+
+[node name="Title" type="Label" parent="Panel/Box"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+text = "OPTIONS"
+
+[node name="Grid" type="GridContainer" parent="Panel/Box"]
+layout_mode = 2
+mouse_filter = 2
+columns = 2
+theme_override_constants/h_separation = 28
+theme_override_constants/v_separation = 16
+
+[node name="SensitivityLabel" type="Label" parent="Panel/Box/Grid"]
+layout_mode = 2
+mouse_filter = 2
+text = "Mouse sensitivity"
+
+[node name="SensitivityRow" type="HBoxContainer" parent="Panel/Box/Grid"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="SensitivitySlider" type="HSlider" parent="Panel/Box/Grid/SensitivityRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 20.0
+step = 0.5
+value = 5.0
+
+[node name="SensitivityValue" type="Label" parent="Panel/Box/Grid/SensitivityRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+mouse_filter = 2
+horizontal_alignment = 2
+text = "5.0"
+
+[node name="VolumeLabel" type="Label" parent="Panel/Box/Grid"]
+layout_mode = 2
+mouse_filter = 2
+text = "Master volume"
+
+[node name="VolumeRow" type="HBoxContainer" parent="Panel/Box/Grid"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="VolumeSlider" type="HSlider" parent="Panel/Box/Grid/VolumeRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 100.0
+
+[node name="VolumeValue" type="Label" parent="Panel/Box/Grid/VolumeRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+mouse_filter = 2
+horizontal_alignment = 2
+text = "100%"
+
+[node name="FullscreenLabel" type="Label" parent="Panel/Box/Grid"]
+layout_mode = 2
+mouse_filter = 2
+text = "Fullscreen"
+
+[node name="FullscreenCheck" type="CheckBox" parent="Panel/Box/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="FpsLabel" type="Label" parent="Panel/Box/Grid"]
+layout_mode = 2
+mouse_filter = 2
+text = "Show FPS counter"
+
+[node name="FpsCheck" type="CheckBox" parent="Panel/Box/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="BackButton" type="Button" parent="Panel/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+text = "Back"
+
+[connection signal="value_changed" from="Panel/Box/Grid/SensitivityRow/SensitivitySlider" to="." method="_on_sensitivity_changed"]
+[connection signal="value_changed" from="Panel/Box/Grid/VolumeRow/VolumeSlider" to="." method="_on_volume_changed"]
+[connection signal="toggled" from="Panel/Box/Grid/FullscreenCheck" to="." method="_on_fullscreen_toggled"]
+[connection signal="toggled" from="Panel/Box/Grid/FpsCheck" to="." method="_on_fps_toggled"]
+[connection signal="pressed" from="Panel/Box/BackButton" to="." method="_on_back_pressed"]

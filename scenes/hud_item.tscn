@@ -2,7 +2,18 @@
 
 [ext_resource type="Script" uid="uid://bv4fgo120iuid" path="res://scripts/HUDItem.gd" id="1_8vy6n"]
 
-[node name="HUDItem" type="Label"]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="HUDItem" type="PanelContainer"]
+size_flags_horizontal = 8
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0)
 script = ExtResource("1_8vy6n")
+
+[node name="Text" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 17
+theme_override_constants/outline_size = 4
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+horizontal_alignment = 2
+text = "Notification"

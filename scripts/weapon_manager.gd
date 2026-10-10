@@ -75,6 +75,7 @@ func _ready() -> void:
 func _make_weapon(node_name: String, overrides: Dictionary) -> Dictionary:
 	var data := {
 		"name": node_name,
+		"display_name": node_name, # shown on the HUD
 		"holder": get_node_or_null(node_name),
 		"barrel": get_node_or_null(node_name + "/MuzzleMarker3D"),
 		"anim_player": get_node_or_null(node_name + "/AnimationPlayer"),
@@ -111,11 +112,13 @@ func _build_weapons_data() -> void:
 	weapons_data = {
 		WeaponState.NO_WEAPON: { "holder": null },
 		WeaponState.WEAPON_1: _make_weapon("blaster-b", {
+			"display_name": "Rapid blaster",
 			"fire_speed": 0.2, "automatic": true, "damage": 1.0, "ammo_cost": 1, "range": 50.0,
 			"spread": 0.0, "bloom": 0.6, "bloom_max": 3.5, "bloom_recovery": 5.0,
 			"recoil_pitch": 0.010, "recoil_yaw": 0.004, "noise": 25.0,
 		}),
 		WeaponState.WEAPON_2: _make_weapon("blaster-m2", {
+			"display_name": "Scatter blaster",
 			"fire_speed": 0.55, "automatic": false, "damage": 1.0, "ammo_cost": 2, "range": 15.0,
 			"pellets": 7, "spread": 4.5, "bloom": 0.0, "bloom_max": 0.0,
 			"falloff_start": 0.3, "falloff_min": 0.25,
@@ -127,6 +130,12 @@ func _build_weapons_data() -> void:
 
 func unlock_weapon(ws: WeaponState) -> void:
 	unlocked[ws] = true
+
+## Current cone half-angle in degrees (bloom, movement and stance). The HUD crosshair reads this.
+func get_current_spread() -> float:
+	if current_weapon == WeaponState.NO_WEAPON or player == null or not weapons_data.has(current_weapon):
+		return 0.0
+	return _current_spread(weapons_data[current_weapon])
 
 # ---------------------------------------------------------------- SWITCHING
 ## Safe to spam: the latest request always wins, no overlapping animations.
