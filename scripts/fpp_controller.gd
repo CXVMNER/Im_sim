@@ -46,6 +46,9 @@ var keys_collected: Array[String] = []
 var keys_collected_current: Array[String] = []
 var total_keys_in_map := 0
 
+## How the player looked when the current level finished loading. "Restart level" puts this back.
+var entry_state: Dictionary = {}
+
 # head bob variables
 const BOB_FREQ := 2.0
 const BOB_AMP := 0.05
@@ -947,15 +950,47 @@ func set_total_keys(total: int) -> void:
 	if hud.has_method("update_keys"):
 		hud.update_keys(keys_collected_current, keys_collected, total_keys_in_map)
 
-# Used by the death screen: bring the player back before the level is reloaded.
+## Everything about the player that must survive a restart, and later a save file.
+## Plain values only (numbers, strings, arrays), so it can be written to disk as it is.
+func capture_state() -> Dictionary:
+	return {
+		"health": health,
+		"armor": armor,
+		"ammo": ammo,
+		"keys": keys_collected.duplicate(),
+		"weapons": weapon_manager.capture_state(),
+	}
+
+
+func apply_state(state: Dictionary) -> void:
+	health = int(state.get("health", max_health))
+	armor = float(state.get("armor", 0.0))
+	ammo = int(state.get("ammo", 0))
+	keys_collected.assign(state.get("keys", []))
+	weapon_manager.restore_state(state.get("weapons", {}))
+	grabbed_object = null # a crate held at death belongs to the level that is about to be freed
+
+
+## Called by main.gd when a level has finished loading (but not after a restart).
+func capture_entry_state() -> void:
+	entry_state = capture_state()
+
+
+# Used by the death screen: the level is reloaded but this node stays, so put the player back
+# exactly the way they entered the level, health included.
 func prepare_restart() -> void:
+	if entry_state.is_empty():
+		# No snapshot (should not happen): fall back to a fresh start
+		armor = 0.0
+		health = max_health
+	else:
+		apply_state(entry_state)
 	is_dead = false
-	health = max_health
 	stamina = 100.0
-	armor = 0.0
 	velocity = Vector3.ZERO
 	hud.health = health
 	hud.armor = armor
+	hud.ammo = ammo
 	hud.stamina = stamina
 	hud.updateHud()
 	pause_menu.set_game_over(false)

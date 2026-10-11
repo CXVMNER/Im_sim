@@ -6,6 +6,9 @@ extends Node3D
 ## Path of the level currently in the container, used by "Restart level" on the death screen
 var current_level_path := ""
 
+## True while a restart is loading, so the level-entry snapshot is kept instead of replaced
+var _is_restart := false
+
 
 func _ready() -> void:
 	# GameManager now handles level loading instead of changing scenes entirely
@@ -23,6 +26,7 @@ func change_level(level_path: String) -> void:
 
 func restart_level() -> void:
 	if current_level_path != "":
+		_is_restart = true
 		GameManager.load_level_into_container(current_level_path)
 
 
@@ -48,3 +52,10 @@ func finalize_level_load(loaded_scene: PackedScene) -> void:
 		player.velocity = Vector3.ZERO
 		if player.fall_damage:
 			player.fall_damage.disarm()
+
+	# Remember how the player entered this level, so "Restart level" can put them back.
+	# A restart keeps the snapshot it already has.
+	if _is_restart:
+		_is_restart = false
+	else:
+		player.capture_entry_state()

@@ -131,6 +131,30 @@ func _build_weapons_data() -> void:
 func unlock_weapon(ws: WeaponState) -> void:
 	unlocked[ws] = true
 
+## The weapon part of the player's saved state. Plain numbers only, so it can go straight into a save file.
+func capture_state() -> Dictionary:
+	var open: Array = []
+	for ws in unlocked:
+		if unlocked[ws]:
+			open.append(int(ws))
+	return {"weapon": int(target_weapon), "last_weapon": int(last_weapon), "unlocked": open}
+
+## Puts the weapons back the way capture_state() found them. A different weapon in hand is changed with the
+## normal lower/raise animation, so this also works while the game is paused or a level is loading.
+func restore_state(state: Dictionary) -> void:
+	if state.is_empty():
+		return
+	var open: Array = state.get("unlocked", [])
+	for ws in unlocked.keys():
+		unlocked[ws] = int(ws) in open
+	for ws in open:
+		unlocked[ws] = true
+	_shot_buffered = false
+	_bloom = 0.0
+	switch_weapon(int(state.get("weapon", WeaponState.NO_WEAPON)) as WeaponState)
+	# switch_weapon() overwrites last_weapon, so put the saved quick-switch weapon back afterwards
+	last_weapon = int(state.get("last_weapon", WeaponState.NO_WEAPON)) as WeaponState
+
 ## Current cone half-angle in degrees (bloom, movement and stance). The HUD crosshair reads this.
 func get_current_spread() -> float:
 	if current_weapon == WeaponState.NO_WEAPON or player == null or not weapons_data.has(current_weapon):
