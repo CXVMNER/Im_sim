@@ -46,6 +46,18 @@ class_name Enemy
 @export var patrol_wait_time: float = 3.0
 @export var update_interval: float = 0.2
 
+@export_group("Avoidance")
+## Master switch. Off = old behaviour (walk straight through each other).
+@export var use_avoidance := true
+## Avoid radius. Roughly the capsule radius. enemy_2 is scaled x2, so bump it there.
+@export var avoidance_radius := 0.6
+## How far the agent looks for neighbours to avoid. Bigger = smoother but slower.
+@export var avoidance_neighbor_distance := 6.0
+## Upper bound on neighbours considered per frame.
+@export var avoidance_max_neighbors := 8
+## Seconds of lookahead used when steering around other agents.
+@export var avoidance_time_horizon := 1.5
+
 var bullet := preload("res://scenes/bullet.tscn")
 
 @onready var vision_ray: RayCast3D = $VisionRay # used as the eye position
@@ -88,12 +100,28 @@ var _sight_timer := 0.0
 var _lost_sight_time := 0.0
 var _pain_timer := 0.0
 var _last_shot_time := -100.0
+
+## True while the agent is on a live navigation map and its callback will fire.
+## If false, we call move_and_slide() ourselves so the enemy still works in
+## levels that have no NavigationRegion3D.
+var _avoidance_active := false
+
 @onready var fall_damage: FallDamage = $FallDamage
 
 func _ready() -> void:
 	add_to_group("enemies")
 	max_health = health
 	vision_ray.enabled = false # kept only as the eye position; sight uses direct ray queries now
+
+	# Sync the agent with our exports. The .tscn can still override these at
+	# design time (they'll just get overwritten here, which is the point).
+	agent.avoidance_enabled = use_avoidance
+	if use_avoidance:
+		agent.radius = avoidance_radius
+		agent.neighbor_distance = avoidance_neighbor_distance
+		agent.max_neighbors = avoidance_max_neighbors
+		agent.time_horizon_agents = avoidance_time_horizon
+
 	home_position = global_position
 	return_position = home_position
 	target = PlayerManager.player
@@ -120,7 +148,33 @@ func _physics_process(delta: float) -> void:
 		State.SHOOT:       _state_shoot(delta)
 
 	_apply_gravity(delta)
+
+	# Hand the desired horizontal velocity to the agent. When the map is live,
+	# the agent steers around its neighbours and calls us back on
+	# velocity_computed, where we actually move the body. When the map is not
+	# live (no NavigationRegion3D, or server hasn't ticked yet) we fall back to
+	# moving the body directly, exactly like before.
+	_avoidance_active = use_avoidance and _is_navigation_ready()
+	if _avoidance_active:
+		agent.set_velocity(Vector3(velocity.x, 0.0, velocity.z))
+	else:
+		move_and_slide()
+
+## Called by NavigationAgent3D once per physics frame while avoidance is live.
+## safe_velocity already has the other agents' contributions baked in.
+func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
+	if is_dead or not _avoidance_active:
+		return
+	# Only the horizontal component is under avoidance control; gravity is ours.
+	velocity.x = safe_velocity.x
+	velocity.z = safe_velocity.z
 	move_and_slide()
+
+## True when the agent's navigation map exists and has been updated at least
+## once, which is when NavigationServer3D starts returning avoidance results.
+func _is_navigation_ready() -> bool:
+	var map := agent.get_navigation_map()
+	return map.is_valid() and NavigationServer3D.map_get_iteration_id(map) > 0
 
 # --------------------
 # SENSES
@@ -449,6 +503,8 @@ func _die() -> void:
 	is_dead = true
 	remove_from_group("enemies")
 	velocity = Vector3.ZERO
+	# Stop asking the agent for safe velocities; our callback would just no-op anyway.
+	agent.avoidance_enabled = false
 	$CollisionShape3D.set_deferred("disabled", true)
 	set_physics_process(false)
 	death_audio_stream_player_3d.play()
@@ -462,11 +518,6 @@ func _hit_finished() -> void:
 	# Kept for animation call-tracks; damage is now dealt by the melee timer
 	if target and target.has_method("hit"):
 		target.hit()
-
-# enemy.tscn connects NavigationAgent3D.velocity_computed to this name, but it was never
-# defined (the connection errored on load). Movement doesn't use avoidance velocity.
-func _on_navigation_agent_3d_velocity_computed(_safe_velocity: Vector3) -> void:
-	pass
 
 func _on_engaged_timeout() -> void:
 	engaged = false
