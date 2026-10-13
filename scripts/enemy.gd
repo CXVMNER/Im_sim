@@ -46,6 +46,16 @@ class_name Enemy
 @export var patrol_wait_time: float = 3.0
 @export var update_interval: float = 0.2
 
+@export_group("Stairs")
+## Master switch for walking up/down stairs and small ledges (same technique as the player).
+@export var use_stair_stepping := true
+## Tallest step the enemy walks up/down, in world units (not affected by the enemy's scale).
+## Stairs in the levels are 0.25 high; the extra 0.05 keeps float rounding from ever failing the check.
+@export var max_step_height := 0.3
+## Hide the instant jump of the body when it steps: the robot model eases back to its rest height
+## (same idea as the player's camera smoothing).
+@export var smooth_step_visuals := true
+
 @export_group("Avoidance")
 ## Master switch. Off = old behaviour (walk straight through each other).
 @export var use_avoidance := true
@@ -67,6 +77,7 @@ var bullet := preload("res://scenes/bullet.tscn")
 @onready var death_audio_stream_player_3d := $DeathAudioStreamPlayer3D
 @onready var hit_audio_stream_player_3d = $HitAudioStreamPlayer3D
 
+@onready var model: Node3D = $CollisionShape3D/robot2
 @onready var animation_player := $CollisionShape3D/robot2/AnimationPlayer
 @onready var anim_player := $AnimPlayer
 
@@ -74,6 +85,7 @@ const SMOOTHING_FACTOR := 0.2
 const SIGHT_CHECK_INTERVAL := 0.1
 const LOSE_SIGHT_GRACE := 0.6
 const PAIN_TIME := 0.25
+const STEP_SMOOTH_LIMIT := 0.5 # max visual offset (model-local units) while smoothing a step
 
 enum State { IDLE, PATROL, INVESTIGATE, CHASE, ATTACK, RETURN, SHOOT }
 var state: State = State.IDLE
@@ -106,11 +118,19 @@ var _last_shot_time := -100.0
 ## levels that have no NavigationRegion3D.
 var _avoidance_active := false
 
+# Stair stepping (ported from the player controller)
+var _snapped_to_stairs_last_frame := false
+var _last_frame_was_on_floor := -INF
+var _model_rest_y := 0.0      # model's resting local height, read in _ready
+var _model_smoothing := false
+var _model_saved_y := 0.0     # model's world height that smoothing is easing from
+
 @onready var fall_damage: FallDamage = $FallDamage
 
 func _ready() -> void:
 	add_to_group("enemies")
 	max_health = health
+	_model_rest_y = model.position.y
 	vision_ray.enabled = false # kept only as the eye position; sight uses direct ray queries now
 
 	# Sync the agent with our exports. The .tscn can still override these at
@@ -158,7 +178,7 @@ func _physics_process(delta: float) -> void:
 	if _avoidance_active:
 		agent.set_velocity(Vector3(velocity.x, 0.0, velocity.z))
 	else:
-		move_and_slide()
+		_move_with_stairs()
 
 ## Called by NavigationAgent3D once per physics frame while avoidance is live.
 ## safe_velocity already has the other agents' contributions baked in.
@@ -168,13 +188,116 @@ func _on_navigation_agent_3d_velocity_computed(safe_velocity: Vector3) -> void:
 	# Only the horizontal component is under avoidance control; gravity is ours.
 	velocity.x = safe_velocity.x
 	velocity.z = safe_velocity.z
-	move_and_slide()
+	_move_with_stairs()
 
 ## True when the agent's navigation map exists and has been updated at least
 ## once, which is when NavigationServer3D starts returning avoidance results.
 func _is_navigation_ready() -> bool:
 	var map := agent.get_navigation_map()
 	return map.is_valid() and NavigationServer3D.map_get_iteration_id(map) > 0
+
+# --------------------
+# STAIRS
+# --------------------
+# Same technique as the player: before moving, test whether a step <= max_step_height sits
+# right ahead and hop onto it; after moving, glue back down if we just walked off a step.
+# The two RayCast3D nodes the player uses are replaced by direct ray queries, so the enemy
+# scenes (enemy.tscn / enemy_2.tscn) need no changes.
+
+## The one place the enemy actually moves. Everything that used to call move_and_slide() goes through here.
+func _move_with_stairs() -> void:
+	if not use_stair_stepping:
+		move_and_slide()
+		return
+	var delta := get_physics_process_delta_time()
+	# is_on_floor() still describes last frame's move at this point
+	if is_on_floor():
+		_last_frame_was_on_floor = Engine.get_physics_frames()
+	if not _snap_up_stairs_check(delta):
+		# _snap_up_stairs_check moves the body manually when it succeeds, so we skip move_and_slide then.
+		move_and_slide()
+		_snap_down_to_stairs_check()
+	_smooth_step_visuals(delta)
+
+func is_surface_too_steep(normal: Vector3) -> bool:
+	return normal.angle_to(Vector3.UP) > floor_max_angle
+
+## Ray straight down from `from` (world space), ignoring ourselves.
+func _ray_down(from: Vector3, length: float) -> Dictionary:
+	var query := PhysicsRayQueryParameters3D.create(
+			from, from + Vector3.DOWN * length, collision_mask, [get_rid()])
+	return get_world_3d().direct_space_state.intersect_ray(query)
+
+func _snap_down_to_stairs_check() -> void:
+	var did_snap := false
+	# Called right after move_and_slide: if we just walked off the top of a step, is_on_floor() is false now
+	var floor_hit := _ray_down(global_position, 1.0)
+	var floor_below: bool = not floor_hit.is_empty() and not is_surface_too_steep(floor_hit["normal"])
+	var was_on_floor_last_frame := Engine.get_physics_frames() == _last_frame_was_on_floor
+	if not is_on_floor() and velocity.y <= 0.0 and (was_on_floor_last_frame or _snapped_to_stairs_last_frame) and floor_below:
+		var body_test_result := KinematicCollision3D.new()
+		if test_move(global_transform, Vector3(0.0, -max_step_height, 0.0), body_test_result):
+			_save_model_pos_for_smoothing()
+			global_position.y += body_test_result.get_travel().y
+			apply_floor_snap()
+			did_snap = true
+	_snapped_to_stairs_last_frame = did_snap
+
+func _snap_up_stairs_check(delta: float) -> bool:
+	if not is_on_floor() and not _snapped_to_stairs_last_frame:
+		return false
+	# Not while rising (jump/knockback), and no need to look for steps when (almost) standing still
+	var horizontal := Vector3(velocity.x, 0.0, velocity.z)
+	if velocity.y > 0.0 or horizontal.length_squared() < 0.0001:
+		return false
+	var expected_move_motion := horizontal * delta
+	# Probe from slightly above where we expect to end up, looking down for a step
+	# (the extra height is clearance for the body).
+	var step_pos_with_clearance := global_transform.translated(
+			expected_move_motion + Vector3(0.0, max_step_height * 2.0, 0.0))
+	var down_check_result := KinematicCollision3D.new()
+	if not test_move(step_pos_with_clearance, Vector3(0.0, -max_step_height * 2.0, 0.0), down_check_result):
+		return false
+	# Only level geometry counts as a step: never hop onto crates, the player or other enemies
+	var collider := down_check_result.get_collider()
+	if collider == null or not (collider.is_class("StaticBody3D") or collider.is_class("CSGShape3D")):
+		return false
+	var step_height := ((step_pos_with_clearance.origin + down_check_result.get_travel()) - global_position).y
+	# <= 0.01 is not a step (also avoids jitter when running into a ceiling)
+	if step_height > max_step_height or step_height <= 0.01 \
+			or (down_check_result.get_position() - global_position).y > max_step_height:
+		return false
+	# Make sure there is walkable ground just past the edge of the step (not just a wall top)
+	var ahead_origin := down_check_result.get_position() \
+			+ Vector3(0.0, max_step_height, 0.0) + expected_move_motion.normalized() * 0.1
+	var ahead_hit := _ray_down(ahead_origin, max_step_height + 0.05)
+	if ahead_hit.is_empty() or is_surface_too_steep(ahead_hit["normal"]):
+		return false
+	_save_model_pos_for_smoothing()
+	global_position = step_pos_with_clearance.origin + down_check_result.get_travel()
+	apply_floor_snap()
+	_snapped_to_stairs_last_frame = true
+	return true
+
+# The body teleports up/down a step in one frame. The robot model is parented to it, so it would
+# visibly pop; instead keep it at its old world height and ease it back to rest.
+func _save_model_pos_for_smoothing() -> void:
+	if not smooth_step_visuals or _model_smoothing:
+		return
+	_model_smoothing = true
+	_model_saved_y = model.global_position.y # called before the body moves
+
+func _smooth_step_visuals(delta: float) -> void:
+	if not _model_smoothing:
+		return
+	model.global_position.y = _model_saved_y
+	var offset := clampf(model.position.y - _model_rest_y, -STEP_SMOOTH_LIMIT, STEP_SMOOTH_LIMIT)
+	var speed := maxf(Vector2(velocity.x, velocity.z).length(), speed_walk * 0.5)
+	offset = move_toward(offset, 0.0, speed * delta)
+	model.position.y = _model_rest_y + offset
+	_model_saved_y = model.global_position.y
+	if is_zero_approx(offset):
+		_model_smoothing = false
 
 # --------------------
 # SENSES
@@ -501,6 +624,7 @@ func _die() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	_model_smoothing = false
 	remove_from_group("enemies")
 	velocity = Vector3.ZERO
 	# Stop asking the agent for safe velocities; our callback would just no-op anyway.
