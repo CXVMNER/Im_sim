@@ -16,6 +16,8 @@ dest_files=["res://.godot/imported/robot.gltf-e7dce149af9a110cd46d11d2ee895faa.s
 nodes/root_type=""
 nodes/root_name=""
 nodes/root_script=null
+mesh_library/use_node_names_as_mesh_names=false
+array_mesh/deduplicate_surfaces=true
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
 nodes/import_as_skeleton_bones=false
@@ -2095,7 +2097,19 @@ _subresources={
 "slice_99/start_frame": 0,
 "slices/amount": 0
 }
+},
+"meshes": {
+"robot_Cylinder_002": {
+"generate/lightmap_uv": 0,
+"generate/lods": 1,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": false,
+"save_to_file/fallback_path": "",
+"save_to_file/path": ""
+}
 }
 }
 gltf/naming_version=2
 gltf/embedded_image_handling=1
+gltf/texture_map_mode=0

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bovg6ay4mudfd"]
 
+[ext_resource type="PackedScene" uid="uid://dqcr8k04k6pux" path="res://scenes/rigid_boulder.tscn" id="22_7bdtt"]
 [ext_resource type="PackedScene" uid="uid://cxn7t0xllrrj0" path="res://scenes/rigid_box.tscn" id="e_crate"]
 [ext_resource type="Texture2D" uid="uid://bwlvtbq0johjc" path="res://assets/kenney_prototype-textures/PNG/Dark/texture_01.png" id="e_dark"]
 [ext_resource type="Script" uid="uid://bkp4fo0yol1r8" path="res://scripts/Door.gd" id="e_door"]
@@ -245,7 +246,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0, 6)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
 
 [node name="SpawnPoint" type="Marker3D" parent="." unique_id=803662475]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 0, 25)
 
 [node name="Health_Start" parent="." unique_id=1108532507 instance=ExtResource("e_power")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.275, 25)
@@ -417,5 +418,8 @@ to open the vault"
 stream = ExtResource("e_track")
 volume_db = -10.0
 autoplay = true
+
+[node name="RigidBox" parent="." unique_id=1242674915 instance=ExtResource("22_7bdtt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.108536, 1.1300019, 24.63734)
 
 [connection signal="interacted" from="yellowDoor/AnimatableBody3D/InteractableComponent" to="yellowDoor/AnimatableBody3D" method="toggle_open"]

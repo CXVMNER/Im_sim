@@ -145,6 +145,8 @@ func _input(event):
 			weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_1)
 		elif event.is_action_pressed("weapon_two"):
 			weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_2)
+		elif event.is_action_pressed("weapon_three"):
+			weapon_manager.switch_weapon(WeaponManager.WeaponState.WEAPON_3)
 		elif event.is_action_pressed("weapon_holster"):
 			weapon_manager.switch_weapon(WeaponManager.WeaponState.NO_WEAPON)
 		elif InputMap.has_action("weapon_last") and event.is_action_pressed("weapon_last"):

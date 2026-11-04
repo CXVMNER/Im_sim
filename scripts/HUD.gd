@@ -206,11 +206,13 @@ func _on_weapon_switched(ws: int) -> void:
 	_set_crosshair_ticks(armed)
 	if armed:
 		_weapon_name.text = str(data.get("display_name", "WEAPON")).to_upper()
-		_fire_mode.text = "AUTO" if data.get("automatic", false) else "SEMI"
+		_fire_mode.text = "MELEE" if data.get("is_melee", false) else ("AUTO" if data.get("automatic", false) else "SEMI")
+		_fire_mode.visible = true
+		_ammo_row.visible = not data.get("is_melee", false)
 	else:
 		_weapon_name.text = "UNARMED"
-	_fire_mode.visible = armed
-	_ammo_row.visible = armed
+		_fire_mode.visible = armed
+		_ammo_row.visible = armed
 	_refresh_ammo()
 
 

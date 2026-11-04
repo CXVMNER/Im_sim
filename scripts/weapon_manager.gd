@@ -11,7 +11,8 @@ signal dry_fired(weapon)
 enum WeaponState {
 	NO_WEAPON,
 	WEAPON_1,  # blaster-b  : rapid-fire blaster
-	WEAPON_2   # blaster-m2 : scatter blaster (shotgun style)
+	WEAPON_2,  # blaster-m2 : scatter blaster (shotgun style)
+	WEAPON_3   # Sword      : short-range melee weapon
 }
 
 enum Phase { READY, LOWERING, RAISING }
@@ -38,6 +39,7 @@ var weapons_data: Dictionary = {}
 var unlocked := {
 	WeaponState.WEAPON_1: true,
 	WeaponState.WEAPON_2: true,
+	WeaponState.WEAPON_3: true,
 }
 
 var can_shoot: bool:
@@ -126,6 +128,15 @@ func _build_weapons_data() -> void:
 			"kick_back": 0.10, "kick_pitch": 0.20,
 			"tracer_color": Color(1.0, 0.7, 0.3), "flash_color": Color(1.0, 0.7, 0.3),
 		}),
+		WeaponState.WEAPON_3: _make_weapon("Sword", {
+			"display_name": "Sword",
+			"fire_speed": 0.65, "automatic": false, "damage": 4.0, "ammo_cost": 0,
+			"range": 2.4, "pellets": 1, "spread": 0.0,
+			"headshot_mult": 1.5, "noise": 8.0,
+			"is_melee": true,
+			"recoil_pitch": 0.025, "recoil_yaw": 0.0,
+			"kick_back": 0.0, "kick_pitch": 0.0,
+		}),
 	}
 
 func unlock_weapon(ws: WeaponState) -> void:
@@ -176,7 +187,7 @@ func switch_weapon(new_weapon: WeaponState) -> void:
 
 func cycle_weapon(dir: int) -> void:
 	var list: Array = []
-	for ws in [WeaponState.WEAPON_1, WeaponState.WEAPON_2]:
+	for ws in [WeaponState.WEAPON_1, WeaponState.WEAPON_2, WeaponState.WEAPON_3]:
 		if unlocked.get(ws, false):
 			list.append(ws)
 	if list.is_empty():
@@ -322,23 +333,44 @@ func _fire(data: Dictionary) -> void:
 		return
 	_shot_buffered = false
 	last_shot = _now()
-	player.ammo -= cost
-	if player.hud:
-		player.hud.ammo = player.ammo
-		player.hud.updateHud()
+	if cost > 0:
+		player.ammo -= cost
+		if player.hud:
+			player.hud.ammo = player.ammo
+			player.hud.updateHud()
 
 	_play_fire_effects(data)
-	_fire_rays(data)
+	if data.get("is_melee", false):
+		_fire_melee(data)
+	else:
+		_fire_rays(data)
 
 	_bloom = minf(_bloom + float(data["bloom"]), float(data["bloom_max"]))
-	if player.has_method("add_recoil"):
+	if not data.get("is_melee", false) and player.has_method("add_recoil"):
 		player.add_recoil(float(data["recoil_pitch"]), float(data["recoil_yaw"]) * randf_range(-1.0, 1.0))
-	_kick_pos += Vector3(randf_range(-0.004, 0.004), randf_range(0.0, 0.006), float(data["kick_back"]))
-	_kick_rot += Vector3(float(data["kick_pitch"]), randf_range(-0.03, 0.03), randf_range(-0.04, 0.04))
-	_kick_pos.z = minf(_kick_pos.z, 0.12)
-	_kick_rot.x = minf(_kick_rot.x, 0.25)
+	if not data.get("is_melee", false):
+		_kick_pos += Vector3(randf_range(-0.004, 0.004), randf_range(0.0, 0.006), float(data["kick_back"]))
+		_kick_rot += Vector3(float(data["kick_pitch"]), randf_range(-0.03, 0.03), randf_range(-0.04, 0.04))
+		_kick_pos.z = minf(_kick_pos.z, 0.12)
+		_kick_rot.x = minf(_kick_rot.x, 0.25)
 	_emit_noise(float(data["noise"]))
 	shot_fired.emit(current_weapon)
+
+func _fire_melee(data: Dictionary) -> void:
+	var camera: Camera3D = player.camera_3d
+	if camera == null:
+		return
+	var origin := camera.global_position
+	var direction := -camera.global_basis.z.normalized()
+	var query := PhysicsRayQueryParameters3D.create(
+		origin, origin + direction * float(data["range"]), hit_mask)
+	query.exclude = [player.get_rid()]
+	var result := get_world_3d().direct_space_state.intersect_ray(query)
+	if result.is_empty():
+		return
+	var outcome := _handle_hit(data, result, direction, origin)
+	if outcome["damaged"] and player.hud and player.hud.has_method("show_hitmarker"):
+		player.hud.show_hitmarker(outcome["killed"], outcome["headshot"])
 
 func _play_fire_effects(data: Dictionary) -> void:
 	var anim: AnimationPlayer = data["anim_player"]
